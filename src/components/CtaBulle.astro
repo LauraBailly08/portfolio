@@ -1,0 +1,126 @@
+---
+/**
+ * Bloc « Prêt à travailler avec moi ? » — bulle BD pointue (forme exportée de Figma)
+ * avec les deux actions principales : télécharger le CV et me contacter.
+ * Remplace l'ancien bloc « Mon CV / Contact » de l'accueil, jugé peu clair.
+ */
+import { SITE } from '@/data/site';
+interface Props {
+  titre?: string;
+}
+const { titre = 'Prêt à travailler avec moi ?' } = Astro.props;
+---
+
+<section class="cta" aria-labelledby="cta-titre">
+  <div class="cta__bubble">
+    <svg class="cta__shape" viewBox="0 0 1048 882" aria-hidden="true" preserveAspectRatio="none">
+      <path d="M829.732 615.155L980.334 881.206L707.429 669.443L607.567 720.512L508.492 616.968L410.852 707.053L336.807 591.58L197.608 678.785L198.258 584.573L12.5469 583.291L112.041 492.354L5.81869 353.321L135.546 299.761L57.2216 123.149L217.515 204.381L294.323 40.6253L448.226 189.649L589.898 67.7876L658.417 180.629L818.986 76.2842L853.057 226.921L1014.82 216.8L931.794 332.053L1047.98 366.566L903.085 475.341L969.036 558.777L829.732 615.155Z" fill="#5E87D5" />
+      <path d="M823.858 575.139L968.422 830.526C969.498 832.428 967.181 834.431 965.455 833.092L701.437 628.223C700.824 627.747 699.991 627.669 699.3 628.023L601.898 677.834C601.111 678.237 600.153 678.075 599.542 677.436L502.855 576.387C502.102 575.599 500.856 575.56 500.054 576.3L405.612 663.436C404.697 664.279 403.243 664.093 402.572 663.046L330.883 551.246C330.291 550.323 329.066 550.049 328.137 550.631L193.704 634.851C192.367 635.689 190.631 634.721 190.642 633.143L191.254 544.573C191.261 543.468 190.372 542.567 189.267 542.559L10.6584 541.326C8.83988 541.313 7.98055 539.077 9.32303 537.85L103.699 451.589C104.464 450.89 104.568 449.722 103.939 448.899L0.411009 313.39C-0.386976 312.345 0.0221882 310.828 1.23698 310.327L126.659 258.544C127.698 258.115 128.18 256.913 127.724 255.884L52.5089 86.2818C51.7463 84.5624 53.5635 82.8368 55.2412 83.687L208.684 161.449C209.691 161.959 210.92 161.536 211.399 160.514L286.142 1.16151C286.725 -0.0812547 288.358 -0.380867 289.344 0.574008L439.921 146.379C440.664 147.098 441.833 147.133 442.616 146.458L581.114 27.3264C582.05 26.5208 583.486 26.7486 584.127 27.8046L650.351 136.867C650.937 137.831 652.204 138.121 653.15 137.506L809.581 35.8485C810.749 35.0899 812.315 35.7264 812.622 37.0843L845.684 183.259C845.9 184.217 846.78 184.876 847.759 184.814L1003.61 175.064C1005.29 174.959 1006.34 176.86 1005.35 178.23L926.441 287.769C925.636 288.886 926.174 290.463 927.494 290.855L1037.17 323.435C1038.74 323.903 1039.11 325.965 1037.8 326.951L897.727 432.11C896.828 432.785 896.661 434.068 897.358 434.95L960.382 514.683C961.209 515.73 960.8 517.277 959.563 517.778L824.848 572.3C823.728 572.753 823.263 574.088 823.858 575.139Z" fill="#fff" />
+    </svg>
+    <div class="cta__content">
+      <h2 id="cta-titre" class="cta__title">{titre}</h2>
+      <p class="cta__sub">Je cherche un stage en design et communication.</p>
+      <div class="cta__actions">
+        <a class="btn" href={SITE.cv} download>Mon CV</a>
+        <a class="btn btn--plein" href="/contact/">Me contacter</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    display: grid;
+    place-items: center;
+    padding: var(--section) var(--gutter);
+  }
+  .cta__bubble {
+    position: relative;
+    width: min(100%, 1048px);
+    aspect-ratio: 1048 / 882;
+    display: grid;
+    place-items: center;
+  }
+  .cta__shape {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .cta__content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+    margin-top: -12%;
+    padding-inline: 18%;
+    text-align: center;
+    color: #000;
+  }
+  .cta__title {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: clamp(1.4rem, 0.9rem + 2vw, 3rem);
+  }
+  .cta__sub {
+    font-size: clamp(0.95rem, 0.85rem + 0.5vw, 1.35rem);
+    color: #2b3445;
+  }
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(0.8rem, 2vw, 3rem);
+    margin-top: 0.5rem;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: clamp(8rem, 18vw, 19rem);
+    padding: clamp(0.6rem, 1.4vw, 1.9rem) 1.6rem;
+    border: 4px solid var(--blue);
+    border-radius: 46px;
+    color: #000;
+    font-weight: 700;
+    font-size: clamp(1rem, 0.8rem + 1vw, 2.25rem);
+    text-decoration: none;
+    transition: transform 0.2s var(--ease-pop), background 0.2s, color 0.2s;
+  }
+  .btn:hover {
+    transform: translateY(-4px) rotate(-2deg);
+  }
+  .btn--plein,
+  .btn:hover {
+    background: var(--blue);
+    color: var(--white);
+  }
+  @media (max-width: 560px) {
+    /* bulle plus haute sur mobile pour que le texte et les boutons restent dans le blanc */
+    .cta__bubble {
+      aspect-ratio: 0.82;
+    }
+    .cta__content {
+      gap: 0.7rem;
+      margin-top: -16%;
+      padding-inline: 22% 20%;
+    }
+    .cta__title {
+      font-size: 1.3rem;
+    }
+    .cta__sub {
+      font-size: 0.9rem;
+    }
+    .cta__actions {
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .btn {
+      min-width: 9.5rem;
+      padding: 0.55rem 1rem;
+      border-width: 3px;
+      font-size: 1rem;
+    }
+  }
+</style>

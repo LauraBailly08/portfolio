@@ -1,0 +1,218 @@
+---
+/**
+ * Pied de page — reprend le footer Figma (grand logo, liens « *projets »,
+ * réseaux, étoile ASCII, étiquette « retour en haut »).
+ * Amélioré : liens réellement cliquables, e-mail visible, icônes accessibles.
+ */
+import { Image } from 'astro:assets';
+import { NAV, SITE } from '@/data/site';
+import etoile from '@/assets/decor/etoile-ascii.png';
+import linkedin from '@/assets/icons/footer-linkedin.png';
+import behance from '@/assets/icons/footer-behance.png';
+import mail from '@/assets/icons/footer-mail.png';
+
+const reseaux = [
+  { nom: 'LinkedIn', href: 'https://www.linkedin.com/in/laura-bailly-0a3b15345/', img: linkedin },
+  { nom: 'Behance', href: 'https://www.behance.net/laurabailly', img: behance },
+  { nom: 'M’écrire un e-mail', href: `mailto:${SITE.email}`, img: mail },
+];
+const annee = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <Image src={etoile} alt="" class="footer__ascii" aria-hidden="true" widths={[480, 860]} sizes="(max-width: 700px) 70vw, 560px" />
+
+  <div class="footer__inner">
+    <div class="footer__brand">
+      <a class="footer__logo" href="/" aria-label="Laura Bailly — accueil">
+        <span>Laura<span class="at">@</span></span>
+        <span>BAILLY</span>
+      </a>
+      <p class="footer__signature">{SITE.signature}</p>
+      <a class="footer__mail" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+    </div>
+
+    <nav class="footer__nav" aria-label="Plan du site">
+      <ul>
+        {NAV.map((item) => (
+          <li><a href={item.href}>*{item.label.toLowerCase()}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <ul class="footer__social" aria-label="Mes réseaux">
+      {reseaux.map((r) => (
+        <li>
+          <a href={r.href} target={r.href.startsWith('http') ? '_blank' : undefined} rel={r.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+            <Image src={r.img} alt={r.nom} height={32} class="footer__social-icon" />
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="footer__legal">
+      <p>© {annee} LAURA BAILLY. TOUS DROITS RÉSERVÉS.</p>
+      <a href="/mentions-legales/#confidentialite">politique de confidentialité</a>
+      <a href="/mentions-legales/">mentions légales</a>
+    </div>
+
+    <a class="footer__top" href="#haut">
+      <span>retour en haut</span>
+    </a>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    overflow: hidden;
+    background: #e5f2f9;
+    color: #000;
+    box-shadow: 0 4px 4px rgb(0 0 0 / 0.25);
+    font-family: var(--font-title);
+  }
+  .footer__ascii {
+    position: absolute;
+    right: 8%;
+    top: -6%;
+    width: min(62vw, 560px);
+    opacity: 0.5;
+    /* les caractères ASCII sont gris clair : on les fonce pour qu'ils se voient sur le bleu pâle */
+    filter: brightness(0.55) sepia(1) hue-rotate(180deg) saturate(2);
+    pointer-events: none;
+  }
+  .footer__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'brand nav'
+      'legal legal'
+      'social top';
+    gap: 2rem 2rem;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding: clamp(2.5rem, 5vw, 4rem) clamp(1.25rem, 4vw, 3.5rem) clamp(2rem, 4vw, 3rem);
+  }
+  .footer__brand {
+    grid-area: brand;
+  }
+  .footer__logo {
+    display: flex;
+    flex-direction: column;
+    font-weight: 700;
+    font-size: clamp(3rem, 1.5rem + 6vw, 8rem);
+    line-height: 0.78;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  .at {
+    color: var(--blue);
+  }
+  .footer__signature {
+    margin-top: 1.2rem;
+    font-size: clamp(1.1rem, 0.9rem + 0.8vw, 2rem);
+  }
+  .footer__mail {
+    display: inline-block;
+    margin-top: 0.4rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    text-underline-offset: 4px;
+  }
+  .footer__nav {
+    grid-area: nav;
+    justify-self: end;
+    text-align: right;
+  }
+  .footer__nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .footer__nav a {
+    display: inline-block;
+    font-weight: 700;
+    font-size: clamp(1.4rem, 1rem + 1.4vw, 2.5rem);
+    line-height: 1.94;
+    text-decoration: none;
+    transition: color 0.2s, transform 0.2s var(--ease-pop);
+  }
+  .footer__nav a:hover {
+    color: var(--blue);
+    transform: translateX(-6px);
+  }
+  .footer__social {
+    grid-area: social;
+    align-self: end;
+    display: flex;
+    gap: 1.6rem;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .footer__social a {
+    display: block;
+    transition: transform 0.2s var(--ease-pop);
+  }
+  .footer__social a:hover {
+    transform: translateY(-4px) rotate(-6deg);
+  }
+  .footer__social-icon {
+    height: 32px;
+    width: auto;
+  }
+  .footer__legal {
+    grid-area: legal;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    justify-self: center;
+    text-align: center;
+    font-size: clamp(0.85rem, 0.75rem + 0.4vw, 1.5rem);
+  }
+  .footer__legal a {
+    font-size: 0.75em;
+    text-underline-offset: 3px;
+  }
+  .footer__top {
+    grid-area: top;
+    justify-self: end;
+    display: inline-block;
+    padding: 0.9rem 2.2rem;
+    background: #000;
+    color: var(--white);
+    font-weight: 700;
+    font-size: clamp(1.1rem, 0.9rem + 0.6vw, 2rem);
+    text-decoration: none;
+    transform: rotate(-20deg);
+    box-shadow: 14px 14px 0 var(--blue);
+    transition: transform 0.25s var(--ease-pop), box-shadow 0.25s;
+  }
+  .footer__top:hover {
+    transform: rotate(-14deg) translateY(-6px);
+    box-shadow: 18px 18px 0 var(--blue);
+  }
+
+  @media (max-width: 760px) {
+    .footer__inner {
+      grid-template-columns: 1fr;
+      grid-template-areas: 'brand' 'nav' 'social' 'legal' 'top';
+    }
+    .footer__nav {
+      justify-self: start;
+      text-align: left;
+    }
+    .footer__legal {
+      justify-self: start;
+      align-items: flex-start;
+      text-align: left;
+    }
+    .footer__top {
+      justify-self: center;
+      margin: 1rem 0 1.5rem;
+    }
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+/**
+ * ÉTIQUETTE — l'élément signature de la DA : un bloc blanc légèrement penché
+ * avec une ombre pleine décalée (bleue par défaut, rose ou noire en variante).
+ * S'utilise pour tous les titres de section : <Tag as="h2">Contexte</Tag>
+ */
+interface Props {
+  as?: 'h1' | 'h2' | 'h3' | 'p' | 'span';
+  ombre?: 'bleu' | 'rose';
+  inverse?: boolean; // fond noir + texte blanc (ex. « retour en haut »)
+  inclinaison?: number; // en degrés
+  taille?: 'xl' | 'l' | 'm';
+  class?: string;
+  id?: string;
+}
+const {
+  as: Element = 'h2',
+  ombre = 'bleu',
+  inverse = false,
+  inclinaison = -4,
+  taille = 'l',
+  class: className,
+  id,
+} = Astro.props;
+---
+
+<Element
+  id={id}
+  class:list={['tag', `tag--${ombre}`, `tag--${taille}`, { 'tag--inverse': inverse }, className]}
+  style={`--tilt:${inclinaison}deg`}
+>
+  <slot />
+</Element>
+
+<style>
+  .tag {
+    position: relative;
+    display: inline-block;
+    width: fit-content;
+    max-width: 100%;
+    padding: 0.35em 0.85em 0.4em;
+    background: var(--white);
+    color: #000;
+    font-family: var(--font-title);
+    font-weight: 700;
+    line-height: 1.05;
+    transform: rotate(var(--tilt));
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--tag-shadow, var(--blue));
+  }
+  .tag--rose {
+    --tag-shadow: var(--pink-deep);
+  }
+  .tag--inverse {
+    background: #000;
+    color: var(--white);
+  }
+  .tag--xl {
+    font-size: var(--fs-hero);
+  }
+  .tag--l {
+    font-size: var(--fs-h1);
+  }
+  .tag--m {
+    font-size: var(--fs-h2);
+    --shadow-offset: 10px;
+  }
+  @media (max-width: 640px) {
+    .tag {
+      --shadow-offset: 9px;
+    }
+  }
+</style>

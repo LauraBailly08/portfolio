@@ -1,0 +1,273 @@
+---
+/**
+ * PAGE À PROPOS — écrite à la première personne (exigence du cahier des charges).
+ * Cartouche photo + bulle BD, compétences en « dossiers », inspirations en jaquettes.
+ */
+import { Image } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Tag from '@/components/Tag.astro';
+import CtaBulle from '@/components/CtaBulle.astro';
+import cartouche from '@/assets/decor/cartouche-a-propos.png';
+import etoile from '@/assets/decor/etoile-ascii.png';
+import figma from '@/assets/skills/figma.png';
+import affinity from '@/assets/skills/affinity.png';
+import astro from '@/assets/skills/astro.png';
+import vscode from '@/assets/skills/vscode.png';
+import gemini from '@/assets/skills/gemini.png';
+import canva from '@/assets/skills/canva.png';
+import insp1 from '@/assets/inspirations/inspiration-1.png';
+import insp2 from '@/assets/inspirations/inspiration-2.png';
+import insp3 from '@/assets/inspirations/inspiration-3.png';
+import insp4 from '@/assets/inspirations/inspiration-4.png';
+import insp5 from '@/assets/inspirations/inspiration-5.png';
+import insp6 from '@/assets/inspirations/inspiration-6.png';
+
+const skills = [
+  { nom: 'Figma', img: figma },
+  { nom: 'Affinity', img: affinity },
+  { nom: 'Astro', img: astro },
+  { nom: 'VS Code', img: vscode },
+  { nom: 'IA générative', img: gemini },
+  { nom: 'Canva', img: canva },
+];
+
+// ⚠️ Légendes à personnaliser : dis en quelques mots pourquoi chaque image t'inspire.
+const inspirations = [
+  { img: insp1, alt: 'Artiste seul sur scène sous un faisceau de lumière, en noir et blanc', legende: 'La scène et la lumière' },
+  { img: insp2, alt: 'Vallée de montagne et chalets sous un ciel nuageux', legende: 'Les grands paysages' },
+  { img: insp3, alt: 'Collage d’objets rétro : ordinateur portable rose, Tamagotchi, coque transparente', legende: 'Les objets tech des années 2000' },
+  { img: insp4, alt: 'Cérémonie d’un tournoi d’esport avec écrans rouges « Champions »', legende: 'L’esport et ses scénographies' },
+  { img: insp5, alt: 'Rue pavée de Montmartre avec une enseigne en fer forgé', legende: 'Les détails de la rue' },
+  { img: insp6, alt: 'Setup de jeu dans le noir avec une Nintendo 3DS allumée', legende: 'Le jeu vidéo et la 3DS' },
+];
+---
+
+<BaseLayout
+  titre="À propos"
+  description="Je m’appelle Laura Bailly, j’ai 19 ans et je suis en 2e année de BUT MMI. Design, communication, art digital : découvrez mon parcours, mes outils et mes inspirations."
+>
+  <!-- PRÉSENTATION -->
+  <section class="hello container" aria-labelledby="apropos-titre">
+    <Tag as="h1" id="apropos-titre" inclinaison={-6}>À propos</Tag>
+    <div class="hello__grid">
+      <Image
+        src={cartouche}
+        alt="Cartouche de jeu « Laura Bailly » avec ma photo sur un fond holographique"
+        class="hello__cartouche"
+        widths={[400, 700, 1059]}
+        sizes="(max-width: 760px) 80vw, 460px"
+        loading="eager"
+      />
+      <div class="hello__bubble">
+        <svg class="hello__shape" viewBox="0 0 822 640" aria-hidden="true" preserveAspectRatio="none">
+          <path d="M169.07 444.776L47.7969 639.374L264.711 486.095L342.732 524.803L421.761 449.493L497.623 516.948L557.087 432.579L665.673 498.348L666.152 428.87L812.259 429.879L734.947 361.776L819.971 260.373L718.483 219.513L755.836 73.7971L655.004 148.319L557.679 30.9954L511.867 138.407L363.5 43.6785L308.411 126.165L183.194 47.5332L154.806 158.252L27.6563 149.087L91.7605 234.947L0 259.174L112.837 340.908L60.0778 401.738L169.07 444.776Z" fill="#DC93A2" />
+          <path d="M171.07 413.776L49.7969 608.374L266.711 455.095L344.732 493.803L423.761 418.493L499.623 485.948L559.087 401.579L667.673 467.348L668.152 397.87L814.259 398.879L736.947 330.776L821.971 229.373L720.483 188.513L757.836 42.7971L657.004 117.319L559.679 0L513.867 107.407L365.5 12.6785L310.411 95.1654L185.194 16.5332L156.806 127.252L29.6563 118.087L93.7605 203.947L2 228.174L114.837 309.908L62.0778 370.738L171.07 413.776Z" fill="#fff" />
+        </svg>
+        <p class="hello__bubble-text">
+          J’ai 19 ans, je suis en deuxième année de BUT MMI et ce qui me passionne, c’est de ne jamais rester enfermée dans une seule case.
+        </p>
+      </div>
+    </div>
+
+    <div class="hello__text">
+      <p>
+        J’aime imaginer, créer et voir mes idées prendre vie. Je passe facilement de la maquette
+        Figma au code, et de l’identité visuelle à l’illustration : c’est ce mélange entre design,
+        communication et art digital qui me plaît.
+      </p>
+      <p>
+        J’ai grandi avec les consoles portables, les blogs colorés et les objets tech un peu kitsch.
+        Ce portfolio en est le reflet : une console, des jaquettes, des fenêtres… et des projets
+        pensés avant tout pour les personnes qui les utilisent.
+      </p>
+      <p class="hello__search">
+        Je suis actuellement <strong>à la recherche d’un stage</strong> en design d’interface,
+        communication visuelle ou direction artistique.
+      </p>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="skills" aria-labelledby="skills-titre">
+    <Image src={etoile} alt="" aria-hidden="true" class="skills__ascii" widths={[500, 860]} sizes="60vw" />
+    <div class="container">
+      <h2 id="skills-titre" class="skills__title">Skills</h2>
+      <ul class="skills__grid">
+        {skills.map((s) => (
+          <li>
+            <Image src={s.img} alt="" aria-hidden="true" widths={[200, 300, 600]} sizes="(max-width: 640px) 40vw, 294px" />
+            <span>{s.nom}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- INSPIRATIONS -->
+  <section class="insp container" aria-labelledby="insp-titre">
+    <Tag as="h2" id="insp-titre">Inspirations</Tag>
+    <ul class="insp__grid">
+      {inspirations.map((i, k) => (
+        <li style={`--tilt:${[-2, 1, -1, 2, -1.5, 1.5][k]}deg`}>
+          <figure>
+            <Image src={i.img} alt={i.alt} widths={[300, 400, 804]} sizes="(max-width: 640px) 80vw, 380px" />
+            <figcaption>{i.legende}</figcaption>
+          </figure>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <CtaBulle />
+</BaseLayout>
+
+<style>
+  .hello {
+    padding-block: clamp(3rem, 7vw, 7rem) var(--section);
+  }
+  .hello__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    align-items: center;
+    gap: clamp(1rem, 3vw, 3rem);
+    margin-top: clamp(2rem, 4vw, 3.5rem);
+  }
+  .hello__cartouche {
+    width: 100%;
+    max-width: 460px;
+    height: auto;
+    rotate: -4deg;
+    filter: drop-shadow(0 18px 24px rgb(0 0 0 / 0.45));
+  }
+  .hello__bubble {
+    position: relative;
+    aspect-ratio: 822 / 640;
+    display: grid;
+    place-items: center;
+  }
+  .hello__shape {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .hello__bubble-text {
+    position: relative;
+    max-width: 22ch;
+    margin: -12% 0 0 6%;
+    color: #000;
+    font-weight: 700;
+    font-size: clamp(1rem, 0.7rem + 1.2vw, 1.75rem);
+    line-height: 1.3;
+    text-align: center;
+  }
+  .hello__text {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    max-width: 52rem;
+    margin: clamp(2.5rem, 5vw, 4rem) 0 0 auto;
+    font-size: var(--fs-lead);
+    line-height: 1.4;
+  }
+  .hello__search strong {
+    color: var(--pink);
+  }
+
+  .skills {
+    position: relative;
+    padding-bottom: var(--section);
+  }
+  .skills__ascii {
+    position: absolute;
+    left: -6%;
+    top: 0;
+    width: min(66vw, 860px);
+    opacity: 0.12;
+    pointer-events: none;
+  }
+  .skills__title {
+    position: relative;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: clamp(3.5rem, 2rem + 6vw, 8rem);
+    text-align: center;
+  }
+  .skills__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 294px));
+    justify-content: center;
+    gap: clamp(1.25rem, 4vw, 4.5rem) clamp(1rem, 5vw, 4.5rem);
+    margin: clamp(2rem, 5vw, 4.5rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .skills__grid li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .skills__grid img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.25s var(--ease-pop);
+  }
+  .skills__grid li:hover img {
+    transform: translateY(-8px) rotate(-3deg);
+  }
+  .skills__grid span {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: #c9d6ee;
+  }
+
+  .insp {
+    padding-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  .insp__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.5rem, 4vw, 3rem);
+    margin: clamp(2.5rem, 5vw, 4.5rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .insp__grid figure {
+    margin: 0;
+    rotate: var(--tilt);
+    transition: rotate 0.3s var(--ease-pop), translate 0.3s var(--ease-pop);
+  }
+  .insp__grid li:hover figure {
+    rotate: 0deg;
+    translate: 0 -8px;
+  }
+  .insp__grid img {
+    width: 100%;
+    height: auto;
+  }
+  .insp__grid figcaption {
+    margin-top: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--pink);
+    text-align: center;
+  }
+
+  @media (max-width: 760px) {
+    .hello__grid {
+      grid-template-columns: 1fr;
+    }
+    .hello__cartouche {
+      max-width: 320px;
+      margin-inline: auto;
+    }
+    .skills__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .insp__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

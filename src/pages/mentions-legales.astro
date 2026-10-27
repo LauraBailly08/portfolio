@@ -1,0 +1,152 @@
+---
+/**
+ * MENTIONS LÉGALES + POLITIQUE DE CONFIDENTIALITÉ
+ * Texte repris de la maquette Figma, complété par la partie confidentialité
+ * (formulaire de contact) et les crédits.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Tag from '@/components/Tag.astro';
+import { SITE } from '@/data/site';
+
+const url = Astro.site?.origin ?? '';
+---
+
+<BaseLayout titre="Mentions légales" description="Mentions légales et politique de confidentialité du portfolio de Laura Bailly.">
+  <article class="legal container">
+    <Tag as="h1">Mentions légales</Tag>
+
+    <p class="intro">
+      Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l’économie
+      numérique, il est précisé aux utilisateurs de ce site l’identité des différents intervenants dans le
+      cadre de sa réalisation et de son suivi.
+    </p>
+
+    <h2>1. Édition du site</h2>
+    <p>
+      Le présent site, accessible à l’URL <a href={url}>{url}</a>, est édité par :<br />
+      Nom : Laura Bailly<br />
+      <!-- ⚠️ Ton numéro de téléphone était dans la maquette : en tant que particulier, tu n'es pas obligée de le publier. -->
+      E-mail : <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+    </p>
+
+    <h2>2. Directrice de la publication</h2>
+    <p>La directrice de la publication du site est Laura Bailly.</p>
+
+    <h2>3. Hébergement</h2>
+    <p>
+      Le site est hébergé par Infomaniak Network SA<br />
+      Rue Eugène-Marziano 25, 1227 Les Acacias (Genève), Suisse<br />
+      Téléphone : +41 22 820 35 40 — <a href="https://www.infomaniak.com" rel="noopener noreferrer">infomaniak.com</a>
+    </p>
+
+    <h2>4. Propriété intellectuelle</h2>
+    <p>
+      Le contenu de ce site est la propriété exclusive de Laura Bailly, sauf mention contraire. Toute
+      reproduction ou publication, même partielle, est interdite sans accord écrit préalable. Les textes,
+      images, designs, photographies et animations sont protégés par le droit d’auteur.
+    </p>
+    <p>
+      Les projets universitaires présentés ont été réalisés dans le cadre du BUT MMI. Les chartes et logos
+      imposés (projet Wenddy) appartiennent à leurs auteurs respectifs. Les logos des logiciels (Figma,
+      Affinity, Astro, VS Code, Canva…) appartiennent à leurs éditeurs et ne sont utilisés qu’à titre
+      d’illustration. Les photos de la rubrique « Inspirations » sont personnelles.
+      <!-- ⚠️ Vérifie et complète les crédits si certaines images ne sont pas de toi. -->
+    </p>
+    <p>
+      Polices : Familjen Grotesk, Bricolage Grotesque et IBM Plex Mono, sous licence SIL Open Font License,
+      hébergées directement sur ce site.
+    </p>
+
+    <h2>5. Responsabilité</h2>
+    <p>
+      Laura Bailly s’efforce de maintenir à jour les informations présentes sur ce site, sans pouvoir garantir
+      leur exactitude ou leur exhaustivité. Elle ne peut être tenue responsable des erreurs ou omissions, des
+      dommages résultant de l’accès au site, d’indisponibilités temporaires, ni du contenu des sites tiers
+      accessibles via des liens externes.
+    </p>
+
+    <h2>6. Liens externes</h2>
+    <p>
+      Ce site contient des liens vers des sites externes. Leur présence ne signifie pas une approbation de leur
+      contenu.
+    </p>
+
+    <h2>7. Loi applicable</h2>
+    <p>
+      Les présentes mentions légales sont régies par la loi française. Tout litige sera soumis aux tribunaux
+      compétents en France.
+    </p>
+
+    <h2 id="confidentialite" class="big">Politique de confidentialité</h2>
+
+    <h3>Données collectées</h3>
+    <p>
+      Le seul endroit où des données personnelles sont saisies est le formulaire de contact : nom, adresse
+      e-mail, sujet et message. Ces informations sont envoyées par e-mail à Laura Bailly dans le seul but de
+      répondre à la demande. Elles ne sont pas enregistrées dans une base de données, ni revendues, ni
+      transmises à des tiers.
+    </p>
+
+    <h3>Base légale et durée de conservation</h3>
+    <p>
+      Le traitement repose sur votre consentement (envoi volontaire du formulaire). Les e-mails reçus sont
+      conservés le temps nécessaire à l’échange, puis supprimés au plus tard au bout d’un an.
+    </p>
+
+    <h3>Cookies et mesure d’audience</h3>
+    <p>
+      Ce site n’utilise aucun cookie, aucun outil de suivi publicitaire ni de mesure d’audience. Les polices
+      sont hébergées sur le site lui-même : aucune donnée n’est envoyée à Google ou à un autre service.
+      L’hébergeur peut conserver des journaux techniques (adresse IP, date de connexion) pour assurer la
+      sécurité du service.
+    </p>
+
+    <h3>Vos droits</h3>
+    <p>
+      Conformément au RGPD, vous disposez d’un droit d’accès, de rectification et de suppression de vos
+      données. Pour l’exercer, écrivez à <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Vous pouvez aussi
+      adresser une réclamation à la CNIL (<a href="https://www.cnil.fr" rel="noopener noreferrer">cnil.fr</a>).
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal {
+    max-width: 62rem;
+    padding-block: clamp(3rem, 7vw, 6rem) var(--section);
+    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.25rem);
+    line-height: 1.6;
+  }
+  .intro {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+  h2 {
+    margin: 2.6rem 0 0.8rem;
+    font-family: var(--font-body);
+    font-size: clamp(1.15rem, 1rem + 0.5vw, 1.5rem);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  h2.big {
+    margin-top: 4.5rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--pink);
+    text-transform: none;
+    font-family: var(--font-title);
+    font-size: clamp(1.6rem, 1.2rem + 1.5vw, 2.6rem);
+    scroll-margin-top: 2rem;
+  }
+  h3 {
+    margin: 1.8rem 0 0.6rem;
+    color: var(--pink);
+    font-family: var(--font-body);
+    font-size: 1.15rem;
+  }
+  p + p {
+    margin-top: 0.8rem;
+  }
+  a {
+    text-underline-offset: 3px;
+    overflow-wrap: anywhere;
+  }
+</style>

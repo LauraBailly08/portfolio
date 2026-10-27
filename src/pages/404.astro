@@ -1,0 +1,36 @@
+---
+/** Page 404 — servie automatiquement par l'hébergement quand une page n'existe pas. */
+import { Image } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Tag from '@/components/Tag.astro';
+import exclamation from '@/assets/decor/exclamation-pixel.png';
+---
+
+<BaseLayout titre="Page introuvable">
+  <section class="nf container">
+    <Image src={exclamation} alt="" aria-hidden="true" width={150} class="nf__exclam" />
+    <Tag as="h1">Erreur 404</Tag>
+    <p class="nf__text">Il n’y a aucune cartouche dans ce lecteur… Cette page n’existe pas.</p>
+    <Tag as="p" taille="m" inclinaison={2}><a href="/">Retour au menu</a></Tag>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2.5rem;
+    padding-block: clamp(4rem, 10vw, 9rem);
+  }
+  .nf__exclam {
+    width: 110px;
+    height: auto;
+  }
+  .nf__text {
+    font-size: var(--fs-lead);
+  }
+  .nf a {
+    text-decoration: none;
+  }
+</style>

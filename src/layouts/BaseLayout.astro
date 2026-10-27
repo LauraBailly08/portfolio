@@ -1,0 +1,66 @@
+---
+/**
+ * GABARIT DE BASE — commun à toutes les pages.
+ * Contient le <head> (SEO, partage réseaux sociaux, favicon), l'en-tête et le footer.
+ * Chaque page l'utilise ainsi : <BaseLayout titre="…" description="…">…</BaseLayout>
+ */
+import '@/styles/global.css';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { SITE } from '@/data/site';
+
+interface Props {
+  titre?: string;
+  description?: string;
+  image?: string; // chemin absolu d'une image de partage (dans /public)
+}
+const { titre, description = SITE.description, image = '/og-image.png' } = Astro.props;
+const pageTitle = titre ? `${titre} — ${SITE.nom}` : SITE.titre;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="author" content={SITE.nom} />
+    <meta name="theme-color" content="#041a2c" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <!-- Partage sur les réseaux (LinkedIn, Instagram…) : Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content={SITE.nom} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Données structurées : aide Google à comprendre qui je suis -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: SITE.nom,
+      jobTitle: 'Designer — communication et art digital',
+      url: Astro.site?.toString(),
+      email: `mailto:${SITE.email}`,
+      sameAs: ['https://www.linkedin.com/in/laura-bailly-0a3b15345/', 'https://www.behance.net/laurabailly'],
+    })} />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <div id="haut"></div>
+    <Header />
+    <main id="contenu" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

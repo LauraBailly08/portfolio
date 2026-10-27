@@ -1,0 +1,154 @@
+/* ==========================================================================
+   STYLES GLOBAUX — tokens de la direction artistique + règles de base.
+   Les composants ont chacun leur propre <style> (CSS « scopé » par Astro).
+   ========================================================================== */
+
+/* Polices auto-hébergées (fontsource) : aucun appel à Google Fonts → plus rapide et RGPD-friendly */
+@import '@fontsource-variable/familjen-grotesk';
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/700.css';
+
+:root {
+  /* Couleurs relevées dans la maquette Figma */
+  --navy: #041a2c;
+  --navy-2: #0b2740;
+  --blue: #5e87d5;
+  --blue-glow: #3361ca;
+  --sky: #e5f3f9;
+  --pink: #f2c2cc;
+  --pink-light: #fad1da;
+  --pink-deep: #dc93a2;
+  --pink-folder: #ffafbe;
+  --ink: #181716;
+  --white: #ffffff;
+  --cartridge: #2f2f2f;
+
+  /* Typographies */
+  --font-title: 'Familjen Grotesk Variable', system-ui, sans-serif;
+  --font-body: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  /* Échelle typographique fluide (min mobile → max desktop 1440) */
+  --fs-hero: clamp(2rem, 1.2rem + 3.2vw, 3.875rem); /* 62px */
+  --fs-h1: clamp(2.1rem, 1.4rem + 2.6vw, 4rem); /* 64px */
+  --fs-h2: clamp(1.6rem, 1.2rem + 1.6vw, 2.5rem);
+  --fs-lead: clamp(1.15rem, 1rem + 0.7vw, 2rem); /* 32px */
+  --fs-body: clamp(1rem, 0.95rem + 0.35vw, 1.375rem);
+  --fs-small: 0.9rem;
+
+  /* Mise en page */
+  --container: 1240px;
+  --gutter: clamp(1rem, 4vw, 5.5rem);
+  --section: clamp(4rem, 8vw, 8rem);
+  --shadow-offset: 15px; /* décalage de l'ombre pleine des étiquettes */
+  --radius-card: 26px;
+  --ease-pop: cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: clip; /* évite tout défilement horizontal causé par les décors */
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--navy);
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  line-height: 1.05;
+  font-family: var(--font-title);
+  font-weight: 700;
+}
+
+p {
+  margin: 0;
+}
+
+/* Contour de focus bien visible pour la navigation au clavier (accessibilité) */
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--pink);
+  color: var(--navy);
+}
+
+/* Utilitaires */
+.container {
+  width: min(100% - 2 * var(--gutter), var(--container));
+  margin-inline: auto;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100px;
+  z-index: 100;
+  background: var(--white);
+  color: var(--navy);
+  padding: 0.75rem 1.25rem;
+  font-weight: 700;
+  box-shadow: 6px 6px 0 var(--blue);
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Respect du réglage « réduire les animations » du système */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

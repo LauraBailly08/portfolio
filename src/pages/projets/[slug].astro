@@ -1,0 +1,513 @@
+---
+/**
+ * MODÈLE DE PAGE PROJET (route dynamique).
+ * getStaticPaths() crée une page par fichier de `src/content/projets/` :
+ *   noyaux-d-ombre.md → /projets/noyaux-d-ombre/
+ * Toutes les études de cas ont donc exactement la même structure :
+ * Intro → Contexte → Mon rôle → Processus → Choix techniques → Résultat.
+ */
+import type { GetStaticPaths } from 'astro';
+import { Image } from 'astro:assets';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Tag from '@/components/Tag.astro';
+import FenetreExe from '@/components/FenetreExe.astro';
+import cartouche from '@/assets/decor/cartouche-vide.png';
+import exclamation from '@/assets/decor/exclamation-pixel.png';
+import etoile from '@/assets/decor/etoile-ascii.png';
+
+export const getStaticPaths = (async () => {
+  const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b.data.ordre);
+  return projets.map((projet, i) => ({
+    params: { slug: projet.id },
+    props: {
+      projet,
+      suivant: projets[(i + 1) % projets.length],
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  projet: CollectionEntry<'projets'>;
+  suivant: CollectionEntry<'projets'>;
+}
+const { projet, suivant } = Astro.props;
+const p = projet.data;
+const { Content } = await render(projet);
+---
+
+<BaseLayout titre={p.titre} description={`${p.titre} — ${p.type} (${p.annee}). ${p.resume}`}>
+  {p.brouillon && import.meta.env.DEV && (
+    <p class="draft">⚠️ Textes provisoires : complète le fichier src/content/projets/{projet.id}.md</p>
+  )}
+
+  <!-- INTRO -->
+  <section class="intro container">
+    <Image src={etoile} alt="" aria-hidden="true" class="intro__ascii" widths={[500, 860]} sizes="60vw" />
+    <div class="intro__text">
+      <Tag as="h1">{p.titre}</Tag>
+      <p class="intro__cadre">{p.cadre}</p>
+      <p class="intro__lead">{p.accroche}</p>
+      {p.mockups.length > 0 && (
+        <div class="intro__mockups">
+          {p.mockups.map((m) => (
+            <Image src={m.src} alt={m.alt} widths={[220, 440]} sizes="(max-width: 760px) 42vw, 220px" />
+          ))}
+        </div>
+      )}
+    </div>
+
+    <!-- Fiche « cartouche » : les infos clés du projet -->
+    <aside class="fiche" aria-label="Fiche du projet">
+      <Image src={cartouche} alt="" aria-hidden="true" class="fiche__bg" widths={[480, 944]} sizes="440px" />
+      <dl class="fiche__content">
+        <p class="fiche__titre">{p.titre}</p>
+        <div><dt>Rôle</dt><dd>{p.role}</dd></div>
+        <div><dt>Type</dt><dd>{p.type}</dd></div>
+        <div><dt>Durée</dt><dd>{p.duree}</dd></div>
+        <div><dt>Année</dt><dd>{p.annee}</dd></div>
+      </dl>
+    </aside>
+  </section>
+
+  <!-- CONTEXTE -->
+  <section class="block container" aria-labelledby="contexte">
+    <Tag as="h2" id="contexte">Contexte</Tag>
+    <div class="block__body">
+      <p class="lead">{p.contexte.commande}</p>
+      <p class="strong">L’objectif était de respecter les consignes suivantes :</p>
+      <ul class="consignes">
+        {p.contexte.consignes.map((c) => <li>{c}</li>)}
+      </ul>
+      {p.contexte.cible && (
+        <p class="cible"><span class="cible__label">La cible</span> {p.contexte.cible}</p>
+      )}
+    </div>
+  </section>
+
+  <!-- MON RÔLE -->
+  <section class="block container" aria-labelledby="role">
+    <div class="block__head">
+      <Tag as="h2" id="role">Mon rôle</Tag>
+      <Image src={exclamation} alt="" aria-hidden="true" class="block__exclam" width={130} />
+    </div>
+    <div class="roles">
+      {p.roleDetail.map((r, i) => (
+        <article class="role" style={`--tilt:${i % 2 ? 2 : -2}deg`}>
+          <h3>{r.titre}</h3>
+          <p>{r.texte}</p>
+        </article>
+      ))}
+    </div>
+    <ul class="skills" aria-label="Compétences mobilisées">
+      {p.competences.map((c) => <li>{c}</li>)}
+    </ul>
+  </section>
+
+  <!-- PROCESSUS -->
+  <section class="process" aria-labelledby="processus">
+    <Image src={etoile} alt="" aria-hidden="true" class="process__ascii" widths={[500, 860]} sizes="60vw" />
+    <div class="container">
+      <div class="process__head">
+        <Tag as="h2" id="processus">Processus</Tag>
+      </div>
+      <ol class="windows">
+        {p.processus.map((etape, i) => (
+          <li style={`--i:${i}`}>
+            <FenetreExe fichier={etape.fichier} titre={etape.titre}>
+              {etape.images.length > 0 && (
+                <div class:list={['win-imgs', { 'win-imgs--duo': etape.images.length > 1 }]}>
+                  {etape.images.map((img) => (
+                    <Image src={img.src} alt={img.alt} widths={[360, 720]} sizes="(max-width: 760px) 90vw, 360px" />
+                  ))}
+                </div>
+              )}
+              <p class="win-text">{etape.texte}</p>
+            </FenetreExe>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- CHOIX TECHNIQUES -->
+  <section class="block container" aria-labelledby="technique">
+    <Tag as="h2" id="technique">Choix technique</Tag>
+    <ul class="tools">
+      {p.outils.map((o) => (
+        <li class="tool">
+          <Image src={o.icone} alt="" aria-hidden="true" widths={[200, 330]} sizes="200px" />
+          <p class="tool__name">{o.nom}</p>
+          <p class="tool__why">{o.pourquoi}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- RÉSULTAT -->
+  <section class="block container" aria-labelledby="resultat">
+    <Tag as="h2" id="resultat">Résultat</Tag>
+    <div class="block__body">
+      <p class="lead">{p.resultat}</p>
+      {p.lien && (
+        <p class="link">
+          Lien du site : <a href={p.lien} target="_blank" rel="noopener noreferrer">{p.lienLibelle ?? p.lien}<span class="sr-only"> (nouvel onglet)</span></a>
+        </p>
+      )}
+      {p.apprentissages && (
+        <p class="learn"><span class="cible__label">Ce que j’en retiens</span> {p.apprentissages}</p>
+      )}
+      <Content />
+    </div>
+  </section>
+
+  <!-- PROJET SUIVANT -->
+  <nav class="next container" aria-label="Projet suivant">
+    <a href={`/projets/${suivant.id}/`} class="next__link">
+      <span class="next__label">Projet suivant</span>
+      <span class="next__title">{suivant.data.numero} — {suivant.data.titre} →</span>
+    </a>
+  </nav>
+</BaseLayout>
+
+<style>
+  .draft {
+    background: #ffde59;
+    color: #000;
+    text-align: center;
+    padding: 0.6rem;
+    font-weight: 700;
+  }
+
+  /* ---------- Intro ---------- */
+  .intro {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+    padding-block: clamp(3rem, 7vw, 7rem) var(--section);
+  }
+  .intro__ascii {
+    position: absolute;
+    right: -10%;
+    top: 40%;
+    width: min(70vw, 860px);
+    opacity: 0.1;
+    pointer-events: none;
+  }
+  .intro__text {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.6rem;
+  }
+  .intro__cadre {
+    margin-top: 1rem;
+    font-family: var(--font-mono);
+    color: var(--pink);
+    font-size: 1rem;
+  }
+  .intro__lead {
+    max-width: 38ch;
+    font-size: var(--fs-lead);
+    line-height: 1.35;
+  }
+  .intro__mockups {
+    display: flex;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    margin-top: 1rem;
+  }
+  .intro__mockups img {
+    width: clamp(120px, 16vw, 220px);
+    height: auto;
+    filter: drop-shadow(0 20px 24px rgb(0 0 0 / 0.4));
+  }
+  .intro__mockups img:nth-child(2) {
+    margin-top: 2.5rem;
+  }
+
+  .fiche {
+    position: relative;
+    width: min(100%, 440px);
+    justify-self: end;
+    rotate: 4deg;
+    margin-top: 1rem;
+  }
+  .fiche__bg {
+    width: 100%;
+    height: auto;
+  }
+  .fiche__content {
+    position: absolute;
+    inset: 14% 14% 18% 15%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    margin: 0;
+    color: #000;
+    rotate: -5deg;
+  }
+  .fiche__titre {
+    padding-bottom: 0.6rem;
+    border-bottom: 1.5px solid #000;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: clamp(1.2rem, 1rem + 0.7vw, 2rem);
+  }
+  .fiche__content div {
+    display: flex;
+    gap: 0.4rem;
+    font-family: var(--font-title);
+    font-size: clamp(0.95rem, 0.85rem + 0.4vw, 1.5rem);
+  }
+  .fiche__content dt::after {
+    content: ' :';
+  }
+  .fiche__content dd {
+    margin: 0;
+  }
+
+  /* ---------- Blocs génériques ---------- */
+  .block {
+    padding-bottom: var(--section);
+  }
+  .block__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .block__exclam {
+    width: clamp(60px, 9vw, 130px);
+    height: auto;
+    margin-right: 10%;
+    rotate: 10deg;
+  }
+  .block__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    max-width: 62rem;
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  }
+  .lead {
+    font-size: var(--fs-lead);
+    line-height: 1.4;
+  }
+  .strong {
+    font-weight: 700;
+    font-size: clamp(1.15rem, 1rem + 0.8vw, 2.25rem);
+  }
+  .consignes {
+    margin: 0;
+    padding-left: 1.8em;
+    font-weight: 700;
+    font-size: clamp(1.15rem, 1rem + 0.8vw, 2.25rem);
+    line-height: 1.35;
+  }
+  .consignes li::marker {
+    color: var(--pink);
+  }
+  .cible,
+  .learn {
+    padding: 1.2rem 1.4rem;
+    border-left: 6px solid var(--pink);
+    background: rgb(255 255 255 / 0.05);
+    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.3rem);
+  }
+  .cible__label {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: var(--pink);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Cartes « Mon rôle » : blanches, ombre rose décalée */
+  .roles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: clamp(2rem, 5vw, 5rem);
+    max-width: 62rem;
+    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  }
+  .role {
+    padding: 1.8rem 2rem 2.2rem;
+    background: var(--white);
+    color: #000;
+    box-shadow: 15px 24px 0 var(--pink-deep);
+    rotate: var(--tilt);
+  }
+  .role h3 {
+    font-family: var(--font-body);
+    font-size: clamp(1.25rem, 1rem + 0.8vw, 2rem);
+  }
+  .role p {
+    margin-top: 1.1rem;
+    font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.75rem);
+    line-height: 1.3;
+  }
+  .skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .skills li {
+    padding: 0.3rem 0.9rem;
+    border: 1px solid #8fb0e8;
+    border-radius: 4px;
+    color: #c9d6ee;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+  }
+
+  /* ---------- Processus (fond rose) ---------- */
+  .process {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: var(--section);
+    padding-block: clamp(4rem, 7vw, 6.5rem) clamp(5rem, 9vw, 8rem);
+    background: var(--pink);
+  }
+  .process__ascii {
+    position: absolute;
+    left: -3%;
+    top: 0;
+    width: min(64vw, 860px);
+    opacity: 0.55;
+    filter: brightness(0.8) sepia(1) hue-rotate(300deg) saturate(1.3);
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+  .process__head {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+  .windows {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.5rem, 3vw, 3.5rem);
+    align-items: start;
+    margin: clamp(3rem, 6vw, 5rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  /* Fenêtre du milieu décalée vers le bas, comme dans la maquette */
+  .windows > li:nth-child(3n + 2) {
+    margin-top: 9rem;
+  }
+  .win-imgs {
+    display: grid;
+    gap: 0.8rem;
+  }
+  .win-imgs--duo {
+    grid-template-columns: 1fr 1fr;
+  }
+  .win-imgs img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
+  .win-text {
+    font-size: 1.02rem;
+    line-height: 1.45;
+    color: #2b3445;
+  }
+
+  /* ---------- Outils (dossiers roses) ---------- */
+  .tools {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: clamp(1.5rem, 4vw, 4rem);
+    margin: clamp(2.5rem, 5vw, 4.5rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tool img {
+    width: 100%;
+    max-width: 330px;
+    height: auto;
+    transition: transform 0.25s var(--ease-pop);
+  }
+  .tool:hover img {
+    transform: translateY(-6px) rotate(-3deg);
+  }
+  .tool__name {
+    margin-top: 1rem;
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+  .tool__why {
+    margin-top: 0.3rem;
+    color: rgb(255 255 255 / 0.75);
+    font-size: 1.05rem;
+  }
+
+  .link {
+    font-weight: 700;
+    font-size: clamp(1.05rem, 0.9rem + 0.7vw, 2.25rem);
+    overflow-wrap: anywhere;
+  }
+  .link a {
+    text-underline-offset: 6px;
+  }
+  .link a:hover {
+    color: var(--pink);
+  }
+
+  /* ---------- Projet suivant ---------- */
+  .next {
+    padding-bottom: var(--section);
+  }
+  .next__link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 3vw, 3rem);
+    background: var(--white);
+    color: #000;
+    text-decoration: none;
+    box-shadow: 15px 15px 0 var(--blue);
+    transition: transform 0.25s var(--ease-pop), box-shadow 0.25s;
+  }
+  .next__link:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 19px 19px 0 var(--blue);
+  }
+  .next__label {
+    font-family: var(--font-mono);
+    color: var(--pink-deep);
+  }
+  .next__title {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: clamp(1.6rem, 1rem + 2.5vw, 3.5rem);
+  }
+
+  @media (max-width: 900px) {
+    .intro {
+      grid-template-columns: 1fr;
+    }
+    .fiche {
+      justify-self: center;
+    }
+    .windows {
+      grid-template-columns: 1fr;
+      max-width: 34rem;
+      margin-inline: auto;
+    }
+    .windows > li,
+    .windows > li:nth-child(2) {
+      margin-top: 0;
+    }
+  }
+</style>

@@ -1,0 +1,477 @@
+---
+/**
+ * CARROUSEL « MENU 3DS » (version V2 validée dans Figma)
+ * - 3 jaquettes de projets ; celle sélectionnée monte et reçoit le sélecteur en coins bleus.
+ * - Une bulle blanche « pop » au-dessus avec le titre, les infos et un résumé.
+ * - Le mockup détouré du projet sort de la jaquette.
+ * Navigation : survol / focus clavier / flèches ← → / boutons. Clic = ouvrir le projet.
+ * Sans JavaScript, tout reste utilisable : les jaquettes sont de simples liens.
+ */
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  projets: CollectionEntry<'projets'>[];
+  titreId?: string; // id du titre de section, pour aria-labelledby
+}
+const { projets, titreId } = Astro.props;
+const total = String(projets.length).padStart(2, '0');
+---
+
+<div class="c3ds" data-c3ds aria-labelledby={titreId} role="region" aria-roledescription="carrousel">
+  <div class="c3ds__counter">
+    <button class="c3ds__arrow" type="button" data-prev aria-label="Projet précédent">←</button>
+    <span><span data-current>01</span> / {total}</span>
+    <button class="c3ds__arrow" type="button" data-next aria-label="Projet suivant">→</button>
+  </div>
+
+  <div class="c3ds__stage" data-stage>
+    <!-- Bulles : une par projet, seule l'active est visible -->
+    <div class="c3ds__bubbles" aria-live="polite">
+      {projets.map((p, i) => (
+        <div class="bubble" data-bubble={i} hidden={i !== 0}>
+          <p class="bubble__title">{p.data.titre}</p>
+          <p class="bubble__info">{p.data.type} · {p.data.annee} · {p.data.role}</p>
+          <p class="bubble__text">{p.data.resume}</p>
+          <span class="bubble__tip" aria-hidden="true"></span>
+        </div>
+      ))}
+    </div>
+
+    <!-- Mockups détourés qui sortent de la jaquette -->
+    {projets.map((p, i) =>
+      p.data.mockupCarrousel ? (
+        <Image
+          src={p.data.mockupCarrousel}
+          alt=""
+          aria-hidden="true"
+          class="c3ds__mockup"
+          data-mockup={i}
+          widths={[160, 320]}
+          sizes="160px"
+          loading="lazy"
+        />
+      ) : null
+    )}
+
+    <ul class="c3ds__track" data-track>
+      {projets.map((p, i) => (
+        <li class="c3ds__item">
+          <a
+            href={`/projets/${p.id}/`}
+            class:list={['card', { 'is-active': i === 0 }]}
+            data-card={i}
+            aria-label={`${p.data.titre} — ${p.data.type}, ${p.data.annee}. Voir l’étude de cas`}
+          >
+            <span class="card__corners" aria-hidden="true">
+              <i></i><i></i><i></i><i></i>
+            </span>
+            <span class="card__type">{p.data.typeCourt}</span>
+            <span class="card__num" aria-hidden="true">{p.data.numero}</span>
+            <Image src={p.data.jaquette} alt="" class="card__visual" widths={[140, 280]} sizes="140px" />
+            <span class="card__name">{p.data.titre}</span>
+            <span class="card__year">{p.data.annee}</span>
+            <svg class="card__plus" viewBox="0 0 52 52" aria-hidden="true">
+              <circle cx="26" cy="26" r="23" fill="none" stroke="currentColor" stroke-width="4" />
+              <path d="M26 15v22M15 26h22" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+            </svg>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <p class="c3ds__help" aria-hidden="true">← → faire défiler · Ⓐ clic : ouvrir le projet</p>
+</div>
+
+<style>
+  .c3ds {
+    position: relative;
+  }
+  .c3ds__counter {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1.4rem;
+  }
+  .c3ds__arrow {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, transform 0.2s var(--ease-pop);
+  }
+  .c3ds__arrow:hover {
+    background: var(--white);
+    color: var(--navy);
+    transform: scale(1.08);
+  }
+
+  .c3ds__stage {
+    position: relative;
+    padding-top: 230px; /* place réservée à la bulle */
+  }
+
+  /* ---------- Bulle 3DS ---------- */
+  .c3ds__bubbles {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 0;
+  }
+  .bubble {
+    position: absolute;
+    left: var(--bubble-x, 0px);
+    top: var(--bubble-y, 40px);
+    z-index: 4;
+    width: min(380px, 86vw);
+    padding: 1.3rem 1.8rem 1.4rem;
+    background: var(--white);
+    border-radius: 34px;
+    color: #1d1d1f;
+    transform-origin: var(--tip-x, 50%) 100%;
+    animation: pop 0.32s var(--ease-pop);
+  }
+  .bubble[hidden] {
+    display: none;
+  }
+  .bubble__title {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: clamp(1.4rem, 1.1rem + 0.8vw, 1.9rem);
+    line-height: 1.1;
+  }
+  .bubble__info {
+    margin-top: 0.3rem;
+    color: #7c818b;
+    font-size: 1.05rem;
+  }
+  .bubble__text {
+    margin-top: 0.4rem;
+    color: #4a4f58;
+    font-size: 1.15rem;
+    line-height: 1.35;
+  }
+  .bubble__tip {
+    position: absolute;
+    left: var(--tip-x, 50%);
+    bottom: -17px;
+    width: 36px;
+    height: 20px;
+    margin-left: -18px;
+    background: var(--white);
+    clip-path: path('M0 0H36L20.5 18.2C19.2 19.7 16.8 19.7 15.5 18.2L0 0Z');
+  }
+  @keyframes pop {
+    from {
+      transform: scale(0.6);
+      opacity: 0;
+    }
+  }
+
+  /* ---------- Mockup détouré ---------- */
+  .c3ds__mockup {
+    position: absolute;
+    z-index: 5;
+    left: var(--mock-x, 0px);
+    top: var(--mock-y, 0px);
+    width: clamp(90px, 9vw, 125px);
+    height: auto;
+    rotate: -7deg;
+    pointer-events: none;
+    opacity: 0;
+    translate: 0 60px;
+    transition: opacity 0.25s, translate 0.45s var(--ease-pop);
+    filter: drop-shadow(0 18px 18px rgb(0 0 0 / 0.35));
+  }
+  .c3ds__mockup.is-visible {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  /* ---------- Jaquettes ---------- */
+  .c3ds__track {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.5rem, 4vw, 4rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .card {
+    position: relative;
+    display: block;
+    container-type: inline-size;
+    aspect-ratio: 340 / 330;
+    border-radius: var(--radius-card);
+    background: linear-gradient(160deg, #fad1da 38%, #947c81 100%);
+    color: var(--ink);
+    text-decoration: none;
+    opacity: 0.55;
+    filter: saturate(0.6);
+    transition: transform 0.3s var(--ease-pop), opacity 0.25s, filter 0.25s;
+  }
+  .card.is-active {
+    opacity: 1;
+    filter: none;
+    transform: translateY(-16px);
+  }
+  .card:focus-visible {
+    outline: none; /* le sélecteur 3DS sert d'indicateur de focus */
+  }
+  .card__type {
+    position: absolute;
+    top: 7%;
+    left: 6.5%;
+    padding: 0.25em 0.7em;
+    background: var(--white);
+    border-radius: 6px;
+    color: #72243e;
+    font-family: var(--font-mono);
+    font-size: max(12px, 4.7cqi);
+  }
+  .card__num {
+    position: absolute;
+    top: 0;
+    right: 6%;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 28cqi;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+  }
+  .card__visual {
+    position: absolute;
+    left: 7%;
+    top: 26%;
+    width: auto;
+    max-width: 42%;
+    height: 40%;
+    object-fit: contain;
+    object-position: left center;
+  }
+  .card__name {
+    position: absolute;
+    left: 7%;
+    bottom: 15%;
+    max-width: 70%;
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 8.6cqi;
+    line-height: 1;
+  }
+  .card__year {
+    position: absolute;
+    left: 7%;
+    bottom: 7%;
+    color: #72243e;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: max(12px, 5.3cqi);
+  }
+  .card__plus {
+    position: absolute;
+    right: 6.5%;
+    bottom: 7%;
+    width: 15%;
+    transition: transform 0.25s var(--ease-pop);
+  }
+  .card:hover .card__plus {
+    transform: rotate(90deg);
+  }
+
+  /* Sélecteur 3DS : 4 coins arrondis bleus qui pulsent */
+  .card__corners {
+    position: absolute;
+    inset: -18px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+  }
+  .card.is-active .card__corners {
+    opacity: 1;
+    animation: pulse 1.1s ease-in-out infinite;
+  }
+  .card__corners i {
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    border: 9px solid #6f9cf0;
+  }
+  .card__corners i:nth-child(1) {
+    top: 0;
+    left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-top-left-radius: 18px;
+  }
+  .card__corners i:nth-child(2) {
+    top: 0;
+    right: 0;
+    border-left: 0;
+    border-bottom: 0;
+    border-top-right-radius: 18px;
+  }
+  .card__corners i:nth-child(3) {
+    bottom: 0;
+    right: 0;
+    border-left: 0;
+    border-top: 0;
+    border-bottom-right-radius: 18px;
+  }
+  .card__corners i:nth-child(4) {
+    bottom: 0;
+    left: 0;
+    border-right: 0;
+    border-top: 0;
+    border-bottom-left-radius: 18px;
+  }
+  @keyframes pulse {
+    50% {
+      transform: scale(1.035);
+    }
+  }
+
+  .c3ds__help {
+    margin-top: 3.5rem;
+    text-align: center;
+    color: #8fb0e8;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+  }
+
+  /* ---------- Mobile : défilement horizontal, une jaquette à la fois ---------- */
+  @media (max-width: 760px) {
+    .c3ds__stage {
+      padding-top: 200px;
+    }
+    .c3ds__track {
+      display: flex;
+      gap: 1.25rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 30px 18vw 40px;
+      margin-inline: calc(-1 * var(--gutter));
+      scrollbar-width: none;
+    }
+    .c3ds__track::-webkit-scrollbar {
+      display: none;
+    }
+    .c3ds__item {
+      flex: 0 0 64vw;
+      scroll-snap-align: center;
+    }
+    .c3ds__mockup {
+      display: none;
+    }
+    .c3ds__help {
+      margin-top: 1rem;
+    }
+  }
+</style>
+
+<script>
+  // Le script s'exécute pour chaque carrousel présent sur la page.
+  function initCarousel(root: HTMLElement) {
+    const cards = [...root.querySelectorAll<HTMLAnchorElement>('[data-card]')];
+    const bubbles = [...root.querySelectorAll<HTMLElement>('[data-bubble]')];
+    const mockups = root.querySelectorAll<HTMLElement>('[data-mockup]');
+    const stage = root.querySelector<HTMLElement>('[data-stage]')!;
+    const track = root.querySelector<HTMLElement>('[data-track]')!;
+    const current = root.querySelector<HTMLElement>('[data-current]')!;
+    const mobile = window.matchMedia('(max-width: 760px)');
+    let index = 0;
+
+    /** Place la bulle (et le mockup) au-dessus de la jaquette active */
+    function position() {
+      const card = cards[index];
+      const bubble = bubbles[index];
+      const stageBox = stage.getBoundingClientRect();
+      const cardBox = card.getBoundingClientRect();
+      const bw = bubble.offsetWidth;
+      const bh = bubble.offsetHeight;
+      const cardCenter = cardBox.left - stageBox.left + cardBox.width / 2;
+      const mockup = root.querySelector<HTMLElement>(`[data-mockup="${index}"]`);
+      const mockW = mockup && !mobile.matches ? mockup.offsetWidth : 0;
+
+      // La bulle est centrée un peu à gauche pour laisser la place au mockup, sans sortir du cadre
+      let x = cardCenter - bw / 2 - mockW / 3;
+      x = Math.max(0, Math.min(stageBox.width - bw - mockW * 0.8, x));
+      const y = Math.max(0, cardBox.top - stageBox.top - bh - 40);
+      bubble.style.setProperty('--bubble-x', `${x}px`);
+      bubble.style.setProperty('--bubble-y', `${y}px`);
+      bubble.style.setProperty('--tip-x', `${Math.max(36, Math.min(bw - 36, cardCenter - x))}px`);
+
+      if (mockup) {
+        mockup.style.setProperty('--mock-x', `${x + bw - 14}px`);
+        mockup.style.setProperty('--mock-y', `${cardBox.top - stageBox.top + 30 - mockup.offsetHeight}px`);
+      }
+    }
+
+    function select(i: number, { focus = false, scroll = false } = {}) {
+      const next = (i + cards.length) % cards.length;
+      const changed = next !== index;
+      index = next;
+      cards.forEach((c, k) => c.classList.toggle('is-active', k === index));
+      bubbles.forEach((b, k) => (b.hidden = k !== index));
+      mockups.forEach((m) => m.classList.toggle('is-visible', m.dataset.mockup === String(index)));
+      current.textContent = String(index + 1).padStart(2, '0');
+      if (changed) {
+        // relance l'animation « pop » de la bulle
+        const b = bubbles[index];
+        b.style.animation = 'none';
+        void b.offsetWidth;
+        b.style.animation = '';
+      }
+      if (scroll && mobile.matches) cards[index].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      if (focus) cards[index].focus({ preventScroll: true });
+      requestAnimationFrame(position);
+    }
+
+    cards.forEach((card, i) => {
+      card.addEventListener('mouseenter', () => !mobile.matches && select(i));
+      card.addEventListener('focus', () => select(i, { scroll: true }));
+    });
+    root.querySelector('[data-prev]')!.addEventListener('click', () => select(index - 1, { scroll: true }));
+    root.querySelector('[data-next]')!.addEventListener('click', () => select(index + 1, { scroll: true }));
+
+    // Flèches du clavier quand le focus est dans le carrousel
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); select(index + 1, { focus: true }); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); select(index - 1, { focus: true }); }
+    });
+
+    // Mobile : la jaquette la plus centrée devient active pendant le défilement
+    let raf = 0;
+    track.addEventListener('scroll', () => {
+      if (!mobile.matches) return;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const mid = track.getBoundingClientRect().left + track.clientWidth / 2;
+        let best = 0, bestDist = Infinity;
+        cards.forEach((c, k) => {
+          const r = c.getBoundingClientRect();
+          const d = Math.abs(r.left + r.width / 2 - mid);
+          if (d < bestDist) { bestDist = d; best = k; }
+        });
+        if (best !== index) select(best);
+      });
+    }, { passive: true });
+
+    window.addEventListener('resize', () => requestAnimationFrame(position));
+    // Re-calcul quand les polices et les images sont chargées (les tailles changent)
+    document.fonts?.ready.then(position);
+    window.addEventListener('load', position);
+    select(0);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-c3ds]').forEach(initCarousel);
+</script>

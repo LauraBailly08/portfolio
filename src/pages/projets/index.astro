@@ -1,0 +1,191 @@
+---
+/**
+ * PAGE PROJETS — carrousel 3DS + liste détaillée (une ligne par projet),
+ * pour que chaque projet soit présenté avec de vraies informations.
+ */
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Tag from '@/components/Tag.astro';
+import Carousel3DS from '@/components/Carousel3DS.astro';
+import exclamation from '@/assets/decor/exclamation-pixel.png';
+import etoile from '@/assets/decor/etoile-ascii.png';
+
+const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b.data.ordre);
+---
+
+<BaseLayout
+  titre="Projets"
+  description="Trois projets présentés en profondeur : Noyaux d’ombre (site web), Wenddy (web app LSF) et Olyvia (communication)."
+>
+  <div class="page container">
+    <Image src={etoile} alt="" aria-hidden="true" class="page__ascii" widths={[500, 860]} sizes="60vw" />
+    <header class="page__head">
+      <Tag as="h1" id="projets-titre">Projets</Tag>
+      <Image src={exclamation} alt="" aria-hidden="true" class="page__exclam" width={170} />
+    </header>
+
+    <Carousel3DS projets={projets} titreId="projets-titre" />
+
+    <section class="list" aria-labelledby="liste-titre">
+      <h2 id="liste-titre" class="sr-only">Liste des projets</h2>
+      <ol class="rows">
+        {projets.map((p) => (
+          <li class="row">
+            <span class="row__num" aria-hidden="true">{p.data.numero}</span>
+            <div class="row__body">
+              <p class="row__meta">
+                <span class="row__badge">{p.data.cadre.split(' · ')[0]}</span>
+                <span>{p.data.annee}</span>
+                <span>· {p.data.type}</span>
+              </p>
+              <h3 class="row__title">
+                <a href={`/projets/${p.id}/`}>{p.data.titre}</a>
+              </h3>
+              <p class="row__resume">{p.data.resume}</p>
+              <ul class="row__skills" aria-label="Compétences">
+                {p.data.competences.slice(0, 4).map((c) => <li>{c}</li>)}
+              </ul>
+            </div>
+            <svg class="row__plus" viewBox="0 0 52 52" aria-hidden="true">
+              <circle cx="26" cy="26" r="23" fill="none" stroke="currentColor" stroke-width="3" />
+              <path d="M26 15v22M15 26h22" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+            </svg>
+          </li>
+        ))}
+      </ol>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    position: relative;
+    padding-block: clamp(3rem, 6vw, 6rem) var(--section);
+  }
+  .page__ascii {
+    position: absolute;
+    left: 10%;
+    top: 0;
+    width: min(70vw, 860px);
+    opacity: 0.12;
+    pointer-events: none;
+  }
+  .page__head {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: clamp(1rem, 3vw, 2rem);
+  }
+  .page__exclam {
+    width: clamp(70px, 10vw, 150px);
+    height: auto;
+    rotate: 12deg;
+    margin-right: 22%;
+  }
+
+  .list {
+    position: relative;
+    margin-top: clamp(4rem, 8vw, 7rem);
+    border-top: 6px solid var(--navy-2);
+  }
+  .rows {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .row {
+    position: relative;
+    display: grid;
+    grid-template-columns: clamp(4.5rem, 14vw, 13rem) 1fr auto;
+    align-items: center;
+    gap: clamp(1rem, 2vw, 2rem);
+    padding-block: clamp(2rem, 4vw, 3.2rem);
+    border-bottom: 1px solid rgb(255 255 255 / 0.12);
+    transition: background 0.25s;
+  }
+  .row:hover {
+    background: rgb(255 255 255 / 0.03);
+  }
+  .row__num {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(3rem, 1.5rem + 6vw, 9.4rem);
+    line-height: 1;
+    color: rgb(255 255 255 / 0.18);
+    transition: color 0.25s;
+  }
+  .row:hover .row__num {
+    color: var(--pink);
+  }
+  .row__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1rem;
+    color: rgb(255 255 255 / 0.6);
+    font-size: 1.05rem;
+  }
+  .row__badge {
+    padding: 0.15rem 0.8rem;
+    background: var(--white);
+    color: #000;
+    box-shadow: 5px 5px 0 var(--pink);
+  }
+  .row__title {
+    margin-top: 0.6rem;
+    font-size: clamp(2.2rem, 1.2rem + 4vw, 6.9rem);
+    letter-spacing: -0.01em;
+  }
+  .row__title a {
+    text-decoration: none;
+  }
+  .row__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0; /* toute la ligne est cliquable */
+  }
+  .row__resume {
+    margin-top: 0.6rem;
+    font-weight: 700;
+    font-size: clamp(1.05rem, 0.9rem + 0.6vw, 1.6rem);
+    color: rgb(255 255 255 / 0.85);
+  }
+  .row__skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .row__skills li {
+    padding: 0.2rem 0.75rem;
+    border: 1px solid #8fb0e8;
+    border-radius: 4px;
+    color: #c9d6ee;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+  }
+  .row__plus {
+    width: clamp(36px, 4vw, 56px);
+    color: rgb(255 255 255 / 0.4);
+    transition: transform 0.3s var(--ease-pop), color 0.25s;
+  }
+  .row:hover .row__plus {
+    color: var(--white);
+    transform: rotate(90deg);
+  }
+  @media (max-width: 640px) {
+    .row {
+      grid-template-columns: 1fr;
+    }
+    .row__num {
+      font-size: 3rem;
+    }
+    .row__plus {
+      display: none;
+    }
+  }
+</style>

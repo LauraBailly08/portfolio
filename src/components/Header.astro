@@ -1,0 +1,142 @@
+---
+/**
+ * En-tête : logo « Laura@BAILLY » + onglets façon classeur (maquette Figma).
+ * L'onglet de la page en cours reçoit aria-current="page" et un style actif.
+ */
+import { NAV } from '@/data/site';
+import NavIcon from './NavIcon.astro';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => path.startsWith(href);
+---
+
+<header class="header">
+  <div class="header__inner">
+    <a class="logo" href="/" aria-label="Laura Bailly — retour à l’accueil">
+      <span>Laura<span class="logo__at">@</span></span>
+      <span>BAILLY</span>
+    </a>
+
+    <nav aria-label="Navigation principale">
+      <ul class="tabs">
+        {NAV.map((item) => (
+          <li>
+            <a
+              class:list={['tab', { 'tab--active': isActive(item.href) }]}
+              href={item.href}
+              aria-current={isActive(item.href) ? 'page' : undefined}
+            >
+              <span class="tab__label">{item.label}</span>
+              <span class="tab__icon"><NavIcon name={item.icone} /></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: relative;
+    z-index: 20;
+    background: var(--sky);
+    border-bottom: 1px solid var(--pink);
+    color: var(--ink);
+  }
+  .header__inner {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding: 1.6rem clamp(1rem, 3vw, 2.6rem) 0;
+    min-height: 138px;
+  }
+
+  .logo {
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 1rem + 1.6vw, 3.25rem);
+    line-height: 0.82;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    color: #000;
+    padding-bottom: 0.4rem;
+  }
+  .logo__at {
+    color: var(--blue);
+  }
+
+  .tabs {
+    display: flex;
+    gap: clamp(0.4rem, 1.2vw, 1rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Onglet blanc avec halo bleu, comme dans la maquette */
+  .tab {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    width: clamp(6rem, 12vw, 10.9rem);
+    height: 69px;
+    padding: 0 0.9rem 0 0.75rem;
+    background: var(--white);
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 1px 3.7px 3px rgb(51 97 202 / 0.5);
+    color: #000;
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 0.8rem + 0.4vw, 1.5rem);
+    text-decoration: none;
+    transform: translateY(6px);
+    transition: transform 0.2s var(--ease-pop), background-color 0.2s;
+  }
+  .tab:hover,
+  .tab--active {
+    transform: translateY(0);
+  }
+  .tab--active {
+    background: var(--pink-light);
+    font-weight: 700;
+  }
+  .tab__icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 52px;
+    flex: none;
+  }
+  .tab__icon :global(svg) {
+    max-height: 100%;
+    width: auto;
+  }
+
+  @media (max-width: 720px) {
+    .header__inner {
+      min-height: 96px;
+      padding-top: 1rem;
+    }
+    .tab {
+      width: auto;
+      height: 52px;
+      padding: 0 0.7rem;
+    }
+    .tab__icon {
+      display: none;
+    }
+  }
+  @media (max-width: 400px) {
+    .tab {
+      font-size: 0.85rem;
+      padding: 0 0.5rem;
+    }
+  }
+</style>
