@@ -14,7 +14,7 @@ competences: ["Design UI", "Parcours utilisateur", "Gamification", "Prototypage"
 
 jaquette: "../../assets/projets/wenddy/jaquette.png"
 jaquetteAlt: "Logo de Wenddy : deux yeux de chat stylisés"
-mockupCarrousel: "../../assets/projets/wenddy/mockup-carrousel.png"
+jaquetteFond: "#ffb27a"
 mockups:
   - src: "../../assets/projets/wenddy/mockup-1.png"
     alt: "Écran d’accueil de Wenddy : « Bonjour bambou_fr ! », séries, XP et carte de progression"

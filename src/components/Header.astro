@@ -1,10 +1,11 @@
 ---
 /**
- * En-tête : logo « Laura@BAILLY » + onglets façon classeur (maquette Figma).
+ * En-tête : logo cartouche « LB » (composant Logo) + onglets façon classeur (maquette Figma).
  * L'onglet de la page en cours reçoit aria-current="page" et un style actif.
  */
 import { NAV } from '@/data/site';
 import NavIcon from './NavIcon.astro';
+import Logo from './Logo.astro';
 
 const path = Astro.url.pathname;
 const isActive = (href: string) => path.startsWith(href);
@@ -13,8 +14,7 @@ const isActive = (href: string) => path.startsWith(href);
 <header class="header">
   <div class="header__inner">
     <a class="logo" href="/" aria-label="Laura Bailly — retour à l’accueil">
-      <span>Laura<span class="logo__at">@</span></span>
-      <span>BAILLY</span>
+      <Logo />
     </a>
 
     <nav aria-label="Navigation principale">
@@ -40,6 +40,8 @@ const isActive = (href: string) => path.startsWith(href);
   .header {
     position: relative;
     z-index: 20;
+    /* Les onglets (et leur halo) restent dans le bandeau bleu clair : rien ne déborde sur la page */
+    overflow: clip;
     background: var(--sky);
     border-bottom: 1px solid var(--pink);
     color: var(--ink);
@@ -49,16 +51,13 @@ const isActive = (href: string) => path.startsWith(href);
     align-items: flex-end;
     justify-content: space-between;
     gap: 1rem;
-    max-width: 1440px;
-    margin-inline: auto;
-    padding: 1.6rem clamp(1rem, 3vw, 2.6rem) 0;
-    min-height: 138px;
+    padding: 1.4rem var(--edge) 0;
+    min-height: 118px;
   }
 
   .logo {
     align-self: center;
-    display: flex;
-    flex-direction: column;
+    display: inline-flex;
     font-family: var(--font-title);
     font-weight: 700;
     font-size: clamp(1.5rem, 1rem + 1.6vw, 3.25rem);
@@ -67,9 +66,6 @@ const isActive = (href: string) => path.startsWith(href);
     text-decoration: none;
     color: #000;
     padding-bottom: 0.4rem;
-  }
-  .logo__at {
-    color: var(--blue);
   }
 
   .tabs {
@@ -121,8 +117,9 @@ const isActive = (href: string) => path.startsWith(href);
 
   @media (max-width: 720px) {
     .header__inner {
-      min-height: 96px;
+      min-height: 88px;
       padding-top: 1rem;
+      padding-inline: 1rem;
     }
     .tab {
       width: auto;

@@ -16,6 +16,7 @@ competences: ["Stratégie de communication", "Identité visuelle", "Supports pri
 
 jaquette: "../../assets/projets/olyvia/jaquette.png"
 jaquetteAlt: "Logo d’Olyvia : une fleur de lotus violette"
+jaquetteFond: "#f1eaff"
 
 contexte:
   commande: "[À compléter : la commande exacte du projet.]"

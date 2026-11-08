@@ -14,9 +14,10 @@ competences: ["Recherche utilisateur", "Wireframes", "Prototype Figma", "HTML / 
 lien: "https://noyaux-d-ombre.bailly-laura.fr/fr/"
 lienLibelle: "noyaux-d-ombre.bailly-laura.fr"
 
-jaquette: "../../assets/projets/noyaux-d-ombre/jaquette.png"
-jaquetteAlt: "Mockup téléphone de la page d’accueil de Noyaux d’ombre"
-mockupCarrousel: "../../assets/projets/noyaux-d-ombre/mockup-carrousel.png"
+jaquette: "../../assets/projets/noyaux-d-ombre/maquette-1.png"
+jaquetteAlt: "Écran « Who was Lise Meitner » du site Noyaux d’ombre"
+jaquetteFit: "contain"
+jaquetteFond: "#14102b"
 mockups:
   - src: "../../assets/projets/noyaux-d-ombre/mockup-1.png"
     alt: "Page d’accueil mobile : titre « L’effet Matilda », définition et citation de Lise Meitner"

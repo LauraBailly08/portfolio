@@ -91,7 +91,7 @@ const inspirations = [
   <section class="skills" aria-labelledby="skills-titre">
     <Image src={etoile} alt="" aria-hidden="true" class="skills__ascii" widths={[500, 860]} sizes="60vw" />
     <div class="container">
-      <h2 id="skills-titre" class="skills__title">Skills</h2>
+      <Tag as="h2" id="skills-titre" ombre="rose" inclinaison={3}>Skills</Tag>
       <ul class="skills__grid">
         {skills.map((s) => (
           <li>
@@ -165,10 +165,10 @@ const inspirations = [
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
-    max-width: 52rem;
+    max-width: 46rem;
     margin: clamp(2.5rem, 5vw, 4rem) 0 0 auto;
-    font-size: var(--fs-lead);
-    line-height: 1.4;
+    font-size: clamp(1.1rem, 0.95rem + 0.6vw, 1.5rem);
+    line-height: 1.5;
   }
   .hello__search strong {
     color: var(--pink);
@@ -186,17 +186,10 @@ const inspirations = [
     opacity: 0.12;
     pointer-events: none;
   }
-  .skills__title {
-    position: relative;
-    font-family: var(--font-body);
-    font-weight: 700;
-    font-size: clamp(3.5rem, 2rem + 6vw, 8rem);
-    text-align: center;
-  }
   .skills__grid {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 294px));
+    grid-template-columns: repeat(3, minmax(0, 240px));
     justify-content: center;
     gap: clamp(1.25rem, 4vw, 4.5rem) clamp(1rem, 5vw, 4.5rem);
     margin: clamp(2rem, 5vw, 4.5rem) 0 0;
@@ -221,6 +214,7 @@ const inspirations = [
     font-family: var(--font-mono);
     font-size: 1rem;
     color: #c9d6ee;
+    text-align: center;
   }
 
   .insp {

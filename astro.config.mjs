@@ -20,4 +20,8 @@ export default defineConfig({
 
   // Préchargement des pages au survol des liens → navigation quasi instantanée.
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
+
+  // En développement : vérifie les fichiers régulièrement au lieu d'attendre les notifications de Windows,
+  // pour que les modifications faites par un autre outil (ex. Claude) s'affichent bien sans redémarrer.
+  vite: { server: { watch: { usePolling: true, interval: 300 } } },
 });

@@ -99,7 +99,7 @@ const { Content } = await render(projet);
         </article>
       ))}
     </div>
-    <ul class="skills" aria-label="Compétences mobilisées">
+    <ul class="chips skills" aria-label="Compétences mobilisées">
       {p.competences.map((c) => <li>{c}</li>)}
     </ul>
   </section>
@@ -297,13 +297,15 @@ const { Content } = await render(projet);
   }
   .strong {
     font-weight: 700;
-    font-size: clamp(1.15rem, 1rem + 0.8vw, 2.25rem);
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.5rem);
   }
   .consignes {
+    display: grid;
+    gap: 0.4rem;
     margin: 0;
-    padding-left: 1.8em;
+    padding-left: 1.4em;
     font-weight: 700;
-    font-size: clamp(1.15rem, 1rem + 0.8vw, 2.25rem);
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.5rem);
     line-height: 1.35;
   }
   .consignes li::marker {
@@ -338,7 +340,7 @@ const { Content } = await render(projet);
     padding: 1.8rem 2rem 2.2rem;
     background: var(--white);
     color: #000;
-    box-shadow: 15px 24px 0 var(--pink-deep);
+    box-shadow: clamp(8px, 1.2vw, 15px) clamp(10px, 1.8vw, 22px) 0 var(--pink-deep);
     rotate: var(--tilt);
   }
   .role h3 {
@@ -347,24 +349,11 @@ const { Content } = await render(projet);
   }
   .role p {
     margin-top: 1.1rem;
-    font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.75rem);
-    line-height: 1.3;
+    font-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.4rem);
+    line-height: 1.4;
   }
   .skills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    margin: clamp(2.5rem, 5vw, 4rem) 0 0;
-    padding: 0;
-    list-style: none;
-  }
-  .skills li {
-    padding: 0.3rem 0.9rem;
-    border: 1px solid #8fb0e8;
-    border-radius: 4px;
-    color: #c9d6ee;
-    font-family: var(--font-mono);
-    font-size: 0.95rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
   }
 
   /* ---------- Processus (fond rose) ---------- */
@@ -433,7 +422,7 @@ const { Content } = await render(projet);
   }
   .tool img {
     width: 100%;
-    max-width: 330px;
+    max-width: 240px;
     height: auto;
     transition: transform 0.25s var(--ease-pop);
   }
@@ -454,7 +443,7 @@ const { Content } = await render(projet);
 
   .link {
     font-weight: 700;
-    font-size: clamp(1.05rem, 0.9rem + 0.7vw, 2.25rem);
+    font-size: clamp(1.05rem, 0.9rem + 0.5vw, 1.5rem);
     overflow-wrap: anywhere;
   }
   .link a {
@@ -499,6 +488,11 @@ const { Content } = await render(projet);
     }
     .fiche {
       justify-self: center;
+      width: min(100%, 360px);
+      rotate: 2deg;
+    }
+    .role {
+      rotate: 0deg;
     }
     .windows {
       grid-template-columns: 1fr;

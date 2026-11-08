@@ -35,6 +35,8 @@ const projets = defineCollection({
       // Visuels
       jaquette: image(), // visuel au centre de la jaquette
       jaquetteAlt: z.string(),
+      jaquetteFit: z.enum(['contain', 'cover']).default('contain'), // contain = logo centré, cover = visuel plein cadre
+      jaquetteFond: z.string().default('#ffffff'), // couleur de fond de la couverture
       mockupCarrousel: image().optional(), // mockup détouré qui sort de la jaquette
       mockups: z
         .array(z.object({ src: image(), alt: z.string() }))

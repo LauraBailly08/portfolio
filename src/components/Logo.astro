@@ -1,0 +1,57 @@
+---
+/**
+ * LOGO — cartouche de jeu DS avec le monogramme « LB » + le nom sur deux lignes.
+ * Tout est en em : le logo suit la taille de police de son parent
+ * (header : petit, footer : grand). Le monogramme est dessiné en tracés,
+ * il ne dépend donc d'aucune police.
+ * Utilisation : <a class="…" href="/"><Logo /></a>
+ */
+interface Props {
+  nom?: boolean; // afficher « Laura Bailly » à côté de la cartouche
+}
+const { nom = true } = Astro.props;
+---
+
+<span class="logo-mark">
+  <svg class="logo-mark__cart" viewBox="0 0 108 128" aria-hidden="true">
+    <!-- ombre pleine décalée -->
+    <path d="M8 0H80L100 20V112A8 8 0 0 1 92 120H8A8 8 0 0 1 0 112V8A8 8 0 0 1 8 0Z" transform="translate(7 7)" fill="#5e87d5" />
+    <!-- cartouche -->
+    <path d="M8 0H80L100 20V112A8 8 0 0 1 92 120H8A8 8 0 0 1 0 112V8A8 8 0 0 1 8 0Z" fill="#2f2f2f" />
+    <rect x="16" y="7" width="52" height="5" rx="2.5" fill="#555" />
+    <!-- étiquette rose + monogramme LB -->
+    <rect x="10" y="22" width="80" height="78" rx="5" fill="#fad1da" />
+    <g fill="#041a2c" fill-rule="evenodd" transform="translate(-7 0)">
+      <path d="M30 40h9v32h17v8H30Z" />
+      <path d="M58 40h14c7 0 11 4 11 9.5c0 3.5-2 6-5 7c4 1 6.5 4 6.5 8.5c0 6.5-4.5 10-12 10H58ZM66.5 47v8.5h5c2.5 0 4-1.6 4-4.3s-1.5-4.2-4-4.2ZM66.5 62.5V73h5.8c3 0 4.6-1.9 4.6-5.2s-1.6-5.3-4.6-5.3Z" />
+    </g>
+    <g fill="#555"><rect x="18" y="108" width="7" height="6" /><rect x="30" y="108" width="7" height="6" /><rect x="42" y="108" width="7" height="6" /><rect x="54" y="108" width="7" height="6" /><rect x="66" y="108" width="7" height="6" /></g>
+  </svg>
+  {nom && (
+    <span class="logo-mark__nom">
+      <span>Laura</span>
+      <span>Bailly</span>
+    </span>
+  )}
+</span>
+
+<style>
+  .logo-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+  }
+  .logo-mark__cart {
+    flex: none;
+    width: auto;
+    height: 1.7em; /* = hauteur des deux lignes du nom */
+  }
+  .logo-mark__nom {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-title);
+    font-weight: 700;
+    line-height: 0.85;
+    letter-spacing: -0.01em;
+  }
+</style>

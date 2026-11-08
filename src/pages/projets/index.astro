@@ -36,14 +36,13 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
             <div class="row__body">
               <p class="row__meta">
                 <span class="row__badge">{p.data.cadre.split(' · ')[0]}</span>
-                <span>{p.data.annee}</span>
-                <span>· {p.data.type}</span>
+                <span>{p.data.annee} · {p.data.type}</span>
               </p>
               <h3 class="row__title">
                 <a href={`/projets/${p.id}/`}>{p.data.titre}</a>
               </h3>
               <p class="row__resume">{p.data.resume}</p>
-              <ul class="row__skills" aria-label="Compétences">
+              <ul class="chips row__skills" aria-label="Compétences">
                 {p.data.competences.slice(0, 4).map((c) => <li>{c}</li>)}
               </ul>
             </div>
@@ -79,10 +78,10 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
     margin-bottom: clamp(1rem, 3vw, 2rem);
   }
   .page__exclam {
-    width: clamp(70px, 10vw, 150px);
+    width: clamp(60px, 9vw, 130px);
     height: auto;
     rotate: 12deg;
-    margin-right: 22%;
+    margin-right: 12%;
   }
 
   .list {
@@ -124,8 +123,8 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
     flex-wrap: wrap;
     align-items: center;
     gap: 0.6rem 1rem;
-    color: rgb(255 255 255 / 0.6);
-    font-size: 1.05rem;
+    color: rgb(255 255 255 / 0.7);
+    font-size: 1rem;
   }
   .row__badge {
     padding: 0.15rem 0.8rem;
@@ -135,7 +134,7 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
   }
   .row__title {
     margin-top: 0.6rem;
-    font-size: clamp(2.2rem, 1.2rem + 4vw, 6.9rem);
+    font-size: clamp(2.2rem, 1.2rem + 4vw, 5.5rem);
     letter-spacing: -0.01em;
   }
   .row__title a {
@@ -153,20 +152,7 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
     color: rgb(255 255 255 / 0.85);
   }
   .row__skills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: 1rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-  .row__skills li {
-    padding: 0.2rem 0.75rem;
-    border: 1px solid #8fb0e8;
-    border-radius: 4px;
-    color: #c9d6ee;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
+    margin-top: 1rem;
   }
   .row__plus {
     width: clamp(36px, 4vw, 56px);
@@ -180,9 +166,11 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
   @media (max-width: 640px) {
     .row {
       grid-template-columns: 1fr;
+      gap: 0.4rem;
     }
     .row__num {
-      font-size: 3rem;
+      font-size: 1.6rem;
+      color: var(--pink);
     }
     .row__plus {
       display: none;

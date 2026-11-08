@@ -66,22 +66,39 @@ const total = String(projets.length).padStart(2, '0');
             <span class="card__corners" aria-hidden="true">
               <i></i><i></i><i></i><i></i>
             </span>
-            <span class="card__type">{p.data.typeCourt}</span>
-            <span class="card__num" aria-hidden="true">{p.data.numero}</span>
-            <Image src={p.data.jaquette} alt="" class="card__visual" widths={[140, 280]} sizes="140px" />
+            <span class="card__in">
+            <!-- Haut : type de projet + numéro -->
+            <span class="card__top">
+              <span class="card__type">{p.data.typeCourt}</span>
+              <span class="card__num" aria-hidden="true">{p.data.numero}</span>
+            </span>
+            <!-- Couverture du projet, sur la couleur du projet -->
+            <span class="card__cover" style={`--fond:${p.data.jaquetteFond}`}>
+              <Image
+                src={p.data.jaquette}
+                alt=""
+                class:list={['card__visual', `card__visual--${p.data.jaquetteFit}`]}
+                widths={[240, 480]}
+                sizes="260px"
+              />
+            </span>
+            <!-- Bas : titre + appel à l'action explicite -->
             <span class="card__name">{p.data.titre}</span>
-            <span class="card__year">{p.data.annee}</span>
-            <svg class="card__plus" viewBox="0 0 52 52" aria-hidden="true">
-              <circle cx="26" cy="26" r="23" fill="none" stroke="currentColor" stroke-width="4" />
-              <path d="M26 15v22M15 26h22" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
-            </svg>
+            <span class="card__foot">
+              <span class="card__year">{p.data.annee}</span>
+              <span class="card__cta">Voir le projet <span aria-hidden="true">→</span></span>
+            </span>
+            </span>
           </a>
         </li>
       ))}
     </ul>
   </div>
 
-  <p class="c3ds__help" aria-hidden="true">← → faire défiler · Ⓐ clic : ouvrir le projet</p>
+  <p class="c3ds__help" aria-hidden="true">
+    <span class="c3ds__help--desktop">← → faire défiler · Ⓐ clic : ouvrir le projet</span>
+    <span class="c3ds__help--mobile">← glisse pour changer de projet →</span>
+  </p>
 </div>
 
 <style>
@@ -151,13 +168,13 @@ const total = String(projets.length).padStart(2, '0');
   }
   .bubble__info {
     margin-top: 0.3rem;
-    color: #7c818b;
-    font-size: 1.05rem;
+    color: #5b616b; /* contraste AA sur blanc */
+    font-size: 1rem;
   }
   .bubble__text {
     margin-top: 0.4rem;
-    color: #4a4f58;
-    font-size: 1.15rem;
+    color: #3d424b;
+    font-size: 1.1rem;
     line-height: 1.35;
   }
   .bubble__tip {
@@ -215,77 +232,113 @@ const total = String(projets.length).padStart(2, '0');
     background: linear-gradient(160deg, #fad1da 38%, #947c81 100%);
     color: var(--ink);
     text-decoration: none;
-    opacity: 0.55;
-    filter: saturate(0.6);
-    transition: transform 0.3s var(--ease-pop), opacity 0.25s, filter 0.25s;
+    opacity: 0.72;
+    transform: scale(0.95);
+    transition: transform 0.3s var(--ease-pop), opacity 0.25s, box-shadow 0.25s;
   }
   .card.is-active {
     opacity: 1;
-    filter: none;
     transform: translateY(-16px);
+    box-shadow: 0 24px 40px rgb(0 0 0 / 0.45);
   }
   .card:focus-visible {
     outline: none; /* le sélecteur 3DS sert d'indicateur de focus */
   }
-  .card__type {
+  /* Contenu de la jaquette : empilé en colonne, tailles relatives à la jaquette (cqi) */
+  /* Conteneur intérieur : ses tailles en cqi suivent la largeur de la jaquette */
+  .card__in {
     position: absolute;
-    top: 7%;
-    left: 6.5%;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3.5cqi;
+    padding: 6cqi;
+  }
+  .card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card__type {
     padding: 0.25em 0.7em;
     background: var(--white);
     border-radius: 6px;
     color: #72243e;
     font-family: var(--font-mono);
-    font-size: max(12px, 4.7cqi);
+    font-size: max(12px, 4.4cqi);
   }
   .card__num {
-    position: absolute;
-    top: 0;
-    right: 6%;
     font-family: var(--font-mono);
     font-weight: 700;
-    font-size: 28cqi;
-    line-height: 1.1;
+    font-size: 11cqi;
+    line-height: 1;
     letter-spacing: -0.04em;
   }
+  .card__cover {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border-radius: 4cqi;
+    background: var(--fond, #fff);
+    box-shadow: inset 0 0 0 2px rgb(0 0 0 / 0.08);
+  }
   .card__visual {
-    position: absolute;
-    left: 7%;
-    top: 26%;
-    width: auto;
-    max-width: 42%;
-    height: 40%;
+    transition: transform 0.35s var(--ease-pop);
+  }
+  /* logo : centré, avec de l'air autour */
+  .card__visual--contain {
+    width: 62%;
+    height: 82%;
     object-fit: contain;
-    object-position: left center;
+    border-radius: 2cqi;
+  }
+  /* écran / visuel : remplit la couverture */
+  .card__visual--cover {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+  .card:hover .card__visual,
+  .card.is-active .card__visual {
+    transform: scale(1.05);
   }
   .card__name {
-    position: absolute;
-    left: 7%;
-    bottom: 15%;
-    max-width: 70%;
     font-family: var(--font-title);
     font-weight: 700;
-    font-size: 8.6cqi;
+    font-size: 8.4cqi;
     line-height: 1;
   }
+  .card__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: -1.5cqi;
+  }
   .card__year {
-    position: absolute;
-    left: 7%;
-    bottom: 7%;
     color: #72243e;
     font-family: var(--font-mono);
     font-weight: 700;
-    font-size: max(12px, 5.3cqi);
+    font-size: max(12px, 4.8cqi);
   }
-  .card__plus {
-    position: absolute;
-    right: 6.5%;
-    bottom: 7%;
-    width: 15%;
-    transition: transform 0.25s var(--ease-pop);
+  .card__cta {
+    padding: 0.35em 0.8em;
+    background: var(--ink);
+    border-radius: 999px;
+    color: var(--white);
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: max(12px, 4.4cqi);
+    transition: background-color 0.2s;
   }
-  .card:hover .card__plus {
-    transform: rotate(90deg);
+  .card:hover .card__cta,
+  .card.is-active .card__cta {
+    background: var(--blue-glow);
   }
 
   /* Sélecteur 3DS : 4 coins arrondis bleus qui pulsent */
@@ -340,6 +393,9 @@ const total = String(projets.length).padStart(2, '0');
     }
   }
 
+  .c3ds__help--mobile {
+    display: none;
+  }
   .c3ds__help {
     margin-top: 3.5rem;
     text-align: center;
@@ -358,7 +414,7 @@ const total = String(projets.length).padStart(2, '0');
       gap: 1.25rem;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
-      padding: 30px 18vw 40px;
+      padding: 30px 16vw 40px;
       margin-inline: calc(-1 * var(--gutter));
       scrollbar-width: none;
     }
@@ -366,14 +422,23 @@ const total = String(projets.length).padStart(2, '0');
       display: none;
     }
     .c3ds__item {
-      flex: 0 0 64vw;
+      flex: 0 0 min(68vw, 300px);
       scroll-snap-align: center;
     }
     .c3ds__mockup {
       display: none;
     }
     .c3ds__help {
-      margin-top: 1rem;
+      margin-top: 0.5rem;
+    }
+    .c3ds__help--desktop {
+      display: none;
+    }
+    .c3ds__help--mobile {
+      display: inline;
+    }
+    .card.is-active {
+      transform: none;
     }
   }
 </style>
