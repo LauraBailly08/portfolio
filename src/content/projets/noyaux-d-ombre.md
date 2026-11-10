@@ -74,4 +74,23 @@ outils:
 
 resultat: "Le site est en ligne en version française et anglaise. Il présente l’effet Matilda, la vie de Lise Meitner et une sélection de films et documentaires pour aller plus loin."
 apprentissages: "Ce projet m’a appris à partir d’un sujet de société pour construire une identité visuelle, et à passer d’une maquette Figma à un site réellement codé et responsive."
+
+# ---- Approfondissement ----
+problematique: "Comment faire comprendre, en quelques minutes et sur téléphone, un phénomène que la plupart des gens n’ont jamais entendu nommer ?"
+chiffres:
+  - valeur: "2"
+    label: "langues : le site existe en français et en anglais"
+  - valeur: "3 mois"
+    label: "de la recherche au site en ligne"
+  - valeur: "4"
+    label: "écrans esquissés à la main avant d’ouvrir Figma"
+  - valeur: "0"
+    label: "framework : tout est codé à la main en HTML et CSS"
+defis:
+  - probleme: "Un sujet scientifique et sérieux risquait de donner un site froid, qui ne donne pas envie de lire."
+    solution: "J’ai construit un moodboard autour des archives, des carnets de laboratoire et de la verrerie pour trouver une ambiance sérieuse mais chaleureuse, loin du cliché du « scientifique froid »."
+  - probleme: "Il fallait que le design raconte, à lui seul, l’idée de femmes restées « dans l’ombre »."
+    solution: "J’ai choisi un fond sombre et un violet lumineux qui fait ressortir les titres, comme si on éclairait ce qui avait été caché, avec des titres très lisibles et des articles courts."
+  - probleme: "La cible découvre le sujet, le plus souvent sur son téléphone, et doit comprendre l’essentiel très vite."
+    solution: "J’ai conçu le site mobile d’abord, en testant sur papier l’ordre des contenus et la navigation, puis je l’ai adapté à l’ordinateur."
 ---

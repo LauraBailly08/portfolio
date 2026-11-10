@@ -68,4 +68,21 @@ outils:
 
 resultat: "Un prototype Figma complet et navigable, qui couvre le parcours d’un apprenant de son arrivée jusqu’au suivi de sa progression."
 apprentissages: "Wenddy m’a appris à travailler avec une charte imposée et à utiliser la gamification au service d’un vrai objectif d’apprentissage."
+
+# ---- Approfondissement ----
+problematique: "Comment donner envie de pratiquer la langue des signes un peu chaque jour, tout en gardant lisible une charte imposée très vive ?"
+chiffres:
+  - valeur: "4"
+    label: "espaces : accueil, dictionnaire, mode arcade et progression"
+  - valeur: "3 mois"
+    label: "de projet, de l’analyse de la charte au prototype"
+  - valeur: "1"
+    label: "prototype Figma navigable, de l’arrivée de l’apprenant au suivi de sa progression"
+defis:
+  - probleme: "La charte imposée était très vive (orange, illustrations dessinées, ton enfantin) et risquait de fatiguer pour un usage quotidien."
+    solution: "J’ai gardé son énergie mais calmé l’interface : textes courts, gros boutons et récompenses bien visibles, pour que l’écran reste lisible chaque jour."
+  - probleme: "Le logo et son pictogramme (deux yeux de chat) devaient apparaître sur chaque écran sans encombrer."
+    solution: "Je les ai utilisés comme repères : dans l’en-tête pour situer l’utilisateur, et sur les écrans de récompense pour célébrer ses progrès."
+  - probleme: "Apprendre une langue demande de la régularité, et beaucoup d’apprenants abandonnent vite."
+    solution: "J’ai utilisé la gamification au service de l’apprentissage : séries, points d’expérience, classement et mini-jeux, sans surcharger l’écran."
 ---

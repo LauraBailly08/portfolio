@@ -67,6 +67,13 @@ const projets = defineCollection({
       resultat: z.string(),
       apprentissages: z.string().optional(),
 
+      // ---- Contenus d'approfondissement (facultatifs : une section n'apparaît que si elle est remplie) ----
+      equipe: z.string().optional(), // ex. "En binôme avec Izya Thiriet" (affiché dans la fiche)
+      problematique: z.string().optional(), // la question à laquelle le projet répond
+      chiffres: z.array(z.object({ valeur: z.string(), label: z.string() })).default([]), // 3-4 chiffres clés
+      defis: z.array(z.object({ probleme: z.string(), solution: z.string() })).default([]), // difficultés → solutions
+      ameliorations: z.string().optional(), // « si je devais le refaire »
+
       // Passe à true tant qu'un texte est provisoire : un bandeau s'affiche en mode dev.
       brouillon: z.boolean().default(false),
     }),

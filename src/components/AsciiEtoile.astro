@@ -1,0 +1,111 @@
+---
+/**
+ * ÉTOILE ASCII — recréée en vrai texte vectoriel (SVG) à partir de l'ancienne image etoile-ascii.png :
+ * même forme, mêmes caractères (@ 3 <), mais nette à toutes les tailles.
+ * - La couleur suit `color` (currentColor) : on la règle en CSS là où on l'utilise.
+ * - Avec `vivante`, quelques caractères changent en continu (effet « écran qui grésille »),
+ *   seulement quand l'étoile est visible et si l'utilisateur n'a pas demandé moins d'animations.
+ */
+interface Props {
+  class?: string;
+  vivante?: boolean;
+}
+const { class: className, vivante = false } = Astro.props;
+
+const LIGNES: string[] = [
+  "               @",
+  "                @@",
+  "                @@@@@",
+  "                 @@3@@@                                 @@",
+  "                 3@333333                            @3@3@",
+  "                  @33@3@@@@@                     @@3@@3<@",
+  "                  @@@@3@@3@@@@                @@3@@3@@3<",
+  "                   @@@3@@33@3@33           3@33@3@33<@@",
+  "                    333333333333@@      @@33@33@333333@",
+  "                    @@3@@3@@3@@3@@<@@@@@@@3@@3@@3@@3@@",
+  "                     @3@<3@@3@@3@@3@@3@3@@3@@3@<3@@@@",
+  "                     @333333333333333333333333333333@",
+  "                      @@@3@@3@<3@@3@@@@3@@3@@3@@3@@@",
+  "                      @<@3@@3@@3@@3@@@@3@@3@@3<@3@@",
+  "                    @@333333333333333333333333333@",
+  "                 @@@@@3@@3@@3@33@@3@33@33@3@@33@3@",
+  "             @<@3@@3@@3@@3@@3@@3@@3@@<@@@@@@@3@@3@@@",
+  "          @3@33@33<33@3333333@33@33@33@33<33@33@333333@",
+  "       @3@@3@33@33@33@3@@33@3@33@33@33@33@33@33@3@33@@3@@",
+  "    @3@@@<@@@@@@3@@3@@3@@3@@3@@3<@3@@@@@@@@@@3@@3@@3@@3<@@@",
+  "@@@@@3@@@@@@@33@33@33@3@@3@@3@@3@33@33@33@33@3@@3@@3@@3@33@3@",
+  "              3@3@<3@@333333333333333333333333333333333333333@3@",
+  "                          3@3@@3@@3@@@@@@@3@@3@@3<@3@@3@@3@@3@@@@@",
+  "                            @@@3@@3@@@@3@@3@    @@@@@@3@@3@@3<@3@@@@",
+  "                            333333333333333                     @<@@@@",
+  "                             @@3@@3@@@@3@@",
+  "                             @@3@@3@@@@@@@",
+  "                              @333333333@",
+  "                              @3@33@33@3",
+  "                               @@@3@@@@",
+  "                                @33@3@@",
+  "                                @@3@3@",
+  "                                 @@@@",
+  "                                 @@@",
+  "                                  3@",
+  "                                  @"
+];
+
+const CH = 12; // largeur d'un caractère (police mono : 0,6 × 20 px)
+const LH = 21; // hauteur de ligne
+const largeur = Math.max(...LIGNES.map((l) => l.length)) * CH;
+const hauteur = LIGNES.length * LH;
+---
+
+<svg
+  class:list={['ascii-etoile', className]}
+  viewBox={`0 0 ${largeur} ${hauteur}`}
+  aria-hidden="true"
+  focusable="false"
+  data-ascii-etoile={vivante ? '' : undefined}
+>
+  {LIGNES.map((ligne, i) => (
+    <text x="0" y={(i + 1) * LH - 5} xml:space="preserve">{ligne}</text>
+  ))}
+</svg>
+
+<style>
+  .ascii-etoile {
+    display: block;
+    height: auto;
+    overflow: visible;
+    fill: currentColor;
+    font-family: var(--font-mono);
+    font-size: 20px;
+    font-weight: 700;
+    pointer-events: none;
+    user-select: none;
+  }
+</style>
+
+<script>
+  // Grésillement : toutes les 90 ms, une dizaine de caractères de l'étoile changent (@ ↔ 3 ↔ <).
+  // mêmes proportions que l'étoile d'origine : surtout des @, des 3, et quelques <
+  const GLYPHES = ['@', '@', '@', '@', '@', '@', '3', '3', '3', '3', '3', '<'];
+  document.querySelectorAll<SVGSVGElement>('[data-ascii-etoile]').forEach((svg) => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const lignes = [...svg.querySelectorAll('text')];
+    const textes = lignes.map((t) => [...(t.textContent ?? '')]);
+    const pleins: [number, number][] = [];
+    textes.forEach((l, i) => l.forEach((c, j) => c !== ' ' && pleins.push([i, j])));
+    let timer = 0;
+    const tick = () => {
+      const modifiees = new Set<number>();
+      for (let k = 0; k < 12; k++) {
+        const [i, j] = pleins[Math.floor(Math.random() * pleins.length)];
+        textes[i][j] = GLYPHES[Math.floor(Math.random() * GLYPHES.length)];
+        modifiees.add(i);
+      }
+      modifiees.forEach((i) => (lignes[i].textContent = textes[i].join('')));
+    };
+    new IntersectionObserver(([e]) => {
+      clearInterval(timer);
+      if (e.isIntersecting) timer = window.setInterval(tick, 90);
+    }).observe(svg);
+  });
+</script>

@@ -7,8 +7,8 @@ import { Image } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Tag from '@/components/Tag.astro';
 import CtaBulle from '@/components/CtaBulle.astro';
-import cartouche from '@/assets/decor/cartouche-a-propos.png';
-import etoile from '@/assets/decor/etoile-ascii.png';
+import cartouche from '@/assets/decor/cartouche-accueil.png'; // même jaquette que sur l'accueil (photo sur fond blanc)
+import AsciiEtoile from '@/components/AsciiEtoile.astro';
 import figma from '@/assets/skills/figma.png';
 import affinity from '@/assets/skills/affinity.png';
 import astro from '@/assets/skills/astro.png';
@@ -31,20 +31,21 @@ const skills = [
   { nom: 'Canva', img: canva },
 ];
 
-// ⚠️ Légendes à personnaliser : dis en quelques mots pourquoi chaque image t'inspire.
+// Chaque jaquette se retourne au survol (ou au clic / au clavier) et montre son thème au dos.
+// theme = titre au dos ; description = ce qu'on voit sur l'image (sert aussi de texte alternatif).
 const inspirations = [
-  { img: insp1, alt: 'Artiste seul sur scène sous un faisceau de lumière, en noir et blanc', legende: 'La scène et la lumière' },
-  { img: insp2, alt: 'Vallée de montagne et chalets sous un ciel nuageux', legende: 'Les grands paysages' },
-  { img: insp3, alt: 'Collage d’objets rétro : ordinateur portable rose, Tamagotchi, coque transparente', legende: 'Les objets tech des années 2000' },
-  { img: insp4, alt: 'Cérémonie d’un tournoi d’esport avec écrans rouges « Champions »', legende: 'L’esport et ses scénographies' },
-  { img: insp5, alt: 'Rue pavée de Montmartre avec une enseigne en fer forgé', legende: 'Les détails de la rue' },
-  { img: insp6, alt: 'Setup de jeu dans le noir avec une Nintendo 3DS allumée', legende: 'Le jeu vidéo et la 3DS' },
+  { img: insp1, theme: 'Musique', description: 'Un artiste seul sur scène, sous un faisceau de lumière, en noir et blanc.' },
+  { img: insp2, theme: 'Paysage', description: 'Une vallée de montagne et ses chalets sous un ciel nuageux.' },
+  { img: insp3, theme: 'Cybertech', description: 'Un collage d’objets tech des années 2000 : ordinateur rose, Tamagotchi, coque transparente.' },
+  { img: insp4, theme: 'Esport', description: 'La cérémonie d’un tournoi d’esport, avec ses écrans rouges « Champions ».' },
+  { img: insp5, theme: 'Photographie', description: 'Une rue pavée de Montmartre et son enseigne en fer forgé.' },
+  { img: insp6, theme: 'Jeux vidéo', description: 'Un setup de jeu dans le noir, avec une Nintendo 3DS allumée.' },
 ];
 ---
 
 <BaseLayout
   titre="À propos"
-  description="Je m’appelle Laura Bailly, j’ai 19 ans et je suis en 2e année de BUT MMI. Design, communication, art digital : découvrez mon parcours, mes outils et mes inspirations."
+  description="Je m’appelle Laura Bailly, j’ai 20 ans et je suis en 2e année de BUT MMI. Design, communication, art digital : découvrez mon parcours, mes outils et mes inspirations."
 >
   <!-- PRÉSENTATION -->
   <section class="hello container" aria-labelledby="apropos-titre">
@@ -52,46 +53,40 @@ const inspirations = [
     <div class="hello__grid">
       <Image
         src={cartouche}
-        alt="Cartouche de jeu « Laura Bailly » avec ma photo sur un fond holographique"
+        alt="Cartouche de jeu « Laura Bailly » avec ma photo"
         class="hello__cartouche"
-        widths={[400, 700, 1059]}
+        widths={[400, 834]}
         sizes="(max-width: 760px) 80vw, 460px"
         loading="eager"
       />
       <div class="hello__bubble">
         <svg class="hello__shape" viewBox="0 0 822 640" aria-hidden="true" preserveAspectRatio="none">
-          <path d="M169.07 444.776L47.7969 639.374L264.711 486.095L342.732 524.803L421.761 449.493L497.623 516.948L557.087 432.579L665.673 498.348L666.152 428.87L812.259 429.879L734.947 361.776L819.971 260.373L718.483 219.513L755.836 73.7971L655.004 148.319L557.679 30.9954L511.867 138.407L363.5 43.6785L308.411 126.165L183.194 47.5332L154.806 158.252L27.6563 149.087L91.7605 234.947L0 259.174L112.837 340.908L60.0778 401.738L169.07 444.776Z" fill="#DC93A2" />
-          <path d="M171.07 413.776L49.7969 608.374L266.711 455.095L344.732 493.803L423.761 418.493L499.623 485.948L559.087 401.579L667.673 467.348L668.152 397.87L814.259 398.879L736.947 330.776L821.971 229.373L720.483 188.513L757.836 42.7971L657.004 117.319L559.679 0L513.867 107.407L365.5 12.6785L310.411 95.1654L185.194 16.5332L156.806 127.252L29.6563 118.087L93.7605 203.947L2 228.174L114.837 309.908L62.0778 370.738L171.07 413.776Z" fill="#fff" />
-        </svg>
+            <path d="M169.07 444.776L47.7969 639.374L264.711 486.095L342.732 524.803L421.761 449.493L497.623 516.948L557.087 432.579L665.673 498.348L666.152 428.87L812.259 429.879L734.947 361.776L819.971 260.373L718.483 219.513L755.836 73.7971L655.004 148.319L557.679 30.9954L511.867 138.407L363.5 43.6785L308.411 126.165L183.194 47.5332L154.806 158.252L27.6563 149.087L91.7605 234.947L0 259.174L112.837 340.908L60.0778 401.738L169.07 444.776Z" fill="#DC93A2" />
+            <path d="M171.07 413.776L49.7969 608.374L266.711 455.095L344.732 493.803L423.761 418.493L499.623 485.948L559.087 401.579L667.673 467.348L668.152 397.87L814.259 398.879L736.947 330.776L821.971 229.373L720.483 188.513L757.836 42.7971L657.004 117.319L559.679 0L513.867 107.407L365.5 12.6785L310.411 95.1654L185.194 16.5332L156.806 127.252L29.6563 118.087L93.7605 203.947L2 228.174L114.837 309.908L62.0778 370.738L171.07 413.776Z" fill="#fff" />
+          </svg>
         <p class="hello__bubble-text">
-          J’ai 19 ans, je suis en deuxième année de BUT MMI et ce qui me passionne, c’est de ne jamais rester enfermée dans une seule case.
+          J’ai 20 ans, je suis en deuxième année de BUT MMI et ce qui me passionne, c’est de ne jamais rester enfermée dans une seule case.
         </p>
       </div>
-    </div>
-
-    <div class="hello__text">
-      <p>
-        J’aime imaginer, créer et voir mes idées prendre vie. Je passe facilement de la maquette
-        Figma au code, et de l’identité visuelle à l’illustration : c’est ce mélange entre design,
-        communication et art digital qui me plaît.
-      </p>
-      <p>
-        J’ai grandi avec les consoles portables, les blogs colorés et les objets tech un peu kitsch.
-        Ce portfolio en est le reflet : une console, des jaquettes, des fenêtres… et des projets
-        pensés avant tout pour les personnes qui les utilisent.
-      </p>
-      <p class="hello__search">
-        Je suis actuellement <strong>à la recherche d’un stage</strong> en design d’interface,
-        communication visuelle ou direction artistique.
-      </p>
+      <div class="hello__text">
+        <p>
+          J’aime imaginer, créer et voir mes idées prendre vie. Je passe facilement de la maquette
+          Figma au code, et de l’identité visuelle à l’illustration : c’est ce mélange entre design,
+          communication et art digital qui me plaît.
+        </p>
+        <p class="hello__search">
+          Je suis actuellement <strong>à la recherche d’un stage</strong> en design d’interface,
+          communication visuelle ou direction artistique.
+        </p>
+      </div>
     </div>
   </section>
 
   <!-- SKILLS -->
   <section class="skills" aria-labelledby="skills-titre">
-    <Image src={etoile} alt="" aria-hidden="true" class="skills__ascii" widths={[500, 860]} sizes="60vw" />
+    <AsciiEtoile class="skills__ascii" />
     <div class="container">
-      <Tag as="h2" id="skills-titre" ombre="rose" inclinaison={3}>Skills</Tag>
+      <Tag as="h2" id="skills-titre" ombre="rose" inclinaison={3} class="skills__title">Skills</Tag>
       <ul class="skills__grid">
         {skills.map((s) => (
           <li>
@@ -108,11 +103,22 @@ const inspirations = [
     <Tag as="h2" id="insp-titre">Inspirations</Tag>
     <ul class="insp__grid">
       {inspirations.map((i, k) => (
-        <li style={`--tilt:${[-2, 1, -1, 2, -1.5, 1.5][k]}deg`}>
-          <figure>
-            <Image src={i.img} alt={i.alt} widths={[300, 400, 804]} sizes="(max-width: 640px) 80vw, 380px" />
-            <figcaption>{i.legende}</figcaption>
-          </figure>
+        <li>
+          <button class="flip" type="button" aria-pressed="false" data-flip style={`--mask:url("${i.img.src}")`}>
+            <span class="flip__inner">
+              <span class="flip__face flip__face--avant">
+                <Image src={i.img} alt="" widths={[300, 400, 804]} sizes="(max-width: 640px) 45vw, 380px" />
+              </span>
+              <span class="flip__face flip__face--dos" aria-hidden="true">
+                <span class="flip__ecran">
+                  <span class="flip__num">inspiration {String(k + 1).padStart(2, '0')}</span>
+                  <span class="flip__theme">{i.theme}</span>
+                  <span class="flip__desc">{i.description}</span>
+                </span>
+              </span>
+            </span>
+            <span class="sr-only">{i.theme} : {i.description}</span>
+          </button>
         </li>
       ))}
     </ul>
@@ -125,21 +131,27 @@ const inspirations = [
   .hello {
     padding-block: clamp(3rem, 7vw, 7rem) var(--section);
   }
+  /* jaquette à gauche (sur 2 lignes), bulle + texte à droite */
   .hello__grid {
     display: grid;
     grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    grid-template-areas:
+      'cartouche bulle'
+      'cartouche texte';
     align-items: center;
-    gap: clamp(1rem, 3vw, 3rem);
-    margin-top: clamp(2rem, 4vw, 3.5rem);
+    column-gap: clamp(1rem, 3vw, 3rem);
+    margin-top: clamp(2.5rem, 5vw, 4rem);
   }
   .hello__cartouche {
+    grid-area: cartouche;
     width: 100%;
-    max-width: 460px;
+    max-width: 440px;
     height: auto;
     rotate: -4deg;
     filter: drop-shadow(0 18px 24px rgb(0 0 0 / 0.45));
   }
   .hello__bubble {
+    grid-area: bulle;
     position: relative;
     aspect-ratio: 822 / 640;
     display: grid;
@@ -162,13 +174,19 @@ const inspirations = [
     text-align: center;
   }
   .hello__text {
+    grid-area: texte;
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
-    max-width: 46rem;
-    margin: clamp(2.5rem, 5vw, 4rem) 0 0 auto;
-    font-size: clamp(1.1rem, 0.95rem + 0.6vw, 1.5rem);
-    line-height: 1.5;
+    gap: 1.6rem;
+    max-width: 40rem;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    font-size: clamp(1.05rem, 0.98rem + 0.35vw, 1.3rem);
+    line-height: 1.7;
+  }
+  .hello__search {
+    padding: 1rem 1.2rem;
+    border-left: 6px solid var(--pink);
+    background: rgb(255 255 255 / 0.05);
   }
   .hello__search strong {
     color: var(--pink);
@@ -178,13 +196,19 @@ const inspirations = [
     position: relative;
     padding-bottom: var(--section);
   }
-  .skills__ascii {
+  :global(.skills__ascii) {
     position: absolute;
     left: -6%;
-    top: 0;
+    top: clamp(-24rem, -26vw, -8rem); /* remontée pour combler le vide sous le texte de présentation */
     width: min(66vw, 860px);
-    opacity: 0.12;
+    color: #8fb0e8;
+    opacity: 0.16;
     pointer-events: none;
+  }
+  /* titre centré au-dessus de la grille de dossiers (elle-même centrée) */
+  :global(.tag.skills__title) {
+    display: block;
+    margin-inline: auto;
   }
   .skills__grid {
     position: relative;
@@ -228,31 +252,107 @@ const inspirations = [
     padding: 0;
     list-style: none;
   }
-  .insp__grid figure {
-    margin: 0;
-    rotate: var(--tilt);
-    transition: rotate 0.3s var(--ease-pop), translate 0.3s var(--ease-pop);
-  }
-  .insp__grid li:hover figure {
-    rotate: 0deg;
-    translate: 0 -8px;
-  }
-  .insp__grid img {
+
+  /* ---------- Jaquette qui se retourne ---------- */
+  .flip {
+    display: block;
     width: 100%;
-    height: auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    aspect-ratio: 804 / 826;
   }
-  .insp__grid figcaption {
-    margin-top: 0.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.95rem;
+  .flip__inner {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  /* Chaque face tourne séparément (plus fiable que la 3D imbriquée dans un bouton) :
+     le recto passe de 0° à 180°, le verso de -180° à 0°. */
+  .flip__face {
+    transition: transform 0.6s var(--ease-pop);
+  }
+  .flip__face--avant {
+    transform: perspective(1200px) rotateY(0deg);
+  }
+  .flip:hover .flip__face--avant,
+  .flip:focus-visible .flip__face--avant,
+  .flip[aria-pressed='true'] .flip__face--avant {
+    transform: perspective(1200px) rotateY(180deg);
+  }
+  .flip:hover .flip__face--dos,
+  .flip:focus-visible .flip__face--dos,
+  .flip[aria-pressed='true'] .flip__face--dos {
+    transform: perspective(1200px) rotateY(0deg);
+  }
+  .flip:focus-visible {
+    outline: none;
+  }
+  .flip:focus-visible .flip__face--dos {
+    filter: drop-shadow(0 0 0 var(--blue)) drop-shadow(0 0 4px var(--blue));
+  }
+  .flip__face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+  }
+  .flip__face :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  /* dos : même silhouette de cartouche que l'image (masque), écran rose avec le thème */
+  .flip__face--dos {
+    transform: perspective(1200px) rotateY(-180deg);
+    background: #303030;
+    -webkit-mask: var(--mask) center / 100% 100% no-repeat;
+    mask: var(--mask) center / 100% 100% no-repeat;
+  }
+  .flip__ecran {
+    position: absolute;
+    inset: 7.7% 9.5% 10.4% 8.6%; /* même emplacement que la photo sur le recto */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1.2rem;
+    border-radius: 4px;
+    background: var(--navy);
+    color: var(--white);
+  }
+  .flip__num {
     color: var(--pink);
-    text-align: center;
+    font-family: var(--font-mono);
+    font-size: clamp(0.75rem, 0.7rem + 0.2vw, 0.9rem);
+  }
+  .flip__theme {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: clamp(1.4rem, 1rem + 1.4vw, 2.4rem);
+    line-height: 1;
+  }
+  .flip__desc {
+    color: #c9d6ee;
+    font-size: clamp(0.85rem, 0.8rem + 0.25vw, 1.05rem);
+    line-height: 1.45;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flip__face {
+      transition: none;
+    }
   }
 
   @media (max-width: 760px) {
     .hello__grid {
       grid-template-columns: 1fr;
+      grid-template-areas: 'cartouche' 'bulle' 'texte';
     }
+
     .hello__cartouche {
       max-width: 320px;
       margin-inline: auto;
@@ -265,3 +365,12 @@ const inspirations = [
     }
   }
 </style>
+
+<script>
+  // Sur téléphone il n'y a pas de survol : un toucher (ou Entrée / Espace) retourne la jaquette.
+  document.querySelectorAll<HTMLButtonElement>('[data-flip]').forEach((b) => {
+    b.addEventListener('click', () => {
+      b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+    });
+  });
+</script>

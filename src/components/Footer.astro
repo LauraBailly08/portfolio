@@ -8,7 +8,7 @@
 import { Image } from 'astro:assets';
 import Logo from './Logo.astro';
 import { NAV, SITE } from '@/data/site';
-import etoile from '@/assets/decor/etoile-ascii.png';
+import AsciiEtoile from './AsciiEtoile.astro';
 import linkedin from '@/assets/icons/footer-linkedin.png';
 import behance from '@/assets/icons/footer-behance.png';
 import mail from '@/assets/icons/footer-mail.png';
@@ -22,7 +22,7 @@ const annee = new Date().getFullYear();
 ---
 
 <footer class="footer">
-  <Image src={etoile} alt="" class="footer__ascii" aria-hidden="true" widths={[480, 860]} sizes="(max-width: 700px) 70vw, 560px" />
+  <AsciiEtoile class="footer__ascii" />
 
   <div class="footer__inner">
     <div class="footer__brand">
@@ -74,14 +74,13 @@ const annee = new Date().getFullYear();
     color: #000;
     font-family: var(--font-title);
   }
-  .footer__ascii {
+  :global(.footer__ascii) {
     position: absolute;
     right: 4%;
     top: -8%;
     width: min(62vw, 560px);
-    opacity: 0.22;
-    /* les caractères ASCII sont gris clair : on les fonce pour qu'ils se voient sur le bleu pâle */
-    filter: brightness(0.55) sepia(1) hue-rotate(180deg) saturate(2);
+    color: var(--blue);
+    opacity: 0.28;
     pointer-events: none;
   }
   .footer__inner {

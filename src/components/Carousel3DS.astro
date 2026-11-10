@@ -19,11 +19,6 @@ const total = String(projets.length).padStart(2, '0');
 ---
 
 <div class="c3ds" data-c3ds aria-labelledby={titreId} role="region" aria-roledescription="carrousel">
-  <div class="c3ds__counter">
-    <button class="c3ds__arrow" type="button" data-prev aria-label="Projet précédent">←</button>
-    <span><span data-current>01</span> / {total}</span>
-    <button class="c3ds__arrow" type="button" data-next aria-label="Projet suivant">→</button>
-  </div>
 
   <div class="c3ds__stage" data-stage>
     <!-- Bulles : une par projet, seule l'active est visible -->
@@ -54,13 +49,18 @@ const total = String(projets.length).padStart(2, '0');
       ) : null
     )}
 
+    <!-- Carrousel infini : la liste est rendue 3 fois. La copie du milieu est la vraie (liens, clavier,
+         lecteurs d'écran) ; les deux autres sont des clones visuels, ignorés au clavier et par les lecteurs d'écran.
+         Quand on arrive au bout, le script ramène discrètement la vue sur la copie du milieu. -->
     <ul class="c3ds__track" data-track>
-      {projets.map((p, i) => (
-        <li class="c3ds__item">
+      {[0, 1, 2].map((copie) => projets.map((p, i) => (
+        <li class="c3ds__item" aria-hidden={copie !== 1 ? 'true' : undefined}>
           <a
             href={`/projets/${p.id}/`}
             class:list={['card', { 'is-active': i === 0 }]}
-            data-card={i}
+            data-idx={i}
+            data-card={copie === 1 ? i : undefined}
+            tabindex={copie !== 1 ? -1 : undefined}
             aria-label={`${p.data.titre} — ${p.data.type}, ${p.data.annee}. Voir l’étude de cas`}
           >
             <span class="card__corners" aria-hidden="true">
@@ -91,25 +91,28 @@ const total = String(projets.length).padStart(2, '0');
             </span>
           </a>
         </li>
-      ))}
+      )))}
     </ul>
   </div>
+  <div class="c3ds__counter">
+    <button class="c3ds__arrow" type="button" data-prev aria-label="Projet précédent">←</button>
+    <span><span data-current>01</span> / {total}</span>
+    <button class="c3ds__arrow" type="button" data-next aria-label="Projet suivant">→</button>
+  </div>
 
-  <p class="c3ds__help" aria-hidden="true">
-    <span class="c3ds__help--desktop">← → faire défiler · Ⓐ clic : ouvrir le projet</span>
-    <span class="c3ds__help--mobile">← glisse pour changer de projet →</span>
-  </p>
 </div>
 
 <style>
   .c3ds {
     position: relative;
   }
+  /* compteur sous les jaquettes, centré */
   .c3ds__counter {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 1rem;
+    margin-top: 0.5rem;
     font-family: var(--font-mono);
     font-weight: 700;
     font-size: 1.4rem;
@@ -135,7 +138,7 @@ const total = String(projets.length).padStart(2, '0');
 
   .c3ds__stage {
     position: relative;
-    padding-top: 230px; /* place réservée à la bulle */
+    padding-top: 200px; /* place réservée à la bulle */
   }
 
   /* ---------- Bulle 3DS ---------- */
@@ -215,13 +218,27 @@ const total = String(projets.length).padStart(2, '0');
   }
 
   /* ---------- Jaquettes ---------- */
+  /* Rangée qui défile horizontalement : 3 jaquettes visibles, les suivantes à droite */
   .c3ds__track {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(1.5rem, 4vw, 4rem);
-    margin: 0;
-    padding: 0;
+    --gap: clamp(1.5rem, 4vw, 4rem);
+    display: flex;
+    gap: var(--gap);
+    /* marges larges : la jaquette active monte de 16px et le sélecteur dépasse de ~20px en pulsant.
+       Sans cette place, la zone qui défile coupait les coins bleus. */
+    margin: -40px -36px 0;
+    padding: 72px 36px 64px;
     list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 36px;
+    scrollbar-width: none;
+  }
+  .c3ds__track::-webkit-scrollbar {
+    display: none;
+  }
+  .c3ds__item {
+    flex: 0 0 calc((100% - 2 * var(--gap)) / 3);
+    scroll-snap-align: start;
   }
   .card {
     position: relative;
@@ -393,28 +410,18 @@ const total = String(projets.length).padStart(2, '0');
     }
   }
 
-  .c3ds__help--mobile {
-    display: none;
-  }
-  .c3ds__help {
-    margin-top: 3.5rem;
-    text-align: center;
-    color: #8fb0e8;
-    font-family: var(--font-mono);
-    font-size: 0.95rem;
-  }
 
   /* ---------- Mobile : défilement horizontal, une jaquette à la fois ---------- */
   @media (max-width: 760px) {
     .c3ds__stage {
-      padding-top: 200px;
+      padding-top: 190px;
     }
     .c3ds__track {
       display: flex;
       gap: 1.25rem;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
-      padding: 30px 16vw 40px;
+      padding: 56px 16vw 48px;
       margin-inline: calc(-1 * var(--gutter));
       scrollbar-width: none;
     }
@@ -428,15 +435,6 @@ const total = String(projets.length).padStart(2, '0');
     .c3ds__mockup {
       display: none;
     }
-    .c3ds__help {
-      margin-top: 0.5rem;
-    }
-    .c3ds__help--desktop {
-      display: none;
-    }
-    .c3ds__help--mobile {
-      display: inline;
-    }
     .card.is-active {
       transform: none;
     }
@@ -444,50 +442,58 @@ const total = String(projets.length).padStart(2, '0');
 </style>
 
 <script>
-  // Le script s'exécute pour chaque carrousel présent sur la page.
+  // Carrousel infini, un par carrousel présent sur la page.
   function initCarousel(root: HTMLElement) {
-    const cards = [...root.querySelectorAll<HTMLAnchorElement>('[data-card]')];
+    const cards = [...root.querySelectorAll<HTMLAnchorElement>('[data-card]')]; // vraies jaquettes (copie du milieu)
+    const all = [...root.querySelectorAll<HTMLAnchorElement>('[data-idx]')]; // toutes les copies
     const bubbles = [...root.querySelectorAll<HTMLElement>('[data-bubble]')];
-    const mockups = root.querySelectorAll<HTMLElement>('[data-mockup]');
     const stage = root.querySelector<HTMLElement>('[data-stage]')!;
     const track = root.querySelector<HTMLElement>('[data-track]')!;
     const current = root.querySelector<HTMLElement>('[data-current]')!;
     const mobile = window.matchMedia('(max-width: 760px)');
+    const n = cards.length;
+    const idx = (el: HTMLElement) => Number(el.dataset.idx);
     let index = 0;
+    let actif: HTMLAnchorElement = cards[0]; // l'exemplaire visible de la jaquette active
 
-    /** Place la bulle (et le mockup) au-dessus de la jaquette active */
+    /** largeur d'une copie complète de la liste */
+    const largeurCopie = () => all[n].offsetLeft - all[0].offsetLeft;
+
+    /** Place la bulle au-dessus de l'exemplaire visible de la jaquette active */
     function position() {
-      const card = cards[index];
       const bubble = bubbles[index];
       const stageBox = stage.getBoundingClientRect();
-      const cardBox = card.getBoundingClientRect();
+      const cardBox = actif.getBoundingClientRect();
       const bw = bubble.offsetWidth;
       const bh = bubble.offsetHeight;
       const cardCenter = cardBox.left - stageBox.left + cardBox.width / 2;
-      const mockup = root.querySelector<HTMLElement>(`[data-mockup="${index}"]`);
-      const mockW = mockup && !mobile.matches ? mockup.offsetWidth : 0;
-
-      // La bulle est centrée un peu à gauche pour laisser la place au mockup, sans sortir du cadre
-      let x = cardCenter - bw / 2 - mockW / 3;
-      x = Math.max(0, Math.min(stageBox.width - bw - mockW * 0.8, x));
+      let x = cardCenter - bw / 2;
+      x = Math.max(0, Math.min(stageBox.width - bw, x));
       const y = Math.max(0, cardBox.top - stageBox.top - bh - 40);
       bubble.style.setProperty('--bubble-x', `${x}px`);
       bubble.style.setProperty('--bubble-y', `${y}px`);
       bubble.style.setProperty('--tip-x', `${Math.max(36, Math.min(bw - 36, cardCenter - x))}px`);
-
-      if (mockup) {
-        mockup.style.setProperty('--mock-x', `${x + bw - 14}px`);
-        mockup.style.setProperty('--mock-y', `${cardBox.top - stageBox.top + 30 - mockup.offsetHeight}px`);
-      }
     }
 
-    function select(i: number, { focus = false, scroll = false } = {}) {
-      const next = (i + cards.length) % cards.length;
+    /** Choisit l'exemplaire de la jaquette i le plus proche, dans le sens demandé (1 = droite, -1 = gauche) */
+    function cible(i: number, sens: number) {
+      const depart = actif.getBoundingClientRect().left;
+      let best: HTMLAnchorElement | null = null;
+      let bestD = Infinity;
+      all.filter((el) => idx(el) === i).forEach((el) => {
+        const d = (el.getBoundingClientRect().left - depart) * sens;
+        if (d > 0 && d < bestD) { bestD = d; best = el; }
+      });
+      return best ?? cards[i];
+    }
+
+    function select(i: number, { el, focus = false, scroll = false, sens = 0 }: { el?: HTMLAnchorElement; focus?: boolean; scroll?: boolean; sens?: number } = {}) {
+      const next = ((i % n) + n) % n;
       const changed = next !== index;
       index = next;
-      cards.forEach((c, k) => c.classList.toggle('is-active', k === index));
+      actif = el ?? (sens ? cible(next, sens) : actif && idx(actif) === next ? actif : cards[next]);
+      all.forEach((c) => c.classList.toggle('is-active', idx(c) === index));
       bubbles.forEach((b, k) => (b.hidden = k !== index));
-      mockups.forEach((m) => m.classList.toggle('is-visible', m.dataset.mockup === String(index)));
       current.textContent = String(index + 1).padStart(2, '0');
       if (changed) {
         // relance l'animation « pop » de la bulle
@@ -496,46 +502,84 @@ const total = String(projets.length).padStart(2, '0');
         void b.offsetWidth;
         b.style.animation = '';
       }
-      if (scroll && mobile.matches) cards[index].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      if (scroll) actif.scrollIntoView({ behavior: 'smooth', inline: mobile.matches ? 'center' : 'nearest', block: 'nearest' });
       if (focus) cards[index].focus({ preventScroll: true });
       requestAnimationFrame(position);
     }
 
-    cards.forEach((card, i) => {
-      card.addEventListener('mouseenter', () => !mobile.matches && select(i));
-      card.addEventListener('focus', () => select(i, { scroll: true }));
+    /** Si on s'approche d'un bord, on saute (sans animation) d'une copie entière : on ne voit rien, et ça ne finit jamais */
+    function recentrer() {
+      const w = largeurCopie();
+      let saut = 0;
+      if (track.scrollLeft < w * 0.5) saut = w;
+      else if (track.scrollLeft > w * 1.5) saut = -w;
+      if (!saut) return;
+      const snap = track.style.scrollSnapType;
+      track.style.scrollSnapType = 'none';
+      track.scrollLeft += saut;
+      track.style.scrollSnapType = snap;
+      // l'exemplaire actif devient celui de la copie voisine, au même endroit à l'écran
+      const pos = all.indexOf(actif) + (saut > 0 ? n : -n);
+      if (all[pos]) actif = all[pos];
+      position();
+    }
+
+    all.forEach((card) => {
+      card.addEventListener('mouseenter', () => !mobile.matches && select(idx(card), { el: card }));
     });
-    root.querySelector('[data-prev]')!.addEventListener('click', () => select(index - 1, { scroll: true }));
-    root.querySelector('[data-next]')!.addEventListener('click', () => select(index + 1, { scroll: true }));
+    cards.forEach((card) => {
+      card.addEventListener('focus', () => idx(card) !== index && select(idx(card), { el: card, scroll: true }));
+    });
+    root.querySelector('[data-prev]')!.addEventListener('click', () => select(index - 1, { scroll: true, sens: -1 }));
+    root.querySelector('[data-next]')!.addEventListener('click', () => select(index + 1, { scroll: true, sens: 1 }));
 
     // Flèches du clavier quand le focus est dans le carrousel
     root.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') { e.preventDefault(); select(index + 1, { focus: true }); }
-      if (e.key === 'ArrowLeft') { e.preventDefault(); select(index - 1, { focus: true }); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); select(index + 1, { scroll: true, sens: 1, focus: true }); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); select(index - 1, { scroll: true, sens: -1, focus: true }); }
     });
 
-    // Mobile : la jaquette la plus centrée devient active pendant le défilement
     let raf = 0;
+    let fin = 0;
     track.addEventListener('scroll', () => {
-      if (!mobile.matches) return;
+      // fin du défilement : on recentre sur la copie du milieu
+      clearTimeout(fin);
+      fin = window.setTimeout(recentrer, 140);
+      // Ordinateur : la bulle suit la jaquette active
+      if (!mobile.matches) { requestAnimationFrame(position); return; }
+      // Mobile : la jaquette la plus centrée devient active
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
         const mid = track.getBoundingClientRect().left + track.clientWidth / 2;
-        let best = 0, bestDist = Infinity;
-        cards.forEach((c, k) => {
+        let best = actif, bestDist = Infinity;
+        all.forEach((c) => {
           const r = c.getBoundingClientRect();
           const d = Math.abs(r.left + r.width / 2 - mid);
-          if (d < bestDist) { bestDist = d; best = k; }
+          if (d < bestDist) { bestDist = d; best = c; }
         });
-        if (best !== index) select(best);
+        if (best !== actif) select(idx(best), { el: best });
       });
     }, { passive: true });
 
-    window.addEventListener('resize', () => requestAnimationFrame(position));
+    /** Au départ : la vue est placée sur la copie du milieu */
+    function depart() {
+      // calcul à la main (pas de scrollIntoView, qui ferait aussi défiler toute la page)
+      const t = track.getBoundingClientRect();
+      const c = actif.getBoundingClientRect();
+      const pad = parseFloat(getComputedStyle(track).paddingLeft);
+      const delta = mobile.matches ? c.left + c.width / 2 - (t.left + t.width / 2) : c.left - t.left - pad;
+      track.style.scrollSnapType = 'none';
+      track.scrollLeft += delta;
+      track.style.scrollSnapType = '';
+      position();
+    }
+
+    window.addEventListener('resize', () => requestAnimationFrame(depart));
     // Re-calcul quand les polices et les images sont chargées (les tailles changent)
-    document.fonts?.ready.then(position);
-    window.addEventListener('load', position);
+    document.fonts?.ready.then(depart);
+    window.addEventListener('load', depart);
     select(0);
+    depart();
   }
 
   document.querySelectorAll<HTMLElement>('[data-c3ds]').forEach(initCarousel);

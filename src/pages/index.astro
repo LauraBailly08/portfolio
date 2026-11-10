@@ -23,10 +23,9 @@ import fen3 from '@/assets/hero/fenetre-3.png';
 import fen4 from '@/assets/hero/fenetre-4.png';
 import fen5 from '@/assets/hero/fenetre-5.png';
 import fen6 from '@/assets/hero/fenetre-6.png';
-import exclamation from '@/assets/decor/exclamation-pixel.png';
 import cartouche from '@/assets/decor/cartouche-accueil.png';
 import vagues from '@/assets/decor/vagues.png';
-import etoile from '@/assets/decor/etoile-ascii.png';
+import AsciiEtoile from '@/components/AsciiEtoile.astro';
 
 // Fenêtres du hero qui « poppent » comme des pop-ups de virus à l'arrivée sur le site.
 // Découpées dans l'ancienne image hero-visuel.png : x / y / w en % de l'image de fond, d = délai d'apparition (s).
@@ -107,7 +106,6 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
 
   <!-- 2. PROJETS -->
   <section id="projets" class="projets container" aria-labelledby="projets-titre">
-    <Image src={exclamation} alt="" aria-hidden="true" class="projets__exclam" width={170} />
     <h2 id="projets-titre" class="sr-only">Mes projets</h2>
     <Carousel3DS projets={projets} titreId="projets-titre" />
     <p class="projets__all">
@@ -116,11 +114,11 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
   </section>
 
   <!-- 3. À PROPOS -->
-  <section class="about" aria-labelledby="about-titre">
+  <section class="about" aria-labelledby="about-titre" data-about>
     <Image src={vagues} alt="" aria-hidden="true" class="about__waves" widths={[800, 1436]} sizes="100vw" />
-    <Image src={etoile} alt="" aria-hidden="true" class="about__ascii" widths={[400, 774]} sizes="45vw" />
+    <AsciiEtoile class="about__ascii" vivante />
     <div class="about__inner container">
-      <Tag as="h2" id="about-titre" inclinaison={-6}>À propos de moi</Tag>
+      <Tag as="h2" id="about-titre" inclinaison={-6} class="about__title">À propos de moi</Tag>
       <div class="about__grid">
         <Image
           src={cartouche}
@@ -130,15 +128,14 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
           sizes="(max-width: 760px) 80vw, 420px"
         />
         <div class="about__text">
+          <p class="about__kicker">20 ans · BUT MMI, 2<sup>e</sup> année</p>
           <p class="about__lead">Designer, communication et passionnée par l’univers de l’art digital</p>
-          <p>
-            Je suis actuellement en deuxième année de BUT MMI, où je continue de développer
-            mes compétences et ma curiosité.
+          <p class="about__body">
+            Je continue de développer mes compétences et ma curiosité, entre design, code et image.
           </p>
           <a class="btn about__more" href="/a-propos/">En savoir plus <span aria-hidden="true">→</span></a>
         </div>
       </div>
-      <p class="about__keywords" aria-label="Mes domaines : design, code, visuel, UI">design · code · visuel · ui</p>
     </div>
   </section>
 
@@ -154,12 +151,13 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
     /* la colonne de texte fait au moins la largeur des étiquettes : l'image ne peut pas passer dessous */
     grid-template-columns: minmax(min-content, 0.85fr) minmax(0, 1.5fr);
     column-gap: clamp(1rem, 3vw, 3rem);
-    align-items: center;
+    align-items: start; /* texte en haut, plus centré verticalement sur la grande image */
     padding: clamp(2.5rem, 5vw, 4.5rem) 0 clamp(2rem, 4vw, 3rem) var(--edge);
     min-height: min(70vw, 900px);
   }
   .hero__text {
     position: relative;
+    padding-top: clamp(0.5rem, 6vw, 6.5rem);
     z-index: 2;
     display: flex;
     flex-direction: column;
@@ -246,17 +244,20 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
   }
 
   /* ---------- Projets ---------- */
+  /* Ordinateur : le carrousel remonte sous le bas de l'image du hero (où il n'y a que les courbes),
+     pour réduire le vide entre « Voir mes projets » et la bulle */
+  @media (min-width: 761px) {
+    .hero {
+      padding-bottom: 0;
+    }
+    .projets {
+      margin-top: -80px;
+      padding-top: 0 !important;
+    }
+  }
   .projets {
     position: relative;
     padding-block: clamp(2rem, 5vw, 4rem) var(--section);
-  }
-  .projets__exclam {
-    position: absolute;
-    left: 0;
-    top: clamp(-9rem, -9vw, -4rem); /* remonté : ne touche plus la bulle du carrousel */
-    width: clamp(70px, 10vw, 170px);
-    height: auto;
-    rotate: -10deg;
   }
   .projets__all {
     margin-top: 1.5rem;
@@ -275,7 +276,9 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
     overflow: hidden;
     background: var(--pink-light);
     color: #000;
-    padding-block: var(--section);
+    padding-block: clamp(3.5rem, 6vw, 6rem); /* plus court : plus de ligne de mots-clés */
+    /* --p = progression du défilement dans la section (0 → 1), mise à jour par le script en bas de page */
+    --p: 0.5;
   }
   .about__waves {
     position: absolute;
@@ -284,16 +287,25 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
     height: 100%;
     object-fit: cover;
     pointer-events: none;
+    /* parallaxe : les vagues glissent plus lentement que la page */
+    transform: translateY(calc((var(--p) - 0.5) * 60px));
   }
-  .about__ascii {
+  :global(.about__ascii) {
     position: absolute;
-    right: -4%;
+    right: -20%;
     top: -3%;
-    width: min(54vw, 774px);
-    opacity: 0.6;
-    filter: brightness(0.9) sepia(1) hue-rotate(300deg) saturate(1.6);
-    mix-blend-mode: multiply;
-    pointer-events: none;
+    width: min(58vw, 820px);
+    color: var(--pink-deep);
+    opacity: 0.4;
+    /* parallaxe : l'étoile traverse la section, tourne et grossit pendant le défilement */
+    transform:
+      translateY(calc((var(--p) - 0.5) * -360px))
+      rotate(calc((var(--p) - 0.5) * 70deg))
+      scale(calc(0.85 + var(--p) * 0.3));
+  }
+  /* titre un peu sorti vers la gauche, au-delà de la colonne de contenu */
+  :global(.tag.about__title) {
+    margin-left: clamp(-3rem, -3vw, -0.5rem);
   }
   .about__inner {
     position: relative;
@@ -310,31 +322,85 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
     max-width: 480px;
     height: auto;
     filter: drop-shadow(0 12px 18px rgb(0 0 0 / 0.25));
+    /* légère parallaxe une fois en place */
+    transform: translateY(calc((var(--p) - 0.5) * -50px)) rotate(calc((var(--p) - 0.5) * -6deg));
   }
+
+  /* ---------- Apparition au défilement ----------
+     État de départ (avant que la section soit visible) : seulement si JavaScript tourne
+     et si l'utilisateur n'a pas demandé moins d'animations. Sans JS, tout reste visible. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .about__cartouche,
+    :global(.js) .about__text > *,
+    :global(.js .about__title) {
+      transition: translate 0.9s var(--ease-pop), rotate 0.9s var(--ease-pop), opacity 0.5s ease, scale 0.6s var(--ease-pop);
+    }
+    /* la cartouche arrive d'en bas en tournant, comme un jeu qu'on insère dans la console */
+    :global(.js) .about:not(.is-in) .about__cartouche {
+      opacity: 0;
+      translate: -60px 160px;
+      rotate: -16deg;
+    }
+    /* le titre « pop » comme une étiquette qu'on colle */
+    :global(.js .about:not(.is-in) .about__title) {
+      opacity: 0;
+      scale: 0.6;
+    }
+    /* les textes montent un par un */
+    :global(.js) .about:not(.is-in) .about__text > * {
+      opacity: 0;
+      translate: 0 40px;
+    }
+    :global(.js .about__title) { transition-delay: 0.1s; }
+    :global(.js) .about__cartouche { transition-delay: 0.2s; }
+    :global(.js) .about__text > :nth-child(1) { transition-delay: 0.35s; }
+    :global(.js) .about__text > :nth-child(2) { transition-delay: 0.5s; }
+    :global(.js) .about__text > :nth-child(3) { transition-delay: 0.65s; }
+    :global(.js) .about__text > :nth-child(4) { transition-delay: 0.8s; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .about__waves,
+    :global(.about__ascii),
+    .about__cartouche {
+      transform: none;
+    }
+  }
+  /* Bloc de texte : 4 niveaux bien distincts
+     1. kicker (mono, petit)  2. accroche (gros, gras)  3. texte courant  4. bouton */
   .about__text {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
-    max-width: 34rem;
-    font-size: clamp(1.1rem, 0.95rem + 0.6vw, 1.6rem);
-    line-height: 1.4;
+    align-items: flex-start;
+    max-width: 36rem;
   }
+  .about__kicker {
+    padding: 0.3em 0.75em;
+    background: var(--white);
+    color: #72243e;
+    font-family: var(--font-mono);
+    font-size: clamp(0.85rem, 0.8rem + 0.2vw, 1rem);
+    letter-spacing: 0.02em;
+  }
+  /* écarts volontairement différents : petit entre l'étiquette et l'accroche (ils vont ensemble),
+     moyen avant le paragraphe, grand avant le bouton */
   .about__lead {
+    margin-top: 1.4rem;
+    max-width: 20ch;
     font-family: var(--font-title);
     font-weight: 700;
-    font-size: clamp(1.4rem, 1rem + 1.4vw, 2.4rem);
-    line-height: 1.15;
+    font-size: clamp(1.6rem, 1.1rem + 1.5vw, 2.5rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .about__body {
+    margin-top: 1.8rem;
+    max-width: 38ch;
+    color: #3a2a30;
+    font-size: clamp(1.05rem, 0.98rem + 0.3vw, 1.25rem);
+    line-height: 1.7;
   }
   .about__more {
-    align-self: flex-start;
-    margin-top: 0.5rem;
-  }
-  .about__keywords {
-    margin-top: clamp(2rem, 4vw, 3.5rem);
-    font-family: var(--font-mono);
-    font-size: clamp(1.1rem, 0.8rem + 2vw, 3.125rem);
-    text-align: center;
-    word-spacing: 0.4em;
+    margin-top: 2.8rem;
   }
 
   @media (max-width: 760px) {
@@ -354,10 +420,38 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
       max-width: 340px;
       margin-inline: auto;
     }
-    .about__keywords {
-      font-size: 1rem;
-      word-spacing: 0;
-      white-space: nowrap;
-    }
   }
 </style>
+
+<script>
+  // Section « À propos » : déclenche l'apparition quand elle arrive à l'écran,
+  // puis met à jour --p (0 → 1) pendant qu'elle traverse l'écran, pour la parallaxe.
+  document.documentElement.classList.add('js');
+  const about = document.querySelector<HTMLElement>('[data-about]');
+  if (about) {
+    new IntersectionObserver(
+      (entries, obs) => {
+        if (entries[0].isIntersecting) {
+          about.classList.add('is-in');
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    ).observe(about);
+    // sécurité : si l'apparition ne s'est pas déclenchée au bout de 3 s alors que la section est à l'écran, on affiche tout
+    setTimeout(() => {
+      const r = about.getBoundingClientRect();
+      if (r.top < innerHeight && r.bottom > 0) about.classList.add('is-in');
+    }, 3000);
+
+    let raf = 0;
+    const maj = () => {
+      const r = about.getBoundingClientRect();
+      const p = (innerHeight - r.top) / (innerHeight + r.height); // 0 : arrive en bas, 1 : sort en haut
+      about.style.setProperty('--p', String(Math.min(1, Math.max(0, p))));
+      raf = 0;
+    };
+    addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(maj); }, { passive: true });
+    maj();
+  }
+</script>

@@ -8,21 +8,19 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Tag from '@/components/Tag.astro';
 import Carousel3DS from '@/components/Carousel3DS.astro';
-import exclamation from '@/assets/decor/exclamation-pixel.png';
-import etoile from '@/assets/decor/etoile-ascii.png';
+import AsciiEtoile from '@/components/AsciiEtoile.astro';
 
 const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b.data.ordre);
 ---
 
 <BaseLayout
   titre="Projets"
-  description="Trois projets présentés en profondeur : Noyaux d’ombre (site web), Wenddy (web app LSF) et Olyvia (communication)."
+  description="Quatre projets présentés en profondeur : Noyaux d’ombre (site web), Wenddy (web app LSF), Ça pèse combien ? (datavisualisation) et Pony diaries (web app)."
 >
   <div class="page container">
-    <Image src={etoile} alt="" aria-hidden="true" class="page__ascii" widths={[500, 860]} sizes="60vw" />
+    <AsciiEtoile class="page__ascii" />
     <header class="page__head">
       <Tag as="h1" id="projets-titre">Projets</Tag>
-      <Image src={exclamation} alt="" aria-hidden="true" class="page__exclam" width={170} />
     </header>
 
     <Carousel3DS projets={projets} titreId="projets-titre" />
@@ -62,12 +60,13 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
     position: relative;
     padding-block: clamp(3rem, 6vw, 6rem) var(--section);
   }
-  .page__ascii {
+  :global(.page__ascii) {
     position: absolute;
     left: 10%;
     top: 0;
     width: min(70vw, 860px);
-    opacity: 0.12;
+    color: #8fb0e8;
+    opacity: 0.1;
     pointer-events: none;
   }
   .page__head {
@@ -76,12 +75,6 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: clamp(1rem, 3vw, 2rem);
-  }
-  .page__exclam {
-    width: clamp(60px, 9vw, 130px);
-    height: auto;
-    rotate: 12deg;
-    margin-right: 12%;
   }
 
   .list {

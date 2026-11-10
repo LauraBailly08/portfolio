@@ -9,7 +9,7 @@ import { Image } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Tag from '@/components/Tag.astro';
 import { RESEAUX, SITE } from '@/data/site';
-import etoile from '@/assets/decor/etoile-ascii.png';
+import AsciiEtoile from '@/components/AsciiEtoile.astro';
 import linkedin from '@/assets/icons/linkedin.png';
 import behance from '@/assets/icons/behance.png';
 import mail from '@/assets/icons/mail.png';
@@ -24,7 +24,7 @@ const icones = { linkedin, behance, mail, instagram, pinterest };
   description="Contactez Laura Bailly pour un stage, une alternance ou un projet : formulaire, e-mail, LinkedIn et Behance."
 >
   <section class="contact container" aria-labelledby="contact-titre">
-    <Image src={etoile} alt="" aria-hidden="true" class="contact__ascii" widths={[500, 860]} sizes="60vw" />
+    <AsciiEtoile class="contact__ascii" />
 
     <div class="contact__head">
       <Tag as="h1" id="contact-titre" inclinaison={6}>Contact</Tag>
@@ -115,12 +115,14 @@ const icones = { linkedin, behance, mail, instagram, pinterest };
     position: relative;
     padding-block: clamp(3rem, 7vw, 6rem) var(--section);
   }
-  .contact__ascii {
+  :global(.contact__ascii) {
     position: absolute;
-    right: -5%;
-    top: 30%;
-    width: min(66vw, 860px);
-    opacity: 0.18;
+    left: -6%;
+    bottom: 2%;
+    width: min(46vw, 620px);
+    color: #8fb0e8;
+    opacity: 0.35;
+    rotate: -10deg;
     pointer-events: none;
   }
   .contact__head {

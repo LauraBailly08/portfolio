@@ -197,10 +197,41 @@ p {
   top: 1rem;
 }
 
+/* ---------- Transitions douces entre les pages ----------
+   View Transitions natives du navigateur : en changeant de page, l'ancienne s'efface pendant que
+   la nouvelle glisse légèrement vers le haut. Aucun JavaScript ; ignoré par les navigateurs qui ne le gèrent pas. */
+@view-transition {
+  navigation: auto;
+}
+::view-transition-old(root) {
+  animation: page-sortie 0.25s ease-in both;
+}
+::view-transition-new(root) {
+  animation: page-entree 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes page-sortie {
+  to { opacity: 0; }
+}
+@keyframes page-entree {
+  from { opacity: 0; transform: translateY(16px); }
+}
+/* l'en-tête reste en place pendant la transition (il est identique sur toutes les pages) */
+.header {
+  view-transition-name: entete;
+}
+::view-transition-group(entete) {
+  animation: none;
+}
+
 /* Respect du réglage « réduire les animations » du système */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
   *,
   *::before,
