@@ -38,6 +38,9 @@ const projets = defineCollection({
       jaquetteFit: z.enum(['contain', 'cover']).default('contain'), // contain = logo centré, cover = visuel plein cadre
       jaquetteFond: z.string().default('#ffffff'), // couleur de fond de la couverture
       mockupCarrousel: image().optional(), // mockup détouré qui sort de la jaquette
+      vitrine: z
+        .array(z.object({ src: image(), alt: z.string() }))
+        .default([]), // visuels à plat présentés dans la bande « vitrine » de la page projet
       mockups: z
         .array(z.object({ src: image(), alt: z.string() }))
         .default([]),

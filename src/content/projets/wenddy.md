@@ -15,11 +15,14 @@ competences: ["Design UI", "Parcours utilisateur", "Gamification", "Prototypage"
 jaquette: "../../assets/projets/wenddy/jaquette.png"
 jaquetteAlt: "Logo de Wenddy : deux yeux de chat stylisés"
 jaquetteFond: "#ffb27a"
-mockups:
-  - src: "../../assets/projets/wenddy/mockup-1.png"
-    alt: "Écran d’accueil de Wenddy : « Bonjour bambou_fr ! », séries, XP et carte de progression"
-  - src: "../../assets/projets/wenddy/mockup-2.png"
-    alt: "Écran « Mode arcade » avec le classement de la semaine et les mini-jeux"
+vitrine:
+  - src: "../../assets/projets/wenddy/maquette-1.png"
+    alt: "Écran d’accueil de Wenddy : progression, statistiques et résumé de la semaine"
+  - src: "../../assets/projets/wenddy/maquette-2.png"
+    alt: "Écran « Dictionnaire LSF » avec les catégories de signes"
+  - src: "../../assets/projets/wenddy/charte.png"
+    alt: "Charte graphique de Wenddy"
+mockups: []
 
 contexte:
   commande: "Au deuxième semestre, nous devions maquetter une application d’apprentissage de la LSF à partir d’une charte graphique et de logos imposés."

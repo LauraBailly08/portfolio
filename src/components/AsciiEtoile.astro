@@ -10,7 +10,7 @@ interface Props {
   class?: string;
   vivante?: boolean;
 }
-const { class: className, vivante = false } = Astro.props;
+const { class: className, vivante = true } = Astro.props;
 
 const LIGNES: string[] = [
   "               @",

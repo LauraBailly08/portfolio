@@ -18,11 +18,12 @@ jaquette: "../../assets/projets/noyaux-d-ombre/maquette-1.png"
 jaquetteAlt: "Écran « Who was Lise Meitner » du site Noyaux d’ombre"
 jaquetteFit: "contain"
 jaquetteFond: "#14102b"
-mockups:
-  - src: "../../assets/projets/noyaux-d-ombre/mockup-1.png"
-    alt: "Page d’accueil mobile : titre « L’effet Matilda », définition et citation de Lise Meitner"
-  - src: "../../assets/projets/noyaux-d-ombre/mockup-2.png"
-    alt: "Page article mobile présentant le documentaire « Picture a Scientist »"
+vitrine:
+  - src: "../../assets/projets/noyaux-d-ombre/tel-1.jpg"
+    alt: "Page d’accueil sur mobile : « L’effet Matilda », définition et citation de Lise Meitner"
+  - src: "../../assets/projets/noyaux-d-ombre/tel-2.jpg"
+    alt: "Article « Qui était Lise Meitner ? » sur mobile"
+mockups: []
 
 contexte:
   commande: "Au premier semestre, nous devions concevoir et réaliser un site web de sensibilisation autour de l’effet Matilda, en choisissant une femme scientifique concernée pour incarner le sujet."

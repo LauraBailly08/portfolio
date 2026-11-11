@@ -16,6 +16,11 @@ competences: ["Astro", "PocketBase", "Base de données", "PWA", "Tailwind CSS", 
 jaquette: "../../assets/projets/pony-diaries/jaquette.png"
 jaquetteAlt: "Icône de l’appli Pony diaries : un bouton de couture rose sur fond bordeaux"
 jaquetteFond: "#8b4562"
+vitrine:
+  - src: "../../assets/projets/pony-diaries/collection.jpg"
+    alt: "Page « Toute ma collection » : mon classeur virtuel avec les cartes possédées, la wishlist et les filtres"
+  - src: "../../assets/projets/pony-diaries/carte-1.png"
+    alt: "Carte à collectionner de Twilight Sparkle, au format de l’appli"
 mockups: []
 
 contexte:

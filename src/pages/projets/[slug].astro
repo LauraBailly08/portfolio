@@ -11,7 +11,6 @@ import { Image } from 'astro:assets';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Tag from '@/components/Tag.astro';
-import FenetreExe from '@/components/FenetreExe.astro';
 import cartouche from '@/assets/decor/cartouche-vide.png';
 import AsciiEtoile from '@/components/AsciiEtoile.astro';
 
@@ -33,10 +32,13 @@ interface Props {
 const { projet, suivant } = Astro.props;
 const p = projet.data;
 const { Content } = await render(projet);
+// numérotation des chapitres (saute « Défis » s'il n'y en a pas)
+const avecDefis = p.defis.length > 0;
+const num = { contexte: '01', role: '02', processus: '03', defis: '04', technique: avecDefis ? '05' : '04' };
+const ghost = (t: string) => `${t} · ${t} · ${t} · ${t} ·`;
 ---
 
 <BaseLayout titre={p.titre} description={`${p.titre} — ${p.type} (${p.annee}). ${p.resume}`}>
-
   <!-- INTRO -->
   <section class="intro container">
     <AsciiEtoile class="intro__ascii" />
@@ -44,13 +46,6 @@ const { Content } = await render(projet);
       <Tag as="h1">{p.titre}</Tag>
       <p class="intro__cadre">{p.cadre}</p>
       <p class="intro__lead">{p.accroche}</p>
-      {p.mockups.length > 0 && (
-        <div class="intro__mockups">
-          {p.mockups.map((m) => (
-            <Image src={m.src} alt={m.alt} widths={[220, 440]} sizes="(max-width: 760px) 42vw, 220px" />
-          ))}
-        </div>
-      )}
     </div>
 
     <!-- Fiche « cartouche » : les infos clés du projet -->
@@ -67,6 +62,24 @@ const { Content } = await render(projet);
     </aside>
   </section>
 
+
+  <!-- VITRINE : les visuels à plat, en grand, dans la couleur du projet -->
+  {p.vitrine.length > 0 && (
+    <section class="vitrine" style={`--w:${Math.floor(84 / p.vitrine.length)}vw`} aria-label="Aperçu du projet" data-vitrine>
+      <p class="vitrine__ghost" aria-hidden="true">{p.titre} · {p.titre} · {p.titre} ·</p>
+      <ul class="vitrine__liste">
+        {p.vitrine.map((v, i) => (
+          <li class="vitrine__item" style={`--i:${i};--ar:${(v.src.width / v.src.height).toFixed(3)}`} data-para>
+            <figure>
+              <Image src={v.src} alt={v.alt} widths={[420, 840]} sizes="(max-width: 760px) 80vw, 30vw" />
+              <figcaption><span>{String(i + 1).padStart(2, '0')}</span> {v.alt.split(':')[0].split(' avec ')[0]}</figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
   <!-- EN CHIFFRES -->
   {p.chiffres.length > 0 && (
     <section class="chiffres container" aria-label="Le projet en chiffres">
@@ -81,73 +94,113 @@ const { Content } = await render(projet);
     </section>
   )}
 
-  <!-- CONTEXTE -->
-  <section class="block container" aria-labelledby="contexte">
-    <Tag as="h2" id="contexte">Contexte</Tag>
-    <div class="block__body">
-      <p class="lead">{p.contexte.commande}</p>
-      {p.problematique && (
-        <p class="question"><span class="cible__label">La question</span> {p.problematique}</p>
-      )}
-      <p class="strong">L’objectif était de respecter les consignes suivantes :</p>
-      <ul class="consignes">
-        {p.contexte.consignes.map((c) => <li>{c}</li>)}
-      </ul>
-      {p.contexte.cible && (
-        <p class="cible"><span class="cible__label">La cible</span> {p.contexte.cible}</p>
-      )}
+
+  <!-- 01 CONTEXTE -->
+  <section class="chap container" aria-labelledby="contexte">
+    <header class="chap__rail">
+      <span class="chap__num" aria-hidden="true">{num.contexte}</span>
+      <Tag as="h2" id="contexte" taille="m">Contexte</Tag>
+    </header>
+    <div class="chap__body contexte">
+      <div class="contexte__col">
+        <p class="lead">{p.contexte.commande}</p>
+        {p.problematique && (
+          <p class="question"><span class="cible__label">La question</span> {p.problematique}</p>
+        )}
+      </div>
+      <div class="contexte__col">
+        <p class="strong">L’objectif était de respecter les consignes suivantes :</p>
+        <ul class="consignes">
+          {p.contexte.consignes.map((c) => <li>{c}</li>)}
+        </ul>
+        {p.contexte.cible && (
+          <p class="cible"><span class="cible__label">La cible</span> {p.contexte.cible}</p>
+        )}
+      </div>
     </div>
   </section>
 
-  <!-- MON RÔLE -->
-  <section class="block container" aria-labelledby="role">
-    <div class="block__head">
-      <Tag as="h2" id="role">Mon rôle</Tag>
+  <!-- 02 MON RÔLE (+ compétences | résultat) -->
+  <section class="chap container" aria-labelledby="role">
+    <header class="chap__rail">
+      <span class="chap__num" aria-hidden="true">{num.role}</span>
+      <Tag as="h2" id="role" taille="m">Mon rôle</Tag>
+    </header>
+    <div class="chap__body">
+      <div class="roles">
+        {p.roleDetail.map((r, i) => (
+          <article class="role" style={`--tilt:${i % 2 ? 1.2 : -1.2}deg`}>
+            <span class="role__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{r.titre}</h3>
+            <p>{r.texte}</p>
+          </article>
+        ))}
+      </div>
+      <div class="duo">
+        <div class="duo__col">
+          <h3 class="sous" id="competences">Compétences</h3>
+          <ul class="chips skills" aria-label="Compétences mobilisées">
+            {p.competences.map((c) => <li>{c}</li>)}
+          </ul>
+        </div>
+        <div class="duo__col">
+          <h3 class="sous" id="resultat">Résultat</h3>
+          <div class="duo__texte">
+            <p class="lead lead--s">{p.resultat}</p>
+            {p.lien && (
+              <a class="btn duo__lien" href={p.lien} target="_blank" rel="noopener noreferrer">Voir le site ↗<span class="sr-only"> ({p.lienLibelle ?? p.lien}, nouvel onglet)</span></a>
+            )}
+            {p.apprentissages && (
+              <p class="learn"><span class="cible__label">Ce que j’en retiens</span> {p.apprentissages}</p>
+            )}
+            {p.ameliorations && (
+              <p class="learn"><span class="cible__label">Si je devais le refaire</span> {p.ameliorations}</p>
+            )}
+            <Content />
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="roles">
-      {p.roleDetail.map((r, i) => (
-        <article class="role" style={`--tilt:${i % 2 ? 2 : -2}deg`}>
-          <h3>{r.titre}</h3>
-          <p>{r.texte}</p>
-        </article>
-      ))}
-    </div>
-    <ul class="chips skills" aria-label="Compétences mobilisées">
-      {p.competences.map((c) => <li>{c}</li>)}
-    </ul>
   </section>
 
-  <!-- PROCESSUS -->
+  <!-- 03 PROCESSUS -->
   <section class="process" aria-labelledby="processus">
     <AsciiEtoile class="process__ascii" />
+    <p class="ghost ghost--process" aria-hidden="true">Processus · Processus · Processus ·</p>
     <div class="container">
-      <div class="process__head">
+      <header class="process__head">
+        <span class="chap__num chap__num--sombre" aria-hidden="true">{num.processus}</span>
         <Tag as="h2" id="processus">Processus</Tag>
-      </div>
-      <ol class="windows">
+      </header>
+      <ol class="etapes">
         {p.processus.map((etape, i) => (
           <li style={`--i:${i}`}>
-            <FenetreExe fichier={etape.fichier} titre={etape.titre}>
+            <article class="etape">
+              <p class="etape__kicker"><span>Étape {String(i + 1).padStart(2, '0')}</span></p>
+              <h3 class="etape__titre">{etape.titre}</h3>
               {etape.images.length > 0 && (
-                <div class:list={['win-imgs', { 'win-imgs--duo': etape.images.length > 1 }]}>
+                <div class:list={['etape__imgs', { 'etape__imgs--duo': etape.images.length > 1 }]}>
                   {etape.images.map((img) => (
                     <Image src={img.src} alt={img.alt} widths={[360, 720]} sizes="(max-width: 760px) 90vw, 360px" />
                   ))}
                 </div>
               )}
-              <p class="win-text">{etape.texte}</p>
-            </FenetreExe>
+              <p class="etape__texte">{etape.texte}</p>
+            </article>
           </li>
         ))}
       </ol>
     </div>
   </section>
 
-  <!-- DÉFIS & SOLUTIONS -->
-  {p.defis.length > 0 && (
-    <section class="block container" aria-labelledby="defis">
-      <Tag as="h2" id="defis">Défis &amp; solutions</Tag>
-      <ol class="defis">
+  <!-- 04 DÉFIS & SOLUTIONS -->
+  {avecDefis && (
+    <section class="chap container" aria-labelledby="defis">
+      <header class="chap__rail">
+        <span class="chap__num" aria-hidden="true">{num.defis}</span>
+        <Tag as="h2" id="defis" taille="m">Défis &amp; solutions</Tag>
+      </header>
+      <ol class="chap__body defis">
         {p.defis.map((d, i) => (
           <li class="defi">
             <span class="defi__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
@@ -165,10 +218,13 @@ const { Content } = await render(projet);
     </section>
   )}
 
-  <!-- CHOIX TECHNIQUES -->
-  <section class="block container" aria-labelledby="technique">
-    <Tag as="h2" id="technique">Choix technique</Tag>
-    <ul class="tools">
+  <!-- 05 CHOIX TECHNIQUES -->
+  <section class="chap container" aria-labelledby="technique">
+    <header class="chap__rail">
+      <span class="chap__num" aria-hidden="true">{num.technique}</span>
+      <Tag as="h2" id="technique" taille="m">Choix technique</Tag>
+    </header>
+    <ul class="chap__body tools">
       {p.outils.map((o) => (
         <li class="tool">
           <Image src={o.icone} alt="" aria-hidden="true" widths={[200, 330]} sizes="200px" />
@@ -179,37 +235,18 @@ const { Content } = await render(projet);
     </ul>
   </section>
 
-  <!-- RÉSULTAT -->
-  <section class="block container" aria-labelledby="resultat">
-    <Tag as="h2" id="resultat">Résultat</Tag>
-    <div class="block__body">
-      <p class="lead">{p.resultat}</p>
-      {p.lien && (
-        <p class="link">
-          Lien du site : <a href={p.lien} target="_blank" rel="noopener noreferrer">{p.lienLibelle ?? p.lien}<span class="sr-only"> (nouvel onglet)</span></a>
-        </p>
-      )}
-      {p.apprentissages && (
-        <p class="learn"><span class="cible__label">Ce que j’en retiens</span> {p.apprentissages}</p>
-      )}
-      {p.ameliorations && (
-        <p class="learn"><span class="cible__label">Si je devais le refaire</span> {p.ameliorations}</p>
-      )}
-      <Content />
-    </div>
-  </section>
-
-  <!-- PROJET SUIVANT -->
-  <nav class="next container" aria-label="Projet suivant">
-    <a href={`/projets/${suivant.id}/`} class="next__link">
-      <span class="next__label">Projet suivant</span>
-      <span class="next__title">{suivant.data.numero} — {suivant.data.titre} →</span>
-    </a>
-  </nav>
+  <!-- PROJET SUIVANT : un aplat dans la couleur du prochain projet -->
+  <a href={`/projets/${suivant.id}/`} class="suite">
+    <p class="ghost ghost--suite" aria-hidden="true">{ghost(suivant.data.titre)}</p>
+    <span class="container suite__in">
+      <span class="suite__label">Projet suivant</span>
+      <span class="suite__title">{suivant.data.numero} — {suivant.data.titre}</span>
+      <span class="suite__fleche" aria-hidden="true">→</span>
+    </span>
+  </a>
 </BaseLayout>
 
 <style>
-
   /* ---------- Intro ---------- */
   .intro {
     position: relative;
@@ -217,7 +254,7 @@ const { Content } = await render(projet);
     grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
     gap: clamp(2rem, 5vw, 5rem);
     align-items: start;
-    padding-block: clamp(3rem, 7vw, 7rem) var(--section);
+    padding-block: clamp(2.5rem, 5vw, 5rem) clamp(2.5rem, 4vw, 4rem);
   }
   :global(.intro__ascii) {
     position: absolute;
@@ -246,20 +283,6 @@ const { Content } = await render(projet);
     font-size: clamp(1.15rem, 1rem + 0.6vw, 1.55rem);
     line-height: 1.6;
   }
-  .intro__mockups {
-    display: flex;
-    gap: clamp(1rem, 3vw, 2.5rem);
-    margin-top: 1rem;
-  }
-  .intro__mockups img {
-    width: clamp(120px, 16vw, 220px);
-    height: auto;
-    filter: drop-shadow(0 20px 24px rgb(0 0 0 / 0.4));
-  }
-  .intro__mockups img:nth-child(2) {
-    margin-top: 2.5rem;
-  }
-
   .fiche {
     position: relative;
     width: min(100%, 440px);
@@ -301,55 +324,181 @@ const { Content } = await render(projet);
     margin: 0;
   }
 
-  /* ---------- Blocs génériques ---------- */
-  .block {
-    padding-bottom: var(--section);
+
+  /* ---------- Titres en filigrane (communs vitrine / processus / suite) ---------- */
+  .ghost {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    translate: 0 -50%;
+    margin: 0;
+    white-space: nowrap;
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: clamp(7rem, 18vw, 17rem);
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 2px rgb(255 255 255 / 0.28);
+    pointer-events: none;
+    user-select: none;
   }
-  .block__head {
+
+  /* ---------- Vitrine ---------- */
+  .vitrine {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: clamp(3rem, 5.5vw, 5.5rem);
+    padding-block: clamp(4rem, 8vw, 7rem);
+    background: transparent;
+  }
+  .vitrine__ghost {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    translate: 0 -50%;
+    white-space: nowrap;
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: clamp(7rem, 18vw, 17rem);
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 2px rgb(255 255 255 / 0.28);
+    transform: translateX(calc(var(--p, 0) * -18%));
+    pointer-events: none;
+    user-select: none;
+  }
+  .vitrine__liste {
+    position: relative;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: flex-start;
+    gap: clamp(1.5rem, 4vw, 4rem);
+    margin: 0;
+    padding: 0 var(--gutter, 1.5rem);
+    list-style: none;
   }
-  .block__body {
+  .vitrine__item {
+    flex: 0 1 auto;
+    --ar: 1;
+    rotate: calc((var(--i) - 1) * 2.2deg);
+    translate: 0 calc(var(--i) * 1.8rem + var(--par, 0) * (var(--i) + 1) * 14px);
+    transition: rotate 0.35s var(--ease-pop), scale 0.35s var(--ease-pop);
+  }
+  .vitrine__item:hover { rotate: 0deg; scale: 1.04; }
+  .vitrine__item figure { margin: 0; }
+  .vitrine__item img {
+    display: block;
+    width: auto;
+    height: min(clamp(240px, 50vh, 500px), calc(var(--w, 40vw) / var(--ar)));
+    max-width: 86vw;
+    border: 5px solid #fff;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 12px 14px 0 var(--blue);
+  }
+  .vitrine__item figcaption {
+    margin-top: 1.1rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: #fff;
+  }
+  .vitrine__item figcaption span { color: var(--navy); background: #fff; padding: 0.1em 0.45em; margin-right: 0.4em; }
+  @media (max-width: 760px) {
+    .vitrine__liste { overflow-x: auto; justify-content: flex-start; scroll-snap-type: x mandatory; padding-bottom: 2.5rem; }
+    .vitrine__item { flex: 0 0 auto; scroll-snap-align: center; translate: 0 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .vitrine__ghost { transform: none; } }
+
+
+  /* ---------- En chiffres : bandeau à filets ---------- */
+  .chiffres { padding-bottom: clamp(3rem, 5vw, 5rem); }
+  .chiffres ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .chiffres li {
     display: flex;
     flex-direction: column;
-    gap: 1.4rem;
-    max-width: 62rem;
-    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+    gap: 0.5rem;
+    padding: 1.6rem 1.4rem 1.8rem;
   }
-  .lead {
-    max-width: 52ch;
-    font-size: clamp(1.15rem, 1rem + 0.6vw, 1.55rem);
-    line-height: 1.6;
-  }
-  .strong {
-    margin-top: 1rem;
+  .chiffres li + li { border-left: 1px dashed rgb(255 255 255 / 0.35); }
+  .chiffres__valeur {
+    font-family: var(--font-title);
     font-weight: 700;
-    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.5rem);
-  }
-  .consignes {
-    display: grid;
-    gap: 0.4rem;
-    margin: 0;
-    padding-left: 1.4em;
-    font-weight: 700;
-    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.5rem);
-    line-height: 1.35;
-  }
-  .consignes li::marker {
+    font-size: clamp(2.6rem, 1.4rem + 3.4vw, 4.6rem);
+    line-height: 1;
     color: var(--pink);
   }
-  .cible,
-  .learn,
-  .question {
+  .chiffres__label { color: rgb(255 255 255 / 0.8); font-size: 1rem; line-height: 1.4; }
+
+  /* ---------- Chapitres : rail (numéro + titre collant) | contenu ---------- */
+  .chap {
+    display: grid;
+    grid-template-columns: minmax(0, 0.34fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 4.5rem);
+    align-items: start;
+    padding-bottom: clamp(3.5rem, 6vw, 6rem);
+  }
+  .chap__rail {
+    position: sticky;
+    top: 7rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.4rem;
+  }
+  /* Étiquettes du rail : une seule ligne, taille adaptée à la colonne */
+  .chap__rail :global(.tag) { font-size: clamp(1.2rem, 0.9rem + 1vw, 1.85rem); }
+  @media (min-width: 901px) {
+    .chap__rail :global(.tag) { white-space: nowrap; }
+    .chap { grid-template-columns: minmax(0, 0.38fr) minmax(0, 1fr); }
+  }
+  .chap__num {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: clamp(2.6rem, 1.6rem + 3vw, 4.5rem);
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--pink);
+  }
+  .chap__num--sombre { -webkit-text-stroke-color: var(--navy); }
+  .chap__body { min-width: 0; }
+  .sous {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--pink);
+  }
+  .sous::before { content: '/ '; color: #8fb0e8; }
+
+  .lead {
+    max-width: 52ch;
+    font-size: clamp(1.1rem, 1rem + 0.5vw, 1.45rem);
+    line-height: 1.6;
+  }
+  .lead--s { font-size: clamp(1.05rem, 0.95rem + 0.35vw, 1.25rem); }
+  .strong { font-weight: 700; font-size: clamp(1.05rem, 1rem + 0.4vw, 1.35rem); }
+  .consignes {
+    display: grid;
+    gap: 0.5rem;
+    margin: 1rem 0 0;
+    padding-left: 1.4em;
+    font-weight: 700;
+    font-size: clamp(1.05rem, 1rem + 0.4vw, 1.35rem);
+    line-height: 1.35;
+  }
+  .consignes li::marker { color: var(--pink); }
+  .cible, .learn, .question {
     padding: 1.2rem 1.4rem;
     border-left: 6px solid var(--pink);
     background: rgb(255 255 255 / 0.05);
-    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.3rem);
-  }
-  .cible,
-  .learn {
-    margin-top: 0.6rem;
+    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.2rem);
   }
   .question {
     border-left-color: var(--blue);
@@ -358,183 +507,132 @@ const { Content } = await render(projet);
     font-size: clamp(1.15rem, 1rem + 0.6vw, 1.6rem);
     line-height: 1.3;
   }
-  .question .cible__label {
-    color: #8fb0e8;
-  }
+  .question .cible__label { color: #8fb0e8; }
   .cible__label {
     display: block;
     margin-bottom: 0.5rem;
     color: var(--pink);
     font-family: var(--font-mono);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
+  .contexte {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: start;
+  }
+  .contexte__col { display: flex; flex-direction: column; gap: 1.2rem; }
+  .contexte__col .strong { margin: 0; }
 
-  /* Cartes « Mon rôle » : blanches, ombre rose décalée */
+  /* ---------- Cartes : cadre blanc, angles doux, ombre franche (comme la vitrine) ---------- */
   .roles {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
-    gap: clamp(2rem, 5vw, 5rem);
-    max-width: 62rem;
-    margin-top: clamp(2.5rem, 5vw, 4.5rem);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: clamp(1.8rem, 3.5vw, 3rem);
   }
-  .role {
-    padding: 1.8rem 2rem 2.2rem;
+  .role, .defi {
     background: var(--white);
     color: #000;
-    box-shadow: clamp(8px, 1.2vw, 15px) clamp(10px, 1.8vw, 22px) 0 var(--pink-deep);
+    border-radius: 14px;
+    box-shadow: 12px 14px 0 var(--blue);
+  }
+  .role {
+    position: relative;
+    padding: 1.6rem 1.8rem 2rem;
     rotate: var(--tilt);
   }
-  .role h3 {
-    font-family: var(--font-body);
-    font-size: clamp(1.25rem, 1rem + 0.8vw, 2rem);
+  .role__n {
+    display: block;
+    margin-bottom: 0.8rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #3d68b8;
   }
-  .role p {
-    margin-top: 1.2rem;
-    font-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.4rem);
-    line-height: 1.4;
-  }
-  .skills {
-    margin-top: clamp(2.5rem, 5vw, 4rem);
-  }
+  .role h3 { font-family: var(--font-body); font-size: clamp(1.2rem, 1rem + 0.7vw, 1.8rem); }
+  .role p { margin-top: 0.9rem; font-size: clamp(1rem, 0.95rem + 0.25vw, 1.2rem); line-height: 1.45; }
 
-  /* ---------- Processus (fond rose) ---------- */
+  .duo {
+    display: grid;
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
+    margin-top: clamp(3rem, 5vw, 4.5rem);
+    padding-top: clamp(2rem, 3vw, 3rem);
+  }
+  .duo__col { display: flex; flex-direction: column; align-items: flex-start; gap: 1.2rem; }
+  .duo__texte { display: flex; flex-direction: column; gap: 1.1rem; align-items: flex-start; }
+  .duo__lien { margin-top: 0.4rem; }
+
+  /* ---------- Processus : aplat rose + cartes d'étapes ---------- */
   .process {
     position: relative;
     overflow: hidden;
-    margin-bottom: var(--section);
-    padding-block: clamp(4rem, 7vw, 6.5rem) clamp(5rem, 9vw, 8rem);
+    margin-bottom: clamp(3.5rem, 6vw, 6rem);
+    padding-block: clamp(4rem, 7vw, 6.5rem) clamp(4.5rem, 8vw, 7rem);
     background: var(--pink);
   }
+  .ghost--process { top: 9%; font-size: clamp(6rem, 14vw, 13rem); -webkit-text-stroke-color: rgb(255 255 255 / 0.7); }
   :global(.process__ascii) {
     position: absolute;
-    left: -3%;
-    top: 0;
-    width: min(64vw, 860px);
+    right: -6%;
+    bottom: -4%;
+    width: min(54vw, 760px);
     color: var(--pink-deep);
-    opacity: 0.5;
+    opacity: 0.45;
     pointer-events: none;
   }
   .process__head {
     position: relative;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
   }
-  .windows {
+  .etapes {
     position: relative;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: clamp(1.5rem, 3vw, 3.5rem);
     align-items: start;
-    margin: clamp(3rem, 6vw, 5rem) 0 0;
+    margin: clamp(3rem, 5vw, 4.5rem) 0 0;
     padding: 0;
     list-style: none;
   }
-  /* Fenêtre du milieu décalée vers le bas, comme dans la maquette */
-  .windows > li:nth-child(3n + 2) {
-    margin-top: 9rem;
-  }
-  .win-imgs {
-    display: grid;
-    gap: 0.8rem;
-  }
-  .win-imgs--duo {
-    grid-template-columns: 1fr 1fr;
-  }
-  .win-imgs img {
-    width: 100%;
-    height: auto;
-    border-radius: 6px;
-  }
-  .win-text {
-    font-size: 1.02rem;
-    line-height: 1.45;
-    color: #2b3445;
-  }
-
-  /* ---------- Outils (dossiers roses) ---------- */
-  .tools {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
-    gap: clamp(1.5rem, 4vw, 4rem);
-    margin: clamp(2.5rem, 5vw, 4.5rem) 0 0;
-    padding: 0;
-    list-style: none;
-  }
-  .tool img {
-    width: 100%;
-    max-width: 240px;
-    height: auto;
-    transition: transform 0.25s var(--ease-pop);
-  }
-  .tool:hover img {
-    transform: translateY(-6px) rotate(-3deg);
-  }
-  .tool__name {
-    margin-top: 1rem;
-    font-family: var(--font-title);
-    font-weight: 700;
-    font-size: 1.5rem;
-  }
-  .tool__why {
-    margin-top: 0.6rem;
-    line-height: 1.5;
-    color: rgb(255 255 255 / 0.75);
-    font-size: 1.05rem;
-  }
-
-  .link {
-    font-weight: 700;
-    font-size: clamp(1.05rem, 0.9rem + 0.5vw, 1.5rem);
-    overflow-wrap: anywhere;
-  }
-  .link a {
-    text-underline-offset: 6px;
-  }
-  .link a:hover {
-    color: var(--pink);
-  }
-
-  /* ---------- En chiffres ---------- */
-  .chiffres {
-    padding-bottom: var(--section);
-  }
-  .chiffres ul {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
-    gap: 1.5rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .chiffres li {
+  .etapes > li:nth-child(3n + 2) { margin-top: 4.5rem; }
+  .etape {
+    padding: 1.4rem 1.5rem 1.8rem;
+    background: var(--white);
+    color: #000;
+    border-radius: 14px;
+    box-shadow: 12px 14px 0 rgb(4 26 44 / 0.9);
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
-    padding: 1.4rem 1.4rem 1.6rem;
-    border-top: 4px solid var(--pink);
-    background: rgb(255 255 255 / 0.04);
+    gap: 0.9rem;
   }
-  .chiffres__valeur {
-    font-family: var(--font-title);
-    font-weight: 700;
-    font-size: clamp(2.2rem, 1.4rem + 2.6vw, 3.6rem);
-    line-height: 1;
-    color: var(--pink);
+  .etape__kicker { margin: 0; }
+  .etape__kicker span {
+    padding: 0.15em 0.55em;
+    background: var(--navy);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
-  .chiffres__label {
-    color: rgb(255 255 255 / 0.8);
-    font-size: 1rem;
-    line-height: 1.4;
-  }
+  .etape__titre { font-family: var(--font-body); font-size: clamp(1.2rem, 1rem + 0.6vw, 1.6rem); line-height: 1.2; }
+  .etape__imgs { display: grid; gap: 0.7rem; }
+  .etape__imgs--duo { grid-template-columns: 1fr 1fr; }
+  .etape__imgs img { width: 100%; height: auto; border-radius: 8px; }
+  .etape__texte { font-size: 1rem; line-height: 1.5; color: #2b3445; }
 
-  /* ---------- Défis & solutions ---------- */
+  /* ---------- Défis ---------- */
   .defis {
     display: grid;
-    gap: clamp(1.5rem, 3vw, 2.5rem);
-    max-width: 66rem;
-    margin: clamp(2.5rem, 5vw, 4.5rem) 0 0;
+    gap: clamp(1.8rem, 3vw, 2.6rem);
+    margin: 0;
     padding: 0;
     list-style: none;
   }
@@ -543,9 +641,6 @@ const { Content } = await render(projet);
     grid-template-columns: auto 1fr 1fr;
     gap: clamp(1rem, 3vw, 2.5rem);
     padding: clamp(1.4rem, 3vw, 2rem);
-    background: var(--white);
-    color: #000;
-    box-shadow: 12px 12px 0 var(--blue);
   }
   .defi__num {
     font-family: var(--font-mono);
@@ -558,72 +653,163 @@ const { Content } = await render(projet);
     margin-bottom: 0.6rem;
     color: #72243e;
     font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
-  .defi__label--solution {
-    color: #3d68b8;
-  }
-  .defi__texte {
-    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.15rem);
-    line-height: 1.55;
-  }
-  @media (max-width: 760px) {
-    .defi {
-      grid-template-columns: 1fr;
-    }
-  }
+  .defi__label--solution { color: #3d68b8; }
+  .defi__texte { font-size: clamp(1rem, 0.95rem + 0.2vw, 1.12rem); line-height: 1.55; }
 
-  /* ---------- Projet suivant ---------- */
-  .next {
-    padding-bottom: var(--section);
+  /* ---------- Outils ---------- */
+  .tools {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+    gap: clamp(1.5rem, 3vw, 3rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
-  .next__link {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.5rem, 3vw, 3rem);
-    background: var(--white);
-    color: #000;
+  .tool img {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+    transition: transform 0.25s var(--ease-pop);
+  }
+  .tool:hover img { transform: translateY(-6px) rotate(-3deg); }
+  .tool__name { margin-top: 0.9rem; font-family: var(--font-title); font-weight: 700; font-size: 1.4rem; }
+  .tool__why { margin-top: 0.5rem; line-height: 1.5; color: rgb(255 255 255 / 0.75); font-size: 1rem; }
+
+  /* ---------- Projet suivant : aplat à la couleur du prochain projet ---------- */
+  .suite {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    padding-block: clamp(4rem, 8vw, 7rem);
+    color: #fff;
     text-decoration: none;
-    box-shadow: 15px 15px 0 var(--blue);
-    transition: transform 0.25s var(--ease-pop), box-shadow 0.25s;
   }
-  .next__link:hover {
-    transform: translate(-4px, -4px);
-    box-shadow: 19px 19px 0 var(--blue);
+  .ghost--suite {
+    transition: transform 0.8s var(--ease-pop);
   }
-  .next__label {
+  .suite:hover .ghost--suite, .suite:focus-visible .ghost--suite { transform: translateX(-8%); }
+  .suite__in {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    gap: 1.2rem 2rem;
+  }
+  .suite__label {
+    grid-column: 1 / -1;
+    justify-self: start;
     font-family: var(--font-mono);
-    color: var(--pink-deep);
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.2em 0.6em;
+    background: #fff;
+    color: var(--navy);
+    width: fit-content;
   }
-  .next__title {
+  .suite__title {
     font-family: var(--font-title);
     font-weight: 700;
-    font-size: clamp(1.6rem, 1rem + 2.5vw, 3.5rem);
+    font-size: clamp(2rem, 1rem + 4.5vw, 5.5rem);
+    line-height: 1;
+    text-shadow: 6px 6px 0 var(--blue);
   }
+  .suite__fleche {
+    font-family: var(--font-title);
+    font-size: clamp(2rem, 1rem + 4.5vw, 5.5rem);
+    transition: transform 0.3s var(--ease-pop);
+  }
+  .suite:hover .suite__fleche { transform: translateX(14px); }
 
   @media (max-width: 900px) {
-    .intro {
-      grid-template-columns: 1fr;
-    }
-    .fiche {
-      justify-self: center;
-      width: min(100%, 360px);
-      rotate: 2deg;
-    }
-    .role {
-      rotate: 0deg;
-    }
-    .windows {
-      grid-template-columns: 1fr;
-      max-width: 34rem;
-      margin-inline: auto;
-    }
-    .windows > li,
-    .windows > li:nth-child(2) {
-      margin-top: 0;
-    }
+    .intro { grid-template-columns: 1fr; }
+    .fiche { justify-self: center; width: min(100%, 360px); rotate: 2deg; }
+    .chap { grid-template-columns: 1fr; }
+    .chap__rail { position: static; flex-direction: row; align-items: center; flex-wrap: wrap; }
+    .contexte, .duo { grid-template-columns: 1fr; }
+    .role { rotate: 0deg; }
+    .etapes { grid-template-columns: 1fr; max-width: 34rem; margin-inline: auto; }
+    .etapes > li:nth-child(n) { margin-top: 0; }
+    .defi { grid-template-columns: 1fr; }
+  }
+  @media (min-width: 1100px) {
+    .defis { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- Apparition au scroll ---------- */
+  :global(.js .mot) {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.6em);
+    filter: blur(4px);
+    transition: opacity 0.5s ease, transform 0.6s var(--ease-pop), filter 0.5s ease;
+    transition-delay: calc(var(--m) * 28ms);
+  }
+  :global(.js .is-in .mot) { opacity: 1; transform: none; filter: none; }
+  :global(.js [data-reveal]) {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.6s ease, transform 0.7s var(--ease-pop);
+    transition-delay: calc(var(--d, 0) * 90ms);
+  }
+  :global(.js [data-reveal].is-in) { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js .mot), :global(.js [data-reveal]) { opacity: 1; transform: none; filter: none; transition: none; }
+    .ghost--suite { transition: none; }
   }
 </style>
+
+<script>
+  // Apparition au scroll : textes mot à mot, blocs en cascade. Sans JS ou si « moins d'animations », tout reste visible.
+  const reduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduit && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('js');
+    const TEXTES = '.intro__lead, .lead, .question, .learn, .duo__texte > p, .defi__texte, .etape__texte';
+
+    document.querySelectorAll<HTMLElement>(TEXTES).forEach((el) => {
+      if (el.querySelector('a, span, em, strong')) { el.setAttribute('data-reveal', ''); return; }
+      const mots = (el.textContent ?? '').trim().split(/\s+/);
+      el.textContent = '';
+      mots.forEach((m, i) => {
+        const s = document.createElement('span');
+        s.className = 'mot';
+        s.style.setProperty('--m', String(Math.min(i, 40)));
+        s.textContent = m;
+        el.append(s, i < mots.length - 1 ? ' ' : '');
+      });
+    });
+    document.querySelectorAll('.chiffres li, .role, .defi, .tool, .consignes li, .etape, .cible, .fiche, .chap__rail, .duo__col > .sous').forEach((el, i) => {
+      el.setAttribute('data-reveal', '');
+      (el as HTMLElement).style.setProperty('--d', String(i % 3));
+    });
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+    document.querySelectorAll(TEXTES).forEach((el) => { if (el.querySelector('.mot')) io.observe(el); });
+    setTimeout(() => document.querySelectorAll('.mot, [data-reveal]').forEach((el) => el.classList.add('is-in')), 4000);
+  }
+
+  // Vitrine : le grand titre défile et les visuels dérivent légèrement avec le scroll
+  const v = document.querySelector<HTMLElement>('[data-vitrine]');
+  if (v && !reduit) {
+    const items = v.querySelectorAll<HTMLElement>('[data-para]');
+    let ticking = false;
+    const maj = () => {
+      const r = v.getBoundingClientRect();
+      const p = Math.max(0, Math.min(1, (innerHeight - r.top) / (innerHeight + r.height)));
+      v.style.setProperty('--p', String(p));
+      items.forEach((el) => el.style.setProperty('--par', String(((0.5 - p) * 2).toFixed(3))));
+      ticking = false;
+    };
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(maj); } }, { passive: true });
+    maj();
+  }
+</script>
