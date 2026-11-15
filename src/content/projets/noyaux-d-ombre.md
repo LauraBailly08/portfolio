@@ -14,9 +14,9 @@ competences: ["Recherche utilisateur", "Wireframes", "Prototype Figma", "HTML / 
 lien: "https://noyaux-d-ombre.bailly-laura.fr/fr/"
 lienLibelle: "noyaux-d-ombre.bailly-laura.fr"
 
-jaquette: "../../assets/projets/noyaux-d-ombre/maquette-1.png"
-jaquetteAlt: "Écran « Who was Lise Meitner » du site Noyaux d’ombre"
-jaquetteFit: "contain"
+jaquette: "../../assets/projets/noyaux-d-ombre/jaquette-site.jpg"
+jaquetteAlt: "Accueil du site Noyaux d’ombre : en-tête et rubrique « À la une »"
+jaquetteFit: "cover"
 jaquetteFond: "#14102b"
 vitrine:
   - src: "../../assets/projets/noyaux-d-ombre/tel-1.jpg"

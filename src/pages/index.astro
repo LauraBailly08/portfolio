@@ -11,7 +11,6 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Tag from '@/components/Tag.astro';
 import Carousel3DS from '@/components/Carousel3DS.astro';
-import CtaBulle from '@/components/CtaBulle.astro';
 import heroFond from '@/assets/hero/fond-v3.png';
 import trait1 from '@/assets/hero/trait-1.png';
 import trait2 from '@/assets/hero/trait-2.png';
@@ -140,7 +139,6 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
   </section>
 
   <!-- 4. CV / CONTACT -->
-  <CtaBulle />
 </BaseLayout>
 
 <style>
@@ -152,12 +150,12 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
     grid-template-columns: minmax(min-content, 0.85fr) minmax(0, 1.5fr);
     column-gap: clamp(1rem, 3vw, 3rem);
     align-items: start; /* texte en haut, plus centré verticalement sur la grande image */
-    padding: clamp(2.5rem, 5vw, 4.5rem) 0 clamp(2rem, 4vw, 3rem) var(--edge);
+    padding: clamp(1.5rem, 3vw, 2.5rem) 0 clamp(2rem, 4vw, 3rem) var(--edge);
     min-height: min(70vw, 900px);
   }
   .hero__text {
     position: relative;
-    padding-top: clamp(0.5rem, 6vw, 6.5rem);
+    padding-top: clamp(0.5rem, 2vw, 2.5rem);
     z-index: 2;
     display: flex;
     flex-direction: column;
@@ -249,6 +247,12 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
   @media (min-width: 761px) {
     .hero {
       padding-bottom: 0;
+      min-height: 0;
+    }
+    /* grand écran : la scène ne dépasse pas la hauteur de la fenêtre (sinon un grand vide apparaît sous le texte) */
+    .hero__stage {
+      width: min(112%, 95vh);
+      justify-self: end;
     }
     .projets {
       margin-top: -80px;
@@ -276,7 +280,7 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
     overflow: hidden;
     background: var(--pink-light);
     color: #000;
-    padding-block: clamp(3.5rem, 6vw, 6rem); /* plus court : plus de ligne de mots-clés */
+    padding-block: clamp(2.5rem, 4vw, 3.75rem); /* plus court : plus de ligne de mots-clés */
     /* --p = progression du défilement dans la section (0 → 1), mise à jour par le script en bas de page */
     --p: 0.5;
   }
@@ -305,21 +309,27 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
   }
   /* titre un peu sorti vers la gauche, au-delà de la colonne de contenu */
   :global(.tag.about__title) {
+    --tag-shadow: var(--pink-deep);
     margin-left: clamp(-3rem, -3vw, -0.5rem);
   }
-  .about__inner {
+  /* pleine largeur de page : le contenu s'étale d'un bord à l'autre */
+  .about__inner.container {
     position: relative;
+    width: 100%;
+    max-width: none;
+    padding-inline: clamp(1.25rem, 3.5vw, 4.5rem);
   }
   .about__grid {
     display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
     align-items: center;
-    gap: clamp(2rem, 5vw, 5rem);
-    margin-top: clamp(2.5rem, 5vw, 4rem);
+    gap: clamp(1.5rem, 4vw, 5rem);
+    margin-top: clamp(0rem, 1vw, 1rem);
   }
   .about__cartouche {
     width: 100%;
-    max-width: 480px;
+    max-width: 440px;
+    justify-self: center;
     height: auto;
     filter: drop-shadow(0 12px 18px rgb(0 0 0 / 0.25));
     /* légère parallaxe une fois en place */
@@ -371,7 +381,7 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    max-width: 36rem;
+    max-width: 46rem;
   }
   .about__kicker {
     padding: 0.3em 0.75em;
@@ -384,24 +394,29 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
   /* écarts volontairement différents : petit entre l'étiquette et l'accroche (ils vont ensemble),
      moyen avant le paragraphe, grand avant le bouton */
   .about__lead {
-    margin-top: 1.4rem;
+    margin-top: 1rem;
     max-width: 20ch;
     font-family: var(--font-title);
     font-weight: 700;
-    font-size: clamp(1.6rem, 1.1rem + 1.5vw, 2.5rem);
+    font-size: clamp(1.9rem, 1rem + 2.3vw, 3.2rem);
     line-height: 1.2;
     letter-spacing: -0.01em;
   }
   .about__body {
-    margin-top: 1.8rem;
-    max-width: 38ch;
+    margin-top: 1.4rem;
+    max-width: 44ch;
     color: #3a2a30;
     font-size: clamp(1.05rem, 0.98rem + 0.3vw, 1.25rem);
     line-height: 1.7;
   }
   .about__more {
-    margin-top: 2.8rem;
+    margin-top: 2rem;
+    border: 0;
+    min-height: 0;
+    padding: 0.5em 1.1em 0.55em;
+    box-shadow: 0 6px 16px rgb(114 36 62 / 0.18);
   }
+  .about__more:hover { box-shadow: 0 10px 22px rgb(114 36 62 / 0.28); }
 
   @media (max-width: 760px) {
     .hero {

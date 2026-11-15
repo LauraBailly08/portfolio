@@ -38,7 +38,7 @@ const {
     display: inline-block;
     width: fit-content;
     max-width: 100%;
-    padding: 0.35em 0.85em 0.4em;
+    padding: 0.22em 0.6em 0.28em;
     background: var(--white);
     color: #000;
     font-family: var(--font-title);
@@ -55,14 +55,14 @@ const {
     color: var(--white);
   }
   .tag--xl {
-    font-size: var(--fs-hero);
+    font-size: calc(var(--fs-hero) * 0.9);
   }
   .tag--l {
-    font-size: var(--fs-h1);
+    font-size: calc(var(--fs-h1) * 0.85);
   }
   .tag--m {
-    font-size: var(--fs-h2);
-    --shadow-offset: 10px;
+    font-size: calc(var(--fs-h2) * 0.9);
+    --shadow-offset: 9px;
   }
   @media (max-width: 640px) {
     .tag {

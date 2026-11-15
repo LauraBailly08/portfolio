@@ -12,16 +12,17 @@ resume: "Une web app pour apprendre la langue des signes française en s’amusa
 accroche: "Wenddy est une web app pensée pour apprendre la Langue des Signes Française (LSF) de manière ludique. Séries, points d’expérience, classement et mini-jeux : l’apprentissage fonctionne comme un jeu, pour donner envie de revenir chaque jour."
 competences: ["Design UI", "Parcours utilisateur", "Gamification", "Prototypage", "Charte graphique"]
 
-jaquette: "../../assets/projets/wenddy/jaquette.png"
-jaquetteAlt: "Logo de Wenddy : deux yeux de chat stylisés"
-jaquetteFond: "#ffb27a"
+jaquette: "../../assets/projets/wenddy/jaquette-landing.png"
+jaquetteAlt: "Landing page de Wenddy : titre « Apprendre la langue des signes différemment ! » et deux écrans de l’application"
+jaquetteFit: "cover"
+jaquetteFond: "#ff6200"
 vitrine:
+  - src: "../../assets/projets/wenddy/landing-accueil.png"
+    alt: "Landing page de Wenddy : « Apprendre la langue des signes différemment ! » et deux écrans de l’application"
   - src: "../../assets/projets/wenddy/maquette-1.png"
     alt: "Écran d’accueil de Wenddy : progression, statistiques et résumé de la semaine"
   - src: "../../assets/projets/wenddy/maquette-2.png"
     alt: "Écran « Dictionnaire LSF » avec les catégories de signes"
-  - src: "../../assets/projets/wenddy/charte.png"
-    alt: "Charte graphique de Wenddy"
 mockups: []
 
 contexte:

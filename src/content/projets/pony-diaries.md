@@ -1,8 +1,8 @@
 ---
 # Infos tirées de ta description et du projet « mlp ». À relire : cadre (perso ?), durée.
 titre: "Pony diaries"
-numero: "04"
-ordre: 4
+numero: "05"
+ordre: 5
 annee: 2026
 type: "Web app"
 typeCourt: "web app"

@@ -1,239 +1,129 @@
 ---
 /**
- * Pied de page — reprend le footer Figma (grand logo, liens « *projets »,
- * réseaux, étoile ASCII, étiquette « retour en haut »).
- * Amélioré : liens réellement cliquables, e-mail visible, icônes accessibles,
- * barre du bas (légal / réseaux / retour en haut) alignée sur la grille du site.
+ * PIED DE PAGE — « Grand nom ».
+ * Même fond que le site. Un appel à l'action (e-mail géant + deux boutons), trois colonnes
+ * (navigation numérotée, réseaux, présentation) et le nom en immense, dont les lettres montent à l'apparition.
+ * Sans JavaScript ou avec « réduire les animations », tout est visible tout de suite.
  */
-import { Image } from 'astro:assets';
-import Logo from './Logo.astro';
 import { NAV, SITE } from '@/data/site';
 import AsciiEtoile from './AsciiEtoile.astro';
-import linkedin from '@/assets/icons/footer-linkedin.png';
-import behance from '@/assets/icons/footer-behance.png';
-import mail from '@/assets/icons/footer-mail.png';
-
-const reseaux = [
-  { nom: 'LinkedIn', href: 'https://www.linkedin.com/in/laura-bailly-0a3b15345/', img: linkedin },
-  { nom: 'Behance', href: 'https://www.behance.net/laurabailly', img: behance },
-  { nom: 'M’écrire un e-mail', href: `mailto:${SITE.email}`, img: mail },
-];
 const annee = new Date().getFullYear();
+const reseaux = [
+  { nom: 'LinkedIn', href: 'https://www.linkedin.com/in/laura-bailly-0a3b15345/' },
+  { nom: 'Behance', href: 'https://www.behance.net/laurabailly' },
+];
+const lettres = 'On discute ?'.split('');
 ---
 
-<footer class="footer">
-  <AsciiEtoile class="footer__ascii" />
+<footer class="fa" data-footer>
+  <AsciiEtoile class="fa__star" />
 
-  <div class="footer__inner">
-    <div class="footer__brand">
-      <a class="footer__logo" href="/" aria-label="Laura Bailly — accueil">
-        <Logo />
-      </a>
-      <p class="footer__signature">{SITE.signature}</p>
-      <a class="footer__mail" href={`mailto:${SITE.email}`}>{SITE.email}</a>
+  <div class="fa__haut container">
+    <div class="fa__id">
+      <p class="fa__nom">Laura Bailly</p>
+      <p class="fa__role">BUT MMI · Design UI &amp; communication</p>
     </div>
-
-    <nav class="footer__nav" aria-label="Plan du site">
-      <ul>
-        {NAV.map((item) => (
-          <li><a href={item.href}>*{item.label.toLowerCase()}</a></li>
-        ))}
-      </ul>
+    <nav aria-label="Plan du site">
+      <ul>{NAV.map((n) => <li><a href={n.href}>{n.label}</a></li>)}</ul>
     </nav>
+  </div>
 
-    <div class="footer__bottom">
-      <ul class="footer__social" aria-label="Mes réseaux">
-        {reseaux.map((r) => (
-          <li>
-            <a href={r.href} target={r.href.startsWith('http') ? '_blank' : undefined} rel={r.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
-              <Image src={r.img} alt={r.nom} height={32} class="footer__social-icon" />
-            </a>
-          </li>
-        ))}
-      </ul>
+  <div class="fa__scene container">
+    <p class="fa__mark" aria-hidden="true">
+      {lettres.map((l, i) => (l === ' ' ? <span class="fa__esp"> </span> : <span class="fa__l" style={`--i:${i}`}>{l}</span>))}
+    </p>
+    <h2 class="sr-only">On discute ?</h2>
 
-      <div class="footer__legal">
-        <p>© {annee} Laura Bailly. Tous droits réservés.</p>
-        <p>
-          <a href="/mentions-legales/">Mentions légales</a>
-          <span aria-hidden="true">·</span>
-          <a href="/mentions-legales/#confidentialite">Confidentialité</a>
-        </p>
-      </div>
+    <ul class="fa__tags" aria-label="Me contacter">
+      <li class="fa__t fa__t--1"><a class="fa__tag" href={`mailto:${SITE.email}`}>M’écrire @</a></li>
+      <li class="fa__t fa__t--2"><a class="fa__tag" href={SITE.cv} download>Mon CV ↓</a></li>
+      {reseaux.map((r, i) => (
+        <li class={`fa__t fa__t--${i + 3}`}><a class="fa__tag" href={r.href} target="_blank" rel="noopener noreferrer">{r.nom} <span aria-hidden="true">↗</span><span class="sr-only"> (nouvel onglet)</span></a></li>
+      ))}
+    </ul>
+  </div>
 
-      <a class="footer__top" href="#haut">retour en haut <span aria-hidden="true">↑</span></a>
-    </div>
+  <div class="fa__bar container">
+    <a class="fa__tag fa__haut-cta" href="#haut">Retour en haut <span aria-hidden="true">↑</span></a>
+    <p class="fa__legal">© {annee} Laura Bailly · <a href="/mentions-legales/">Mentions légales</a> · <a href="/mentions-legales/#confidentialite">Confidentialité</a></p>
   </div>
 </footer>
 
-<style>
-  .footer {
-    position: relative;
-    overflow: hidden;
-    background: var(--sky);
-    color: #000;
-    font-family: var(--font-title);
-  }
-  :global(.footer__ascii) {
-    position: absolute;
-    right: 4%;
-    top: -8%;
-    width: min(62vw, 560px);
-    color: var(--blue);
-    opacity: 0.28;
-    pointer-events: none;
-  }
-  .footer__inner {
-    position: relative;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-      'brand nav'
-      'bottom bottom';
-    gap: clamp(2rem, 4vw, 3.5rem) 2rem;
-    padding: clamp(3rem, 6vw, 5rem) var(--edge) clamp(1.5rem, 3vw, 2.5rem);
-  }
-  .footer__brand {
-    grid-area: brand;
-  }
-  .footer__logo {
-    display: inline-flex;
-    font-weight: 700;
-    font-size: clamp(3rem, 1.5rem + 6vw, 7.5rem);
-    line-height: 0.82;
-    text-decoration: none;
-    letter-spacing: -0.01em;
-  }
-  .footer__signature {
-    margin-top: 1.2rem;
-    font-size: clamp(1.1rem, 0.9rem + 0.8vw, 1.75rem);
-  }
-  .footer__mail {
-    display: inline-block;
-    margin-top: 0.4rem;
-    font-family: var(--font-body);
-    font-size: 1rem;
-    text-underline-offset: 4px;
-    overflow-wrap: anywhere;
-  }
-  .footer__mail:hover {
-    color: var(--blue-glow);
-  }
-  .footer__nav {
-    grid-area: nav;
-    text-align: right;
-  }
-  .footer__nav ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .footer__nav a {
-    display: inline-block;
-    font-weight: 700;
-    font-size: clamp(1.4rem, 1rem + 1.4vw, 2.5rem);
-    line-height: 1.7;
-    text-decoration: none;
-    transition: color 0.2s, transform 0.2s var(--ease-pop);
-  }
-  .footer__nav a:hover {
-    color: var(--blue-glow);
-    transform: translateX(-6px);
+<script>
+  const pied = document.querySelector<HTMLElement>('[data-footer]');
+  const reduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Les lettres du nom montent quand le pied de page entre à l'écran
+  const marque = pied?.querySelector('.fa__mark');
+  if (pied && marque && !reduit && 'IntersectionObserver' in window) {
+    pied.classList.add('fa--anim');
+    const io = new IntersectionObserver((e) => {
+      if (e[0].isIntersecting) { marque.classList.add('is-in'); io.disconnect(); }
+    }, { threshold: 0.35 });
+    io.observe(marque);
   }
 
-  /* Barre du bas : réseaux | mentions | retour en haut */
-  .footer__bottom {
-    grid-area: bottom;
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    gap: 1.5rem;
-    padding-top: clamp(1.5rem, 3vw, 2rem);
-    border-top: 2px solid #000;
+</script>
+
+<style>
+  .fa { position: relative; overflow: hidden; background: var(--navy); color: #fff; padding-top: clamp(2rem, 4vw, 3rem); }
+  :global(.fa__star) { position: absolute; right: 5%; top: 10%; width: min(30vw, 380px); color: var(--blue); opacity: 0.2; pointer-events: none; }
+
+  .fa__haut { position: relative; display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 1rem 2rem; font-family: var(--font-mono); font-size: 0.9rem; }
+  .fa__haut p { margin: 0; }
+  .fa__nom { font-family: var(--font-title); font-weight: 700; font-size: 1.15rem; }
+  .fa__role { color: rgb(255 255 255 / 0.85); margin-top: 0.2rem !important; }
+  .fa__haut ul { display: flex; gap: 1.8rem; margin: 0; padding: 0; list-style: none; text-transform: uppercase; font-size: 0.95rem; }
+  .fa__haut nav a { text-decoration: none; }
+  .fa__haut nav a:hover, .fa__haut nav a:focus-visible { color: var(--pink); }
+  .fa__dispo { justify-self: end; display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.3rem 0.8rem; border: 1px solid rgb(255 255 255 / 0.5); border-radius: 999px; }
+  .fa__point { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: 0.25; transform: scale(0.8); } }
+
+  /* Le mot géant, avec les étiquettes posées par-dessus */
+  .fa__scene { position: relative; margin-top: clamp(5rem, 9vw, 8rem); container-type: inline-size; }
+  .fa__mark {
+    display: flex; justify-content: center; margin: 0; padding-bottom: 0.18em; overflow: hidden;
+    white-space: pre; user-select: none; font-family: var(--font-title); font-weight: 700;
+    font-size: 18.8cqw; line-height: 0.95; letter-spacing: -0.03em; color: var(--pink);
   }
-  .footer__social {
-    display: flex;
-    gap: 1.4rem;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  .fa__l { flex-shrink: 0; display: inline-block; transition: transform 0.9s var(--ease-pop); transition-delay: calc(var(--i) * 45ms); }
+  .fa__esp { flex-shrink: 0; display: inline-block; width: 0.3em; }
+  .fa--anim .fa__l { transform: translateY(105%); }
+  .fa--anim .fa__mark.is-in .fa__l { transform: none; }
+
+  .fa__tags { list-style: none; margin: 0; padding: 0; }
+  .fa__t { position: absolute; }
+  .fa__t--1 { left: 3%;  top: -14%; --tilt: -5deg; }
+  .fa__t--2 { left: 47%; top: -20%; --tilt: 3deg;  --sh: var(--pink-deep); }
+  .fa__t--3 { left: 23%; top: 56%;  --tilt: 4deg; }
+  .fa__t--4 { left: 70%; top: 48%;  --tilt: -6deg; --sh: var(--pink-deep); }
+
+  /* Même étiquette que sur le reste du site : blanche, penchée, ombre pleine décalée */
+  .fa__tag {
+    display: inline-block; padding: 0.35em 0.85em 0.4em; border: 0; cursor: pointer;
+    background: var(--white); color: #000; text-decoration: none;
+    font-family: var(--font-title); font-weight: 700; line-height: 1.05; font-size: clamp(1rem, 0.55rem + 1.5vw, 1.8rem);
+    transform: rotate(var(--tilt, -4deg));
+    box-shadow: 8px 8px 0 var(--sh, var(--blue));
+    transition: transform 0.25s var(--ease-pop), box-shadow 0.25s var(--ease-pop);
   }
-  .footer__social a {
-    display: block;
-    transition: transform 0.2s var(--ease-pop);
-  }
-  .footer__social a:hover {
-    transform: translateY(-4px) rotate(-6deg);
-  }
-  .footer__social-icon {
-    height: 28px;
-    width: auto;
-  }
-  .footer__legal {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-    text-align: center;
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-  }
-  .footer__legal p:last-child {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-  .footer__legal a {
-    text-underline-offset: 3px;
-  }
-  .footer__legal a:hover {
-    color: var(--blue-glow);
-  }
-  .footer__top {
-    justify-self: end;
-    display: inline-block;
-    padding: 0.7rem 1.4rem;
-    background: #000;
-    color: var(--white);
-    font-weight: 700;
-    font-size: clamp(1rem, 0.9rem + 0.4vw, 1.4rem);
-    text-decoration: none;
-    rotate: -6deg;
-    box-shadow: 8px 8px 0 var(--blue);
-    transition: rotate 0.25s var(--ease-pop), translate 0.25s var(--ease-pop), box-shadow 0.25s;
-  }
-  .footer__top:hover {
-    rotate: -2deg;
-    translate: 0 -4px;
-    box-shadow: 11px 11px 0 var(--blue);
-  }
+  .fa__tag:hover, .fa__tag:focus-visible { transform: rotate(0deg) translate(-2px, -4px); box-shadow: 12px 12px 0 var(--sh, var(--blue)); }
+  .fa__tag:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+
+  .fa__bar { position: relative; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.8rem 2rem; padding-block: 1rem 1.4rem; margin-top: 0.6rem; font-family: var(--font-body); font-size: 0.82rem; }
+  .fa__legal { margin: 0; order: -1; }
+  .fa__haut-cta { --tilt: -3deg; --sh: var(--pink-deep); font-size: 1.1rem; box-shadow: 6px 6px 0 var(--pink-deep); }
+  .fa__legal a { text-underline-offset: 3px; }
+  .fa__legal a:hover { color: var(--pink); }
 
   @media (max-width: 760px) {
-    .footer__inner {
-      grid-template-columns: 1fr;
-      grid-template-areas: 'brand' 'nav' 'bottom';
-    }
-    .footer__nav {
-      text-align: left;
-    }
-    .footer__bottom {
-      grid-template-columns: 1fr auto;
-      grid-template-areas:
-        'social top'
-        'legal legal';
-    }
-    .footer__social {
-      grid-area: social;
-    }
-    .footer__top {
-      grid-area: top;
-    }
-    .footer__legal {
-      grid-area: legal;
-      text-align: left;
-    }
-    .footer__legal p:last-child {
-      justify-content: flex-start;
-    }
+    .fa__haut { grid-template-columns: 1fr; }
+        .fa__haut ul { flex-wrap: wrap; gap: 0.6rem 1.4rem; }
+    .fa__mark { font-size: 18.8cqw; }
+    .fa__tags { display: flex; flex-wrap: wrap; gap: 1rem 1.2rem; padding: 1.4rem 0.4rem 0.4rem; }
+    .fa__t { position: static; }
+    .fa__tag { font-size: 1.05rem; box-shadow: 6px 6px 0 var(--sh, var(--blue)); }
   }
+  @media (prefers-reduced-motion: reduce) { .fa__point { animation: none; } }
 </style>

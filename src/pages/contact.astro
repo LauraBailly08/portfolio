@@ -1,22 +1,19 @@
 ---
 /**
- * PAGE CONTACT — rubrique fonctionnelle :
- * - fenêtre « Mes liens » (réseaux, comme dans la maquette)
- * - fenêtre « Nouveau message » : formulaire envoyé par public/contact.php
- *   (script PHP exécuté par l'hébergement Infomaniak, qui m'envoie un e-mail).
+ * PAGE CONTACT — titre, texte et étiquettes de liens à gauche, formulaire à droite.
+ * Le formulaire est envoyé par public/contact.php (script PHP de l'hébergement Infomaniak, qui m'envoie un e-mail).
  */
-import { Image } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Tag from '@/components/Tag.astro';
-import { RESEAUX, SITE } from '@/data/site';
 import AsciiEtoile from '@/components/AsciiEtoile.astro';
-import linkedin from '@/assets/icons/linkedin.png';
-import behance from '@/assets/icons/behance.png';
-import mail from '@/assets/icons/mail.png';
-import instagram from '@/assets/icons/instagram.png';
-import pinterest from '@/assets/icons/pinterest.png';
+import { SITE } from '@/data/site';
 
-const icones = { linkedin, behance, mail, instagram, pinterest };
+const liens = [
+  { nom: 'E-mail @', href: `mailto:${SITE.email}`, ombre: 'bleu', tilt: -3 },
+  { nom: 'LinkedIn ↗', href: 'https://www.linkedin.com/in/laura-bailly-0a3b15345/', ombre: 'rose', tilt: 3 },
+  { nom: 'Behance ↗', href: 'https://www.behance.net/laurabailly', ombre: 'bleu', tilt: -2 },
+  { nom: 'Instagram ↗', href: 'https://www.instagram.com/laurablly/', ombre: 'rose', tilt: 4 },
+];
 ---
 
 <BaseLayout
@@ -26,317 +23,104 @@ const icones = { linkedin, behance, mail, instagram, pinterest };
   <section class="contact container" aria-labelledby="contact-titre">
     <AsciiEtoile class="contact__ascii" />
 
-    <div class="contact__head">
-      <Tag as="h1" id="contact-titre" inclinaison={6}>Contact</Tag>
-      <div class="bubble">
-        <svg viewBox="0 0 575 444" aria-hidden="true" preserveAspectRatio="none">
-          <path d="M452.954 305.047L461.635 443.35L385.474 331.706L330.347 356.863L276.303 304.265L222.234 349.056L182.003 290.591L105.094 333.715L105.847 286.336L3.73349 284.712L58.8253 239.502L1.00031 169.017L72.5598 142.765L48.7417 42.8214L118.034 95.2275L175.046 17.9893L236.944 84.0815L323.374 28.4943L360.578 85.6073L449.31 33.9757L467.412 109.915L556.407 105.679L510.266 163.205L574.008 181.175L493.877 235.118L529.792 277.428L452.954 305.047Z" fill="#DC93A2" />
-          <path d="M451.954 287.047L460.635 425.35L384.474 313.706L329.347 338.863L275.303 286.265L221.234 331.056L181.003 272.591L104.094 315.715L104.847 268.336L2.73349 266.712L57.8253 221.502L0 151.017L71.5598 124.765L47.7417 24.8214L117.034 77.2275L174.046 0L235.944 66.0815L322.374 10.4943L359.578 67.6073L448.31 15.9757L466.412 91.9152L555.407 87.6786L509.266 145.205L573.008 163.175L492.877 217.118L528.792 259.428L451.954 287.047Z" fill="#fff" />
-        </svg>
-        <p>Tous mes liens sont ici, alors n’hésite pas à me contacter&nbsp;!</p>
-      </div>
-    </div>
-
     <div class="contact__grid">
-      <!-- Fenêtre « Mes liens » -->
-      <section class="win" aria-labelledby="liens-titre">
-        <header class="win__bar">
-          <h2 id="liens-titre">mes-liens.exe</h2>
-          <span class="win__btns" aria-hidden="true"><i>_</i><i>□</i><i>×</i></span>
-        </header>
-        <div class="win__addr" aria-hidden="true">laura-bailly://contact</div>
-        <ul class="links">
-          {RESEAUX.map((r) => (
+      <div class="contact__texte">
+        <Tag as="h1" id="contact-titre" inclinaison={-4}>Contact</Tag>
+        <p class="contact__titre" aria-hidden="true">Parlons de ton <span>projet.</span></p>
+        <p class="contact__lead">Je cherche un stage en design et communication. Écris-moi ici ou retrouve-moi sur mes réseaux.</p>
+        <ul class="contact__liens" aria-label="Mes liens">
+          {liens.map((l) => (
             <li>
               <a
-                href={r.href}
-                target={r.href.startsWith('http') ? '_blank' : undefined}
-                rel={r.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              >
-                <span class="links__circle">
-                  <Image src={icones[r.icone]} alt="" aria-hidden="true" height={56} />
-                </span>
-                <span class="links__name">{r.nom}</span>
-              </a>
+                class:list={['etiquette', `etiquette--${l.ombre}`]}
+                style={`--tilt:${l.tilt}deg`}
+                href={l.href}
+                target={l.href.startsWith('http') ? '_blank' : undefined}
+                rel={l.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              >{l.nom}{l.href.startsWith('http') && <span class="sr-only"> (nouvel onglet)</span>}</a>
             </li>
           ))}
         </ul>
-      </section>
+      </div>
 
-      <!-- Fenêtre « Nouveau message » : formulaire -->
-      <section class="win win--form" aria-labelledby="form-titre">
-        <header class="win__bar">
-          <h2 id="form-titre">nouveau-message.exe</h2>
-          <span class="win__btns" aria-hidden="true"><i>_</i><i>□</i><i>×</i></span>
-        </header>
-
+      <section class="carte" aria-labelledby="form-titre">
+        <h2 id="form-titre">Nouveau message</h2>
         <p class="form__status" role="status" data-status hidden></p>
-
-        <form class="form" action="/contact.php" method="post" data-form>
-          <div class="field">
-            <label for="nom">Ton nom <span aria-hidden="true">*</span></label>
-            <input id="nom" name="nom" type="text" autocomplete="name" required maxlength="100" />
-          </div>
-          <div class="field">
-            <label for="email">Ton e-mail <span aria-hidden="true">*</span></label>
-            <input id="email" name="email" type="email" autocomplete="email" required maxlength="150" />
-          </div>
-          <div class="field">
-            <label for="sujet">Sujet</label>
-            <select id="sujet" name="sujet">
-              <option>Proposition de stage</option>
-              <option>Projet / collaboration</option>
-              <option>Autre</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="message">Ton message <span aria-hidden="true">*</span></label>
-            <textarea id="message" name="message" rows="6" required minlength="10" maxlength="3000"></textarea>
-          </div>
-          <!-- Piège à robots : champ invisible pour les humains -->
-          <div class="hp" aria-hidden="true">
-            <label for="site">Ne pas remplir</label>
-            <input id="site" name="site" type="text" tabindex="-1" autocomplete="off" />
-          </div>
-          <p class="form__rgpd">
-            Tes informations servent uniquement à te répondre. Elles ne sont ni stockées sur le site
-            ni transmises à des tiers (voir la <a href="/mentions-legales/#confidentialite">politique de confidentialité</a>).
-          </p>
-          <button type="submit" class="btn btn--bleu form__btn"><span class="ab" aria-hidden="true">A</span> Envoyer</button>
-          <p class="form__alt">Ou directement : <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
-        </form>
+  
+          <form class="form" action="/contact.php" method="post" data-form>
+            <div class="duo-champs">
+            <div class="field">
+              <label for="nom">Ton nom <span aria-hidden="true">*</span></label>
+              <input id="nom" name="nom" type="text" autocomplete="name" required maxlength="100" />
+            </div>
+            <div class="field">
+              <label for="email">Ton e-mail <span aria-hidden="true">*</span></label>
+              <input id="email" name="email" type="email" autocomplete="email" required maxlength="150" />
+            </div>
+            </div>
+            <div class="field">
+              <label for="sujet">Sujet</label>
+              <select id="sujet" name="sujet">
+                <option>Proposition de stage</option>
+                <option>Projet / collaboration</option>
+                <option>Autre</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="message">Ton message <span aria-hidden="true">*</span></label>
+              <textarea id="message" name="message" rows="4" required minlength="10" maxlength="3000"></textarea>
+            </div>
+            <!-- Piège à robots : champ invisible pour les humains -->
+            <div class="hp" aria-hidden="true">
+              <label for="site">Ne pas remplir</label>
+              <input id="site" name="site" type="text" tabindex="-1" autocomplete="off" />
+            </div>
+            <p class="form__rgpd">
+              Tes informations servent uniquement à te répondre. Elles ne sont ni stockées sur le site
+              ni transmises à des tiers (voir la <a href="/mentions-legales/#confidentialite">politique de confidentialité</a>).
+            </p>
+            <button type="submit" class="btn btn--bleu form__btn"><span class="ab" aria-hidden="true">A</span> Envoyer</button>
+          </form>
       </section>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .contact {
-    position: relative;
-    padding-block: clamp(3rem, 7vw, 6rem) var(--section);
-  }
-  :global(.contact__ascii) {
-    position: absolute;
-    left: -6%;
-    bottom: 2%;
-    width: min(46vw, 620px);
-    color: #8fb0e8;
-    opacity: 0.35;
-    rotate: -10deg;
-    pointer-events: none;
-  }
-  .contact__head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-  }
-  .bubble {
-    position: relative;
-    width: min(100%, 440px);
-    aspect-ratio: 575 / 444;
-    display: grid;
-    place-items: center;
-    rotate: -4deg;
-  }
-  .bubble svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
-  .bubble p {
-    position: relative;
-    max-width: 18ch;
-    margin-top: -8%;
-    color: #000;
-    font-size: clamp(1rem, 0.8rem + 0.8vw, 1.6rem);
-    text-align: center;
-    line-height: 1.25;
-  }
+  .contact { position: relative; padding-block: clamp(2rem, 4vw, 3.5rem) var(--section); }
+  :global(.contact__ascii) { position: absolute; left: -6%; bottom: 2%; width: min(40vw, 520px); color: #8fb0e8; opacity: 0.3; rotate: -10deg; pointer-events: none; }
+  .contact__grid { position: relative; display: grid; align-items: center; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 4vw, 3.5rem); }
+  .contact__titre { margin: clamp(1.8rem, 4vw, 3rem) 0 0; max-width: 9ch; font-family: var(--font-title); font-weight: 700; font-size: clamp(2.8rem, 1rem + 6vw, 7rem); line-height: 1; letter-spacing: -0.02em; color: #fff; text-wrap: balance; }
+  .contact__titre span { color: var(--pink); }
+  .contact__lead { margin: 1.6rem 0 0; max-width: 40ch; font-size: var(--fs-lead); line-height: 1.35; color: rgb(255 255 255 / 0.92); }
+  .contact__liens { display: flex; flex-wrap: wrap; gap: 1.4rem 1rem; margin: clamp(2rem, 4vw, 3rem) 0 0; padding: 0; list-style: none; }
 
-  .contact__grid {
-    position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    gap: clamp(2rem, 5vw, 4rem);
-    align-items: start;
-    margin-top: clamp(1.5rem, 3vw, 2.5rem);
-  }
+  /* Même étiquette que partout sur le site : blanche, penchée, ombre pleine décalée */
+  .etiquette { display: inline-block; padding: 0.35em 0.85em 0.4em; background: var(--white); color: #000; text-decoration: none; font-family: var(--font-title); font-weight: 700; line-height: 1.05; font-size: clamp(1.1rem, 0.85rem + 0.8vw, 1.6rem); transform: rotate(var(--tilt, -3deg)); box-shadow: 7px 7px 0 var(--blue); transition: transform 0.25s var(--ease-pop), box-shadow 0.25s var(--ease-pop); }
+  .etiquette--rose { box-shadow: 7px 7px 0 var(--pink-deep); }
+  .etiquette:hover, .etiquette:focus-visible { transform: rotate(0deg) translate(-2px, -4px); box-shadow: 11px 11px 0 var(--blue); }
+  .etiquette--rose:hover, .etiquette--rose:focus-visible { box-shadow: 11px 11px 0 var(--pink-deep); }
+  .etiquette:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
 
-  /* Fenêtres : même langage que FenetreExe (barre bleue, bord noir, ombre pleine) */
-  .win {
-    padding: 0 0 1.6rem;
-    background: var(--white);
-    border: 3px solid #000;
-    border-radius: 18px;
-    box-shadow: clamp(10px, 1.8vw, 22px) clamp(10px, 1.8vw, 22px) 0 var(--blue);
-    color: #000;
-    overflow: hidden;
-  }
-  .win--form {
-    box-shadow: clamp(10px, 1.8vw, 22px) clamp(10px, 1.8vw, 22px) 0 var(--pink-deep);
-  }
-  .win__bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    min-height: 56px;
-    margin-bottom: 1.2rem;
-    padding: 0.6rem 1.2rem;
-    background: var(--blue);
-    border-bottom: 2px solid #000;
-    color: var(--white);
-  }
-  .win__bar h2 {
-    font-family: var(--font-body);
-    font-weight: 400;
-    font-size: clamp(1.1rem, 0.9rem + 0.6vw, 1.6rem);
-  }
-  .win__btns {
-    display: flex;
-    gap: 0.4rem;
-    font-family: var(--font-mono);
-  }
-  .win__btns i {
-    display: grid;
-    place-items: center;
-    width: 22px;
-    height: 22px;
-    background: var(--white);
-    border: 1.5px solid #000;
-    color: #000;
-    font-style: normal;
-    font-size: 0.8rem;
-    line-height: 1;
-  }
-  .win__addr {
-    margin: 0 1.6rem;
-    padding: 0.6rem 0.8rem;
-    border: 2px solid #000;
-    font-family: var(--font-mono);
-    font-size: 0.9rem;
-    color: #555;
-  }
+  /* Carte du formulaire */
+  .carte { padding: clamp(1.2rem, 2.2vw, 1.8rem); background: var(--white); border-radius: var(--radius-card); box-shadow: clamp(10px, 1.4vw, 15px) clamp(10px, 1.4vw, 15px) 0 var(--blue); color: #000; }
+  .carte h2 { font-family: var(--font-title); font-weight: 700; font-size: clamp(1.6rem, 1.2rem + 1.2vw, 2.2rem); margin-bottom: 0.8rem; }
+  .form { display: flex; flex-direction: column; gap: 0.8rem; }
+  .duo-champs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .duo-champs .field { min-width: 0; }
+  .field { display: flex; flex-direction: column; gap: 0.25rem; }
+  .field label { font-weight: 700; }
+  .field input, .field select, .field textarea { width: 100%; padding: 0.55rem 0.8rem; border: 2px solid #000; border-radius: 8px; background: #f6fafc; color: #000; font: inherit; font-size: 1rem; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: 3px solid var(--blue); outline-offset: 0; background: var(--white); }
+  .hp { position: absolute; left: -9999px; }
+  .form__rgpd { font-size: 0.78rem; line-height: 1.35; color: #3d424b; }
+  .form__btn { align-self: flex-start; margin-top: 0.3rem; }
+  .ab { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--white); color: var(--blue); font-size: 0.9rem; }
+  .form__alt { font-size: 0.95rem; }
+  .form__status { margin: 0 0 1rem; padding: 0.8rem 1rem; border-left: 6px solid #2fb37a; background: #e7f8ef; font-weight: 700; }
+  .form__status.is-error { border-color: #d64545; background: #fdecec; }
 
-  .links {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1.4rem 1.6rem;
-    margin: 0 1.6rem;
-    padding: 2rem 1rem;
-    background: var(--navy);
-    list-style: none;
-  }
-  .links a {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--white);
-    text-decoration: none;
-  }
-  .links__circle {
-    display: grid;
-    place-items: center;
-    width: clamp(78px, 8vw, 110px);
-    aspect-ratio: 1;
-    border: clamp(7px, 0.9vw, 13px) solid var(--blue);
-    border-radius: 50%;
-    background: var(--white);
-    transition: transform 0.25s var(--ease-pop);
-  }
-  .links__circle img {
-    width: 48%;
-    height: auto;
-  }
-  .links a:hover .links__circle,
-  .links a:focus-visible .links__circle {
-    transform: scale(1.1) rotate(-6deg);
-  }
-  .links__name {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-  }
-
-  /* Formulaire */
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.1rem;
-    padding: 0.4rem 1.6rem 0;
-  }
-  .field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-  }
-  .field label {
-    font-weight: 700;
-  }
-  .field input,
-  .field select,
-  .field textarea {
-    width: 100%;
-    padding: 0.75rem 0.9rem;
-    border: 2px solid #000;
-    border-radius: 8px;
-    background: #f6fafc;
-    color: #000;
-    font: inherit;
-    font-size: 1rem;
-  }
-  .field input:focus,
-  .field select:focus,
-  .field textarea:focus {
-    outline: 3px solid var(--blue);
-    outline-offset: 0;
-    background: var(--white);
-  }
-  .hp {
-    position: absolute;
-    left: -9999px;
-  }
-  .form__rgpd {
-    font-size: 0.85rem;
-    color: #3d424b;
-  }
-  .form__btn {
-    align-self: flex-start;
-    margin-top: 0.3rem;
-  }
-  .ab {
-    display: grid;
-    place-items: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: var(--white);
-    color: var(--blue);
-    font-size: 0.9rem;
-  }
-  .form__alt {
-    font-size: 0.95rem;
-  }
-  .form__status {
-    margin: 0.4rem 1.6rem 0;
-    padding: 0.8rem 1rem;
-    border-left: 6px solid #2fb37a;
-    background: #e7f8ef;
-    font-weight: 700;
-  }
-  .form__status.is-error {
-    border-color: #d64545;
-    background: #fdecec;
-  }
-
-  @media (max-width: 860px) {
-    .contact__grid {
-      grid-template-columns: 1fr;
-    }
-  }
+  @media (max-width: 860px) { .contact__grid { grid-template-columns: 1fr; } .duo-champs { grid-template-columns: 1fr; } .contact__titre { max-width: none; } }
 </style>
 
 <script>

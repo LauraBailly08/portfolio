@@ -38,12 +38,12 @@
   --fs-small: 0.9rem;
 
   /* Mise en page */
-  --container: 1240px;
-  --gutter: clamp(1.25rem, 4vw, 5.5rem);
+  --container: 1420px;
+  --gutter: clamp(1.25rem, 3.7vw, 5rem);
   /* bord gauche commun à toutes les sections (hero, en-tête, footer alignés sur .container) */
   --edge: max(var(--gutter), (100% - var(--container)) / 2);
   --section: clamp(4rem, 8vw, 8rem);
-  --shadow-offset: 15px; /* décalage de l'ombre pleine des étiquettes */
+  --shadow-offset: 12px; /* décalage de l'ombre pleine des étiquettes */
   --radius-card: 26px;
   --ease-pop: cubic-bezier(0.3, 1.5, 0.5, 1);
 }
@@ -55,6 +55,7 @@
 }
 
 html {
+  scroll-padding-top: 80px;
   overflow-x: clip; /* évite tout défilement horizontal causé par les décors */
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
