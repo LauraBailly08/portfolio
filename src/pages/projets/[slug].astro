@@ -35,6 +35,7 @@ const { Content } = await render(projet);
 // numérotation des chapitres (saute « Défis » s'il n'y en a pas)
 const avecDefis = p.defis.length > 0;
 const num = { contexte: '01', role: '02', processus: '03', defis: '04', technique: avecDefis ? '05' : '04' };
+const poids = p.vitrine.reduce((n, v) => n + (v.src.width > v.src.height ? 2 : 1), 0) || 1; // les visuels en paysage prennent deux fois plus de place
 const ghost = (t: string) => `${t} · ${t} · ${t} · ${t} ·`;
 ---
 
@@ -66,10 +67,11 @@ const ghost = (t: string) => `${t} · ${t} · ${t} · ${t} ·`;
   <!-- VITRINE : les visuels à plat, en grand, dans la couleur du projet -->
   {p.vitrine.length > 0 && (
     <section class="vitrine" style={`--w:${Math.floor(84 / p.vitrine.length)}vw`} aria-label="Aperçu du projet" data-vitrine>
+      <AsciiEtoile class="vitrine__ascii" />
       <p class="vitrine__ghost" aria-hidden="true">{p.titre} · {p.titre} · {p.titre} ·</p>
       <ul class="vitrine__liste">
         {p.vitrine.map((v, i) => (
-          <li class="vitrine__item" style={`--i:${i};--ar:${(v.src.width / v.src.height).toFixed(3)}`} data-para>
+          <li class="vitrine__item" style={`--i:${i};--ar:${(v.src.width / v.src.height).toFixed(3)};--w:${Math.min(34, (88 * (v.src.width > v.src.height ? 2 : 1)) / poids).toFixed(1)}vw`} data-para>
             <figure>
               <Image src={v.src} alt={v.alt} widths={[420, 840]} sizes="(max-width: 760px) 80vw, 30vw" />
               <figcaption><span>{String(i + 1).padStart(2, '0')}</span> {v.alt.split(':')[0].split(' avec ')[0]}</figcaption>
@@ -166,6 +168,7 @@ const ghost = (t: string) => `${t} · ${t} · ${t} · ${t} ·`;
   <!-- 03 PROCESSUS -->
   <section class="process" aria-labelledby="processus">
     <AsciiEtoile class="process__ascii" />
+    <AsciiEtoile class="process__ascii process__ascii--gauche" />
     <p class="ghost ghost--process" aria-hidden="true">Processus · Processus · Processus ·</p>
     <div class="container">
       <header class="process__head">
@@ -377,11 +380,21 @@ const ghost = (t: string) => `${t} · ${t} · ${t} · ${t} ·`;
     pointer-events: none;
     user-select: none;
   }
+  :global(.vitrine__ascii) {
+    position: absolute;
+    left: -6%;
+    bottom: -12%;
+    width: min(38vw, 520px);
+    color: #8fb0e8;
+    opacity: 0.14;
+    scale: -1 1;
+    pointer-events: none;
+  }
   .vitrine__liste {
     position: relative;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     gap: clamp(1.5rem, 4vw, 4rem);
     margin: 0;
     padding: 0 var(--gutter, 1.5rem);
@@ -594,6 +607,14 @@ const ghost = (t: string) => `${t} · ${t} · ${t} · ${t} ·`;
     opacity: 0.45;
     pointer-events: none;
   }
+  :global(.process__ascii--gauche) {
+    right: auto;
+    left: -8%;
+    bottom: auto;
+    top: 38%;
+    width: min(40vw, 560px);
+    scale: -1 1;
+  }
   .process__head {
     position: relative;
     display: flex;
@@ -792,7 +813,7 @@ const ghost = (t: string) => `${t} · ${t} · ${t} · ${t} ·`;
         el.append(s, i < mots.length - 1 ? ' ' : '');
       });
     });
-    document.querySelectorAll('.chiffres li, .role, .defi, .tool, .consignes li, .etape, .cible, .fiche, .chap__rail, .duo__col > .sous').forEach((el, i) => {
+    document.querySelectorAll('.chiffres li, .role, .defi, .tool, .consignes li, .etape, .cible, .fiche, .chap__rail, .process__head, .duo__col > .sous').forEach((el, i) => {
       el.setAttribute('data-reveal', '');
       (el as HTMLElement).style.setProperty('--d', String(i % 3));
     });

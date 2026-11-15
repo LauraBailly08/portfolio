@@ -19,6 +19,8 @@ jaquetteAlt: "Accueil du site Noyaux d’ombre : en-tête et rubrique « À la u
 jaquetteFit: "cover"
 jaquetteFond: "#14102b"
 vitrine:
+  - src: "../../assets/projets/noyaux-d-ombre/site-2.jpg"
+    alt: "Rubrique « Les articles » du site : cartes avec illustration, titre et résumé"
   - src: "../../assets/projets/noyaux-d-ombre/tel-1.jpg"
     alt: "Page d’accueil sur mobile : « L’effet Matilda », définition et citation de Lise Meitner"
   - src: "../../assets/projets/noyaux-d-ombre/tel-2.jpg"

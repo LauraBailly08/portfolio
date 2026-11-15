@@ -1,6 +1,6 @@
 ---
 # Infos tirées de ta description et du projet « mlp ». À relire : cadre (perso ?), durée.
-titre: "Pony diaries"
+titre: "MLP tcg"
 numero: "05"
 ordre: 5
 annee: 2026
@@ -10,17 +10,17 @@ cadre: "Projet personnel"
 duree: "2 mois"
 role: "Conception et développement"
 resume: "Une appli web pour suivre sa collection de cartes My Little Pony, développée avec Astro et PocketBase."
-accroche: "Pony diaries est un site, installable aussi comme appli, pour suivre sa collection de cartes Kayou My Little Pony. Il regroupe les 2 469 cartes officielles avec leurs images, et permet d’ajouter ses cartes, de suivre sa progression par série, de gérer sa wishlist et ses doubles, et d’exposer ses cartes préférées dans une vitrine."
+accroche: "MLP tcg est un site, installable aussi comme appli, pour suivre sa collection de cartes Kayou My Little Pony. Il regroupe les 2 469 cartes officielles avec leurs images, et permet d’ajouter ses cartes, de suivre sa progression par série, de gérer sa wishlist et ses doubles, et d’exposer ses cartes préférées dans une vitrine."
 competences: ["Astro", "PocketBase", "Base de données", "PWA", "Tailwind CSS", "UI design"]
 
 jaquette: "../../assets/projets/pony-diaries/jaquette.png"
-jaquetteAlt: "Icône de l’appli Pony diaries : un bouton de couture rose sur fond bordeaux"
+jaquetteAlt: "Icône de l’appli MLP tcg : un bouton de couture rose sur fond bordeaux"
 jaquetteFond: "#8b4562"
 vitrine:
   - src: "../../assets/projets/pony-diaries/collection.jpg"
     alt: "Page « Toute ma collection » : mon classeur virtuel avec les cartes possédées, la wishlist et les filtres"
-  - src: "../../assets/projets/pony-diaries/carte-1.png"
-    alt: "Carte à collectionner de Twilight Sparkle, au format de l’appli"
+  - src: "../../assets/projets/pony-diaries/collection-grille.jpg"
+    alt: "Grille des cartes possédées : image, code, série, rareté et quantité de chaque carte"
 mockups: []
 
 contexte:
@@ -42,11 +42,17 @@ processus:
   - fichier: "donnees.exe"
     titre: "Le catalogue"
     texte: "J’ai rassemblé les 2 469 cartes du catalogue officiel dans une base PocketBase : code, nom, rareté, série et image de chaque carte."
-    images: []
+    images:
+      - src: "../../assets/projets/pony-diaries/carte-2.png"
+        alt: "Carte Fluttershy du catalogue"
+      - src: "../../assets/projets/pony-diaries/carte-3.png"
+        alt: "Carte Princess Twilight Sparkle du catalogue"
   - fichier: "collection.exe"
     titre: "La collection"
     texte: "Chaque utilisateur ajoute ses cartes à partir de leur code, suit sa progression par série, gère sa wishlist et ses doubles, choisit ses cartes préférées pour sa vitrine et peut voir la valeur de la carte. Tout est synchronisé avec PocketBase."
-    images: []
+    images:
+      - src: "../../assets/projets/pony-diaries/collection-grille.jpg"
+        alt: "Ma collection : grille des cartes possédées avec leur série et leur rareté"
   - fichier: "appli.exe"
     titre: "L’appli"
     texte: "Le site s’installe sur téléphone comme une appli : barre d’onglets en bas avec le bouton Scanner au milieu, raccourcis, et cartes déjà vues disponibles hors connexion."
@@ -64,7 +70,7 @@ outils:
     pourquoi: "Développement du site, de la base et de la version appli (PWA)."
 
 resultat: "Une appli web installable qui regroupe tout le catalogue officiel et permet de suivre sa collection, sa wishlist, ses doubles et sa vitrine et aussi la valeur de la carte, synchronisés entre ordinateur et téléphone."
-apprentissages: "Pony diaries m’a appris à concevoir une base de données et à transformer un site en vraie appli installable, en partant d’un besoin personnel."
+apprentissages: "MLP tcg m’a appris à concevoir une base de données et à transformer un site en vraie appli installable, en partant d’un besoin personnel."
 brouillon: true
 
 # ---- Approfondissement ----

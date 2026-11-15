@@ -6,7 +6,7 @@ export const SITE = {
   nom: 'Laura Bailly',
   titre: 'Laura Bailly — Designer, communication & art digital',
   description:
-    'Portfolio de Laura Bailly, étudiante en BUT MMI : design d’interfaces, communication visuelle et art digital. Études de cas Noyaux d’ombre, Wenddy, Ça pèse combien ? et Pony diaries.',
+    'Portfolio de Laura Bailly, étudiante en BUT MMI : design d’interfaces, communication visuelle et art digital. Études de cas Noyaux d’ombre, Wenddy, Ça pèse combien ?, TiK•TaK et MLP tcg.',
   signature: 'Designer - art digital - comm’',
   email: 'laura.bailly08102006@gmail.com',
   cv: '/cv-laura-bailly.pdf', // ⚠️ Dépose ton CV dans public/cv-laura-bailly.pdf
