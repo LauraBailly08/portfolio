@@ -14,7 +14,6 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { glob, type Loader } from 'astro/loaders';
-import { loadEnv } from 'vite';
 
 type Fichier = string;
 type Enregistrement = Record<string, unknown> & {
@@ -24,6 +23,14 @@ type Enregistrement = Record<string, unknown> & {
   images?: Fichier[];
   contenu?: string;
 };
+
+/** Lit POCKETBASE_URL : d'abord dans l'environnement, sinon dans le fichier .env du projet. */
+async function lireUrl(): Promise<string> {
+  if (process.env.POCKETBASE_URL) return process.env.POCKETBASE_URL;
+  const fichier = await readFile(path.join(process.cwd(), '.env'), 'utf8').catch(() => '');
+  const ligne = fichier.split(/\r?\n/).find((l) => /^\s*POCKETBASE_URL\s*=/.test(l));
+  return ligne ? ligne.split('=').slice(1).join('=').trim().replace(/^['"]|['"]$/g, '') : '';
+}
 
 /** PocketBase renomme les fichiers : « jaquette.png » devient « jaquette_a1b2c3d4e5.png ». */
 const nomOriginal = (nom: Fichier) => nom.replace(/_[a-z0-9]{10}(\.[^.]+)?$/i, '$1');
@@ -55,7 +62,7 @@ function cheminsImages(valeur: unknown, trouves = new Set<string>()): string[] {
 }
 
 /** Les champs qui contiennent des références d'images (les autres textes ne sont jamais modifiés). */
-const CHAMPS_IMAGES = ['jaquette', 'mockupCarrousel', 'vitrine', 'mockups', 'processus'] as const;
+const CHAMPS_IMAGES = ['jaquette', 'mockupCarrousel', 'vitrine', 'mockups', 'processus', 'outils'] as const;
 /** Les champs facultatifs vides dans PocketBase (« ») doivent devenir « absents » pour Zod. */
 const NETTOYER = ['lien', 'lienLibelle', 'mockupCarrousel', 'apprentissages', 'equipe', 'problematique', 'ameliorations', 'vitrine', 'mockups', 'chiffres', 'defis'];
 
@@ -65,8 +72,7 @@ export function projetsLoader(): Loader {
   return {
     name: 'projets-pocketbase',
     async load(contexte) {
-      const env = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), '');
-      const base = (env.POCKETBASE_URL ?? '').replace(/\/$/, '');
+      const base = (await lireUrl()).replace(/\/$/, '');
       if (!base) {
         contexte.logger.info('POCKETBASE_URL absent : lecture des fichiers Markdown.');
         return secours.load(contexte);
