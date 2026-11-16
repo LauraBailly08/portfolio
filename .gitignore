@@ -6,9 +6,13 @@ dist/
 # environnement / système
 .env
 .env.*
+!.env.example
 .DS_Store
 Thumbs.db
 npm-debug.log*
+
+# images téléchargées depuis PocketBase au build (régénérées à chaque build)
+src/assets/projets-pb/
 
 # copies de sécurité locales
 .sauvegarde/
