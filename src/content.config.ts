@@ -10,11 +10,12 @@
  * TOUS les projets : ajouter un projet = ajouter un fichier .md, rien d'autre.
  */
 import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { projetsLoader } from './lib/pocketbase-loader';
 import { z } from 'astro/zod';
 
 const projets = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/projets' }),
+  // PocketBase si POCKETBASE_URL est défini, sinon les fichiers .md de src/content/projets/
+  loader: projetsLoader(),
   schema: ({ image }) =>
     z.object({
       titre: z.string(),

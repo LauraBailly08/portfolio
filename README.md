@@ -27,6 +27,29 @@ npm run build      # génère le site final dans dist/
 npm run preview    # prévisualise le site généré
 ```
 
+## Source de données : PocketBase (avec les .md en secours)
+
+Les projets peuvent être lus depuis une base **PocketBase** (collection `projets`) au moment du build.
+Si `POCKETBASE_URL` n'est pas défini, ou si PocketBase ne répond pas, le site lit les fichiers Markdown de
+`src/content/projets/` : le build ne casse jamais.
+
+| Fichier | Rôle |
+|---|---|
+| `pocketbase/projets.collections.json` | Définition de la collection `projets` (champs, règles d'accès : lecture publique, écriture réservée au compte admin) |
+| `scripts/seed-pocketbase.mjs` | Crée la collection si besoin et y recopie les 5 projets Markdown (relançable, sans doublon) |
+| `src/lib/pocketbase-loader.ts` | « Loader » Astro : lit l'API PocketBase, télécharge les images dans `src/assets/projets-pb/` (ignoré par Git), valide avec le schéma Zod |
+| `src/content.config.ts` | Branche le loader sur la collection `projets` |
+
+### En local
+
+1. Télécharger PocketBase pour Windows sur pocketbase.io, le dézipper dans un dossier **à part** du portfolio, puis lancer
+   `pocketbase.exe serve` (adresse : http://127.0.0.1:8090). Créer le compte superuser demandé.
+2. Copier `.env.example` en `.env`, puis renseigner `POCKETBASE_ADMIN_EMAIL` et `POCKETBASE_ADMIN_PASSWORD`.
+3. `npm install` puis `npm run pb:seed` : les 5 projets sont envoyés dans PocketBase.
+4. `npm run dev` : le site lit maintenant PocketBase (« 5 projets chargés depuis PocketBase » dans le terminal).
+
+Le script ne touche qu'à la collection `projets` : aucune autre collection de la base n'est lue ni modifiée.
+
 ## Structure
 
 ```
