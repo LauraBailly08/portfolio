@@ -12,9 +12,10 @@ Direction artistique inspirée de l’univers Nintendo 3DS (jaquettes, sélecteu
 | `astro:assets` (sharp) | Images | Conversion automatique en WebP et tailles adaptées à l’écran (`srcset`). |
 | @astrojs/sitemap | SEO | Génère le plan du site pour les moteurs de recherche. |
 | Fontsource | Polices | Polices auto-hébergées (pas d’appel à Google Fonts → RGPD + performance). |
+| [Tailwind CSS 4](https://tailwindcss.com) | Utilitaires CSS | Classes utilitaires pour la mise en page (ex. page 404). Chargé **sans preflight** (`src/styles/tailwind.css`) pour ne pas modifier le rendu existant. |
 | PHP (hébergement Infomaniak) | Formulaire | `public/contact.php` envoie les messages du formulaire par e-mail. |
 
-Aucune librairie CSS : tout le style est écrit à la main (CSS « scopé » dans chaque composant).
+Le style de la direction artistique est écrit à la main (CSS « scopé » dans chaque composant). Tailwind complète avec des classes utilitaires, sans thème ni composants prédéfinis : aucune bibliothèque de composants (Bootstrap, DaisyUI…) n’est utilisée.
 
 ## Lancer le projet
 

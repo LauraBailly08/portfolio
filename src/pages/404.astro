@@ -6,25 +6,11 @@ import Tag from '@/components/Tag.astro';
 ---
 
 <BaseLayout titre="Page introuvable">
-  <section class="nf container">
+  <!-- Mise en page avec les utilitaires Tailwind (même rendu qu'avant) -->
+  <section class="container flex flex-col items-start gap-10 py-[clamp(4rem,10vw,9rem)]">
     <Tag as="h1">Erreur 404</Tag>
-    <p class="nf__text">Il n’y a aucune cartouche dans ce lecteur… Cette page n’existe pas.</p>
-    <Tag as="p" taille="m" inclinaison={2}><a href="/">Retour au menu</a></Tag>
+    <p class="text-(length:--fs-lead)">Il n’y a aucune cartouche dans ce lecteur… Cette page n’existe pas.</p>
+    <Tag as="p" taille="m" inclinaison={2}><a class="no-underline" href="/">Retour au menu</a></Tag>
   </section>
 </BaseLayout>
 
-<style>
-  .nf {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2.5rem;
-    padding-block: clamp(4rem, 10vw, 9rem);
-  }
-  .nf__text {
-    font-size: var(--fs-lead);
-  }
-  .nf a {
-    text-decoration: none;
-  }
-</style>

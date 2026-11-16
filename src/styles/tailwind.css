@@ -1,0 +1,18 @@
+/* ==========================================================================
+   TAILWIND CSS v4 — utilitaires seulement, SANS « preflight ».
+   Le preflight (remise à zéro de Tailwind) est volontairement exclu : il modifierait
+   les styles de base du site. Seuls le thème et les classes utilitaires sont chargés,
+   donc le rendu existant reste identique. Les couleurs de la direction artistique
+   sont déclarées dans @theme : bg-navy, text-pink, border-blue… sont utilisables.
+   ========================================================================== */
+@layer theme, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@theme {
+  --color-navy: #041a2c;
+  --color-navy-2: #0b2740;
+  --color-blue: #5e87d5;
+  --color-pink: #f2c2cc;
+  --color-pink-light: #fad1da;
+}

@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import tailwindcss from '@tailwindcss/vite';
 
 // https://docs.astro.build/fr/reference/configuration-reference/
 export default defineConfig({
@@ -23,5 +24,5 @@ export default defineConfig({
 
   // En développement : vérifie les fichiers régulièrement au lieu d'attendre les notifications de Windows,
   // pour que les modifications faites par un autre outil (ex. Claude) s'affichent bien sans redémarrer.
-  vite: { server: { watch: { usePolling: true, interval: 300 } } },
+  vite: { plugins: [tailwindcss()], server: { watch: { usePolling: true, interval: 300 } } },
 });
