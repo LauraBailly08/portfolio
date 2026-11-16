@@ -1,34 +1,38 @@
 ---
 /**
- * LOGO — signature typographique « Laura Bailly » suivie du papillon de la page d'accueil
- * (quatre ailes dessinées au trait + quelques pixels). Le papillon est un SVG décoratif :
- * il est caché aux lecteurs d'écran (aria-hidden), le nom suffit.
+ * LOGO — « Laura Bailly » avec le papillon de la page d'accueil dessiné derrière le nom
+ * (quatre ailes au trait + quelques pixels, comme sur le visuel de l'accueil).
+ * Le papillon est un SVG décoratif placé en arrière-plan (aria-hidden) : le nom reste lisible
+ * par-dessus et les lecteurs d'écran ne lisent que le nom.
  * Tout est en em : le logo suit la taille de police de son parent.
  * Utilisation : <a class="…" href="/"><Logo /></a>
  */
 ---
 
 <span class="logo-mark">
-  <span>Laura</span>
-  <span>Bailly</span>
   <svg class="logo-mark__papillon" viewBox="0 0 100 100" aria-hidden="true">
-    <g fill="none" stroke="#9fb0c0" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+    <g fill="none" stroke="#7d8f9f" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round">
       <path d="M53 46C50 20 62 5 79 7C93 9 90 28 70 41Z"></path>
       <path d="M46 48C20 28 6 40 4 56C2 74 28 70 47 57Z"></path>
       <path d="M50 55C40 72 44 96 60 96C76 96 74 76 57 57Z"></path>
       <path d="M56 48C80 40 98 50 96 66C94 80 78 74 59 54Z"></path>
     </g>
-    <!-- pixels, comme sur le visuel de l'accueil -->
-    <g shape-rendering="crispEdges">
-      <rect x="2" y="26" width="8" height="8" fill="#5e87d5"></rect>
-      <rect x="12" y="26" width="8" height="8" fill="#5e87d5"></rect>
-      <rect x="20" y="34" width="8" height="8" fill="#fad1da"></rect>
+    <!-- pixels le long des ailes -->
+    <g shape-rendering="crispEdges" fill="#7d8f9f">
+      <rect x="14" y="24" width="5" height="5" opacity=".9"></rect>
+      <rect x="20" y="24" width="5" height="5" opacity=".6"></rect>
+      <rect x="26" y="29" width="5" height="5" opacity=".8"></rect>
+      <rect x="88" y="74" width="5" height="5" opacity=".7"></rect>
+      <rect x="94" y="74" width="5" height="5" opacity=".5"></rect>
     </g>
   </svg>
+  <span class="logo-mark__nom">Laura</span>
+  <span class="logo-mark__nom">Bailly</span>
 </span>
 
 <style>
   .logo-mark {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 0.28em;
@@ -38,11 +42,18 @@
     letter-spacing: -0.015em;
     white-space: nowrap;
   }
+  .logo-mark__nom {
+    position: relative; /* le nom passe devant le papillon */
+    z-index: 1;
+  }
   .logo-mark__papillon {
-    flex: none;
-    width: 1.05em;
-    height: 1.05em;
-    margin-left: 0.02em;
+    position: absolute;
+    left: 66%; /* le papillon est centré vers la fin du nom, comme dans la maquette */
+    top: 50%;
+    width: 2em;
+    height: 2em;
+    transform: translate(-50%, -50%);
     overflow: visible;
+    pointer-events: none;
   }
 </style>
