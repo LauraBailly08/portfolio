@@ -51,6 +51,11 @@ const isActive = (href: string) => path.startsWith(href);
       if (!ticking) { ticking = true; requestAnimationFrame(maj); }
     }, { passive: true });
     maj();
+
+    // Publie la hauteur réelle de l'en-tête : les liens d'ancre s'arrêtent juste sous lui, sans vide.
+    const hauteur = () => document.documentElement.style.setProperty('--header-h', `${header.offsetHeight}px`);
+    hauteur();
+    new ResizeObserver(hauteur).observe(header);
   }
 </script>
 

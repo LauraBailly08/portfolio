@@ -55,7 +55,7 @@
 }
 
 html {
-  scroll-padding-top: 80px;
+  scroll-padding-top: var(--header-h, 76px); /* hauteur réelle de l'en-tête, mise à jour par Header.astro */
   overflow-x: clip; /* évite tout défilement horizontal causé par les décors */
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
