@@ -7,7 +7,7 @@
 
 | Page | Performance | Accessibilité | Bonnes pratiques | SEO |
 |---|---|---|---|---|
-| Accueil (mobile) | 87 (1) | 100 | 100 | 100 |
+| Accueil (mobile) | 100 (1) | 100 | 100 | 100 |
 | Fiche projet (mobile) | 99 | 100 | 100 | 100 |
 | Contact (mobile) | 100 | 100 | 100 | 100 |
 | À propos (mobile) | 99 | 100 | 100 | 100 |

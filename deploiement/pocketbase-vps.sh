@@ -10,7 +10,9 @@ read -rp "E-mail du compte administrateur PocketBase : " PB_EMAIL
 read -rsp "Mot de passe (12 caractères minimum, non affiché) : " PB_MDP; echo
 
 sudo apt-get install -y unzip curl
-VERSION=$(curl -fsSL https://api.github.com/repos/pocketbase/pocketbase/releases/latest | grep -m1 '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+JSON=$(curl -fsSL https://api.github.com/repos/pocketbase/pocketbase/releases/latest)
+VERSION=$(printf '%s' "$JSON" | sed -n 's/.*"tag_name": *"v\([^"]*\)".*/\1/p' | head -n1)
+[ -n "$VERSION" ] || { echo "Version de PocketBase introuvable"; exit 1; }
 echo "PocketBase $VERSION"
 sudo useradd --system --home "$DOSSIER" --shell /usr/sbin/nologin pocketbase 2>/dev/null || true
 sudo mkdir -p "$DOSSIER"
