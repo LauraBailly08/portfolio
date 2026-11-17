@@ -1,8 +1,8 @@
 ---
 # Infos tirées de ta description et du projet « mlp ». À relire : cadre (perso ?), durée.
 titre: "MLP tcg"
-numero: "05"
-ordre: 5
+numero: "03"
+ordre: 3
 annee: 2026
 type: "Web app"
 typeCourt: "web app"

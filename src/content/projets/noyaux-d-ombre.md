@@ -1,7 +1,7 @@
 ---
 titre: "Noyaux d’ombre"
-numero: "01"
-ordre: 1
+numero: "04"
+ordre: 4
 annee: 2025
 type: "Site web"
 typeCourt: "site web"
