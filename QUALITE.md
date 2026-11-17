@@ -46,7 +46,7 @@ Mesures Lighthouse du 17/11/2026, en mode mobile sauf mention contraire.
 |---|---|---|---|
 | `<title>` et meta description uniques par page | Chaque projet doit être trouvable | Lighthouse SEO | OK : 100 sur toutes les pages testées. |
 | Sitemap + robots.txt | Indexation | /sitemap-index.xml | OK. |
-| Balises Open Graph + image de partage | Partage du portfolio sur LinkedIn | Lecture de la page en ligne (17/11/2026) | OK : `og:title`, `og:description`, `og:url`, `og:image` (1200 × 630 px), `og:locale` et `twitter:card` présents. Aperçu LinkedIn à confirmer avec le Post Inspector. |
+| Balises Open Graph + image de partage | Partage du portfolio sur LinkedIn | Lecture de la page en ligne + LinkedIn Post Inspector | OK : `og:title`, `og:description`, `og:url`, `og:image` (1200 × 630 px), `og:locale` et `twitter:card` présents. Aperçu LinkedIn vérifié avec le Post Inspector (17/11/2026) : titre et image corrects. |
 | Données structurées `Person` | Identifier l’auteure du site | Code source de la page + validateur schema.org | OK : bloc JSON-LD `Person` (nom, métier, URL, liens LinkedIn et Behance) valide. |
 | URLs lisibles (/projets/wenddy/) | Lisibilité | Navigation | OK. |
 | Nom de domaine configuré dans `astro.config.mjs` et `robots.txt` | Liens absolus corrects | Code | OK (portfolio.bailly-laura.fr). |
