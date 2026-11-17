@@ -37,7 +37,9 @@ const isActive = (href: string) => path.startsWith(href);
 </header>
 
 <script>
-  // En-tête collant : il reste visible et se compacte dès qu'on défile.
+  // En-tête collant : il reste visible et gagne une ombre dès qu'on défile.
+  // Sa taille ne change pas : modifier sa hauteur déplaçait la page, ce qui faisait
+  // osciller l'en-tête entre ses deux états quand on s'arrêtait vers 40 px de défilement.
   const header = document.querySelector<HTMLElement>('[data-header]');
   if (header) {
     let ticking = false;
@@ -74,10 +76,7 @@ const isActive = (href: string) => path.startsWith(href);
     justify-content: space-between;
     gap: 1rem;
     padding: 0.9rem var(--edge) 0;
-    transition: padding 0.3s var(--ease-pop);
-  }
-  .header.is-compact .header__inner {
-    padding-top: 0.4rem;
+    border-bottom: 8px solid var(--pink-light); /* trait rose sous les onglets */
   }
 
   .logo {
@@ -91,10 +90,6 @@ const isActive = (href: string) => path.startsWith(href);
     letter-spacing: -0.01em;
     text-decoration: none;
     color: var(--white);
-    transition: font-size 0.3s var(--ease-pop);
-  }
-  .header.is-compact .logo {
-    font-size: clamp(1.1rem, 0.8rem + 0.8vw, 1.7rem);
   }
 
   .tabs {
@@ -107,6 +102,7 @@ const isActive = (href: string) => path.startsWith(href);
 
   /* Onglets : blocs blancs nets, sans halo bleu. L'onglet actif passe en rose. */
   .tab {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 0.6rem;
@@ -114,24 +110,33 @@ const isActive = (href: string) => path.startsWith(href);
     background: var(--white);
     border-radius: 12px 12px 0 0; /* onglet de classeur : accroché au bas du bandeau */
     box-shadow: 0 -2px 8px rgb(0 20 40 / 0.1);
-    transform: translateY(5px);
     color: #000;
     font-family: var(--font-body);
     font-size: clamp(0.95rem, 0.85rem + 0.3vw, 1.2rem);
     white-space: nowrap;
     text-decoration: none;
-    transition: transform 0.2s var(--ease-pop), background-color 0.2s, box-shadow 0.2s, padding 0.3s var(--ease-pop);
+    transition: transform 0.2s var(--ease-pop), background-color 0.2s, box-shadow 0.2s;
   }
-  .header.is-compact .tab {
-    padding-block: 0.35rem 0.45rem;
+  .tab:hover {
+    transform: translateY(-4px);
   }
-  .tab:hover,
-  .tab--active {
-    transform: translateY(0);
+  /* Le troisième onglet est bleu ciel ; l'onglet actif est rose et se fond dans le trait */
+  .tabs li:nth-child(3) .tab:not(.tab--active) {
+    background: var(--sky);
   }
   .tab--active {
     background: var(--pink-light);
     font-weight: 700;
+  }
+  /* prolonge l'onglet actif sur le trait rose : il s'y fond, comme un onglet de classeur ouvert */
+  .tab--active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -8px;
+    height: 8px;
+    background: var(--pink-light);
   }
   .tab__icon {
     display: grid;
@@ -148,6 +153,11 @@ const isActive = (href: string) => path.startsWith(href);
   @media (max-width: 720px) {
     .header__inner {
       padding: 0.6rem 1rem 0;
+      border-bottom-width: 6px;
+    }
+    .tab--active::after {
+      bottom: -6px;
+      height: 6px;
     }
     .tab {
       padding: 0.45rem 0.7rem 0.55rem;
@@ -168,10 +178,10 @@ const isActive = (href: string) => path.startsWith(href);
     .tabs { gap: 0.25rem; }
   }
   @media (max-width: 350px) {
-    .logo, .header.is-compact .logo { font-size: 1.1rem; }
+    .logo { font-size: 1.1rem; }
     .tab { font-size: 0.78rem; padding: 0.35rem 0.4rem 0.45rem; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .header, .header__inner, .logo, .tab { transition: none; }
+    .header, .tab { transition: none; }
   }
 </style>
