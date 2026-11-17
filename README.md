@@ -51,6 +51,13 @@ Si `POCKETBASE_URL` n'est pas défini, ou si PocketBase ne répond pas, le site 
 
 Le script ne touche qu'à la collection `projets` : aucune autre collection de la base n'est lue ni modifiée.
 
+### En production (VPS)
+
+PocketBase tourne sur le même VPS que le site, comme service systemd, derrière Apache en HTTPS (`https://api.bailly-laura.fr`).
+Le script `deploiement/pocketbase-vps.sh` fait toute l'installation. Le site restant statique, PocketBase est interrogé **au moment du build** :
+pour publier une modification faite dans l'interface d'administration (`/_/`), relancer le workflow « Deploy portfolio » (onglet Actions → Run workflow).
+L'adresse de l'API est stockée dans la variable GitHub Actions `POCKETBASE_URL` ; sans elle, le build lit les fichiers Markdown.
+
 ## Structure
 
 ```

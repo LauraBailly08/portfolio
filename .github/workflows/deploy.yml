@@ -17,7 +17,10 @@ jobs:
           cache: npm
 
       - run: npm ci
-      - run: npm run build
+      - name: Build (lit PocketBase si POCKETBASE_URL est défini, sinon les .md)
+        run: npm run build
+        env:
+          POCKETBASE_URL: ${{ vars.POCKETBASE_URL }}
 
       - name: Envoyer dist sur le VPS
         uses: appleboy/scp-action@v0.1.7
