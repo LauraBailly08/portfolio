@@ -146,7 +146,7 @@ p {
 }
 .btn--bleu {
   --btn-shadow: #000;
-  background: var(--blue);
+  background: #4870c9; /* même bleu, un cran plus foncé : texte blanc lisible (contraste 4,5:1) */
   color: var(--white);
 }
 .btn--rose {

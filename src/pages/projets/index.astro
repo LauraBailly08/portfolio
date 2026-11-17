@@ -30,7 +30,7 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
       <ol class="rows">
         {projets.map((p) => (
           <li class="row">
-            <span class="row__num" aria-hidden="true">{p.data.numero}</span>
+            <span class="row__num" aria-hidden="true" data-n={p.data.numero}></span>
             <div class="row__body">
               <p class="row__meta">
                 <span class="row__badge">{p.data.cadre.split(' · ')[0]}</span>
@@ -107,6 +107,9 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
     line-height: 1;
     color: rgb(255 255 255 / 0.18);
     transition: color 0.25s;
+  }
+  .row__num::before {
+    content: attr(data-n); /* numéro décoratif : texte généré, ignoré par les lecteurs d'écran */
   }
   .row:hover .row__num {
     color: var(--pink);

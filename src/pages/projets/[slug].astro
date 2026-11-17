@@ -208,7 +208,7 @@ const ghost = (t: string) => `${t} · ${t} · ${t} · ${t} ·`;
       <ol class="chap__body defis">
         {p.defis.map((d, i) => (
           <li class="defi">
-            <span class="defi__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <span class="defi__num" aria-hidden="true" data-n={String(i + 1).padStart(2, '0')}></span>
             <div>
               <p class="defi__label">Le problème</p>
               <p class="defi__texte">{d.probleme}</p>
@@ -685,6 +685,9 @@ const ghost = (t: string) => `${t} · ${t} · ${t} · ${t} ·`;
     font-size: clamp(1.6rem, 1rem + 2vw, 2.6rem);
     line-height: 1;
     color: var(--pink-deep);
+  }
+  .defi__num::before {
+    content: attr(data-n); /* numéro décoratif : texte généré, ignoré par les lecteurs d'écran */
   }
   .defi__label {
     margin-bottom: 0.6rem;

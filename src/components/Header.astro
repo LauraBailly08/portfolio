@@ -118,6 +118,7 @@ const isActive = (href: string) => path.startsWith(href);
     color: #000;
     font-family: var(--font-body);
     font-size: clamp(0.95rem, 0.85rem + 0.3vw, 1.2rem);
+    white-space: nowrap;
     text-decoration: none;
     transition: transform 0.2s var(--ease-pop), background-color 0.2s, box-shadow 0.2s, padding 0.3s var(--ease-pop);
   }
@@ -160,6 +161,15 @@ const isActive = (href: string) => path.startsWith(href);
       font-size: 0.85rem;
       padding: 0.4rem 0.5rem;
     }
+  }
+  /* très petits écrans (320 px) : le logo et les onglets se resserrent pour tenir sur une ligne */
+  @media (max-width: 380px) {
+    .header__inner { gap: 0.5rem; padding-inline: 0.7rem; }
+    .tabs { gap: 0.25rem; }
+  }
+  @media (max-width: 350px) {
+    .logo, .header.is-compact .logo { font-size: 1.1rem; }
+    .tab { font-size: 0.78rem; padding: 0.35rem 0.4rem 0.45rem; }
   }
   @media (prefers-reduced-motion: reduce) {
     .header, .header__inner, .logo, .tab { transition: none; }
