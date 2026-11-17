@@ -1,7 +1,7 @@
 ---
 /**
  * PAGE CONTACT — titre, texte et étiquettes de liens à gauche, formulaire à droite.
- * Le formulaire est envoyé par public/contact.php (script PHP de l'hébergement Infomaniak, qui m'envoie un e-mail).
+ * Le formulaire est envoyé par public/contact.php (script PHP du serveur, qui m'envoie un e-mail par SMTP ; les identifiants restent hors du dépôt).
  */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Tag from '@/components/Tag.astro';
@@ -76,8 +76,8 @@ const liens = [
               <input id="site" name="site" type="text" tabindex="-1" autocomplete="off" />
             </div>
             <p class="form__rgpd">
-              Tes informations servent uniquement à te répondre. Elles ne sont ni stockées sur le site
-              ni transmises à des tiers (voir la <a href="/mentions-legales/#confidentialite">politique de confidentialité</a>).
+              Tes informations servent uniquement à te répondre. Elles ne sont pas stockées sur le site :
+              ton message m’est envoyé par e-mail, via Gmail (voir la <a href="/mentions-legales/#confidentialite">politique de confidentialité</a>).
             </p>
             <button type="submit" class="btn btn--bleu form__btn"><span class="ab" aria-hidden="true">A</span> Envoyer</button>
           </form>
