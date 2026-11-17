@@ -1,19 +1,68 @@
 <?php
 /**
  * Traitement du formulaire de contact.
- * Ce fichier est copié tel quel dans dist/ et exécuté par l'hébergement Infomaniak (PHP).
- * Il vérifie les champs puis m'envoie le message par e-mail. Rien n'est stocké.
+ * Envoi par SMTP authentifié. Les identifiants sont lus dans un fichier placé
+ * HORS du dossier public (jamais dans le dépôt Git) : /var/www/portfolio-config/contact.php
+ * Il vérifie les champs puis envoie le message par e-mail. Rien n'est stocké.
  */
 
-// ⚠️ Adresse qui reçoit les messages
-$destinataire = 'laura.bailly08102006@gmail.com';
-// ⚠️ Expéditeur technique : utilise une adresse de TON domaine (ex. contact@ton-domaine.fr)
-//    sinon les e-mails risquent d'arriver dans les spams.
-$expediteur = 'no-reply@bailly-laura.fr';
+const FICHIER_CONFIG = '/var/www/portfolio-config/contact.php';
 
 function retour(string $etat): void {
     header('Location: /contact/?envoi=' . $etat);
     exit;
+}
+
+/** Lit une réponse SMTP complète (elle peut tenir sur plusieurs lignes). */
+function smtp_lire($socket): string {
+    $reponse = '';
+    while (($ligne = fgets($socket, 515)) !== false) {
+        $reponse .= $ligne;
+        if (strlen($ligne) < 4 || $ligne[3] === ' ') {
+            break;
+        }
+    }
+    return $reponse;
+}
+
+function smtp_cmd($socket, string $commande, string $attendu): bool {
+    fwrite($socket, $commande . "\r\n");
+    return str_starts_with(smtp_lire($socket), $attendu);
+}
+
+function envoyer_smtp(array $c, string $objet, string $corps, string $replyTo): bool {
+    $socket = @stream_socket_client('ssl://' . $c['host'] . ':' . $c['port'], $errno, $errstr, 10);
+    if (!$socket) {
+        return false;
+    }
+    stream_set_timeout($socket, 10);
+
+    $corps = preg_replace('/^\./m', '..', str_replace("\n", "\r\n", str_replace("\r\n", "\n", $corps)));
+    $entetes = implode("\r\n", [
+        'Date: ' . date('r'),
+        'From: Portfolio <' . $c['from'] . '>',
+        'To: <' . $c['to'] . '>',
+        'Reply-To: <' . $replyTo . '>',
+        'Subject: ' . $objet,
+        'Message-ID: <' . bin2hex(random_bytes(8)) . '@bailly-laura.fr>',
+        'MIME-Version: 1.0',
+        'Content-Type: text/plain; charset=UTF-8',
+        'Content-Transfer-Encoding: 8bit',
+    ]);
+
+    $ok = str_starts_with(smtp_lire($socket), '220')
+        && smtp_cmd($socket, 'EHLO bailly-laura.fr', '250')
+        && smtp_cmd($socket, 'AUTH LOGIN', '334')
+        && smtp_cmd($socket, base64_encode($c['user']), '334')
+        && smtp_cmd($socket, base64_encode($c['pass']), '235')
+        && smtp_cmd($socket, 'MAIL FROM:<' . $c['from'] . '>', '250')
+        && smtp_cmd($socket, 'RCPT TO:<' . $c['to'] . '>', '250')
+        && smtp_cmd($socket, 'DATA', '354')
+        && smtp_cmd($socket, $entetes . "\r\n\r\n" . $corps . "\r\n.", '250');
+
+    fwrite($socket, "QUIT\r\n");
+    fclose($socket);
+    return $ok;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -41,16 +90,14 @@ if ($nom === '' || mb_strlen($nom) > 100
 $nom = str_replace(["\r", "\n"], ' ', $nom);
 $sujet = str_replace(["\r", "\n"], ' ', $sujet);
 
-$objet = '=?UTF-8?B?' . base64_encode('[Portfolio] ' . $sujet . ' — ' . $nom) . '?=';
+$config = is_file(FICHIER_CONFIG) ? (require FICHIER_CONFIG) : null;
+if (!is_array($config)) {
+    retour('erreur');
+}
+
+$objet = '=?UTF-8?B?' . base64_encode('[Portfolio] ' . $sujet . ' - ' . $nom) . '?=';
 $corps = "Nouveau message depuis le portfolio\n\n"
     . "Nom : $nom\nE-mail : $email\nSujet : $sujet\n\n"
     . "Message :\n$message\n";
 
-$entetes = [
-    'From' => $expediteur,
-    'Reply-To' => $email,
-    'Content-Type' => 'text/plain; charset=UTF-8',
-    'X-Mailer' => 'PHP/' . phpversion(),
-];
-
-retour(mail($destinataire, $objet, $corps, $entetes) ? 'ok' : 'erreur');
+retour(envoyer_smtp($config, $objet, $corps, $email) ? 'ok' : 'erreur');
