@@ -13,7 +13,7 @@ Direction artistique inspirée de l’univers Nintendo 3DS (jaquettes, sélecteu
 | @astrojs/sitemap | SEO | Génère le plan du site pour les moteurs de recherche. |
 | Fontsource | Polices | Polices auto-hébergées (pas d’appel à Google Fonts → RGPD + performance). |
 | [Tailwind CSS 4](https://tailwindcss.com) | Utilitaires CSS | Classes utilitaires pour la mise en page (ex. page 404). Chargé **sans preflight** (`src/styles/tailwind.css`) pour ne pas modifier le rendu existant. |
-| PHP (hébergement Infomaniak) | Formulaire | `public/contact.php` envoie les messages du formulaire par e-mail. |
+| PHP (serveur Apache du VPS) | Formulaire | `public/contact.php` envoie les messages du formulaire par e-mail, en SMTP authentifié (Gmail). |
 
 Le style de la direction artistique est écrit à la main (CSS « scopé » dans chaque composant). Tailwind complète avec des classes utilitaires, sans thème ni composants prédéfinis : aucune bibliothèque de composants (Bootstrap, DaisyUI…) n’est utilisée.
 
@@ -71,10 +71,14 @@ public/                fichiers copiés tels quels : favicon, robots.txt, .htacc
 2. Mettre ses images dans `src/assets/projets/mon-projet/`.
 3. C’est tout : la page `/projets/mon-projet/`, la jaquette du carrousel et la ligne de la liste sont créées automatiquement.
 
-## Mise en ligne (Infomaniak)
-1. `npm run build`
-2. Envoyer **le contenu** du dossier `dist/` dans le dossier du site sur l’hébergement (FTP / SFTP ou gestionnaire de fichiers).
-3. Vérifier que PHP est activé (formulaire de contact) et que le certificat SSL est actif (HTTPS).
+## Mise en ligne (VPS Debian + Apache)
+Le site est un site statique (`dist/`) servi par Apache sur un VPS que je configure moi-même.
+
+- **Domaine** : `portfolio.bailly-laura.fr`. La zone DNS est chez Infomaniak (enregistrement `A` vers l’IP du VPS).
+- **HTTPS** : certificat Let’s Encrypt, installé avec certbot et renouvelé automatiquement.
+- **Apache** : un virtual host dédié (`/etc/apache2/sites-available/portfolio.conf`) gère la compression, le cache long de `/_astro/` et les en-têtes de sécurité. Le fichier `public/.htaccess` est donc inactif sur ce serveur.
+- **Déploiement automatique** : à chaque `git push` sur `main`, GitHub Actions (`.github/workflows/deploy.yml`) construit le site (`npm ci`, `npm run build`) puis copie `dist/` dans `/var/www/portfolio` par SSH. Les accès (hôte, utilisateur, port, clé) sont des *secrets* GitHub, jamais dans le dépôt.
+- **Formulaire de contact** : `contact.php` envoie le message par SMTP. Ses identifiants sont dans un fichier de configuration placé hors du dossier public du serveur et hors du dépôt.
 
 ## Documents du projet
 - [JOURNAL.md](JOURNAL.md) — journal de bord

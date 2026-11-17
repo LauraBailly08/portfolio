@@ -1,4 +1,5 @@
-# Configuration Apache (hébergement Infomaniak)
+# Configuration Apache de secours (hébergement mutualisé).
+# Sur le VPS (AllowOverride None), ce fichier est ignoré : les mêmes réglages sont dans portfolio.conf.
 
 # Page d'erreur personnalisée
 ErrorDocument 404 /404.html
