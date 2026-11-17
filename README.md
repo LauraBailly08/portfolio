@@ -63,7 +63,7 @@ L'adresse de l'API est stockée dans la variable GitHub Actions `POCKETBASE_URL`
 ```
 src/
 ├── assets/            images (optimisées automatiquement au build)
-├── components/        briques réutilisables : Header, Footer, Tag (étiquette), Carousel3DS, CtaBulle, FenetreExe…
+├── components/        briques réutilisables : Header, Footer, Logo, Tag (étiquette), Carousel3DS, AsciiEtoile…
 ├── content/projets/   ← LES PROJETS (un fichier Markdown par projet)
 ├── content.config.ts  schéma des projets (champs obligatoires, types)
 ├── data/site.ts       infos globales : e-mail, liens réseaux, navigation

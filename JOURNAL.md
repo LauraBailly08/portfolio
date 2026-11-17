@@ -57,7 +57,6 @@
 ## Réseaux sociaux (justification)
 
 - **LinkedIn :** réseau des recruteurs et des tuteurs de stage ; mon profil y renvoie vers le portfolio.
-- **Instagram :** montre mes travaux en cours et le côté art digital en images, et touche un public plus large que le réseau professionnel.
 - **Behance :** plateforme dédiée aux portfolios de designers, où je peux présenter mes études de cas en détail et être repérée par des professionnels du design.
 - **Cohérence :** les trois pointent vers le même portfolio et reprennent la même identité visuelle (bleu nuit, rose, signature « Laura Bailly »).
 - **Rythme :** publier quand un projet est terminé, sans chercher à poster tous les jours.

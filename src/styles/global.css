@@ -149,9 +149,6 @@ p {
   background: #4870c9; /* même bleu, un cran plus foncé : texte blanc lisible (contraste 4,5:1) */
   color: var(--white);
 }
-.btn--rose {
-  --btn-shadow: var(--pink-deep);
-}
 
 /* ---------- Chips (compétences) ---------- */
 .chips {

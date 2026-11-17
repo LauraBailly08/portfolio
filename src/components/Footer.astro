@@ -76,9 +76,6 @@ const lettres = 'On discute ?'.split('');
   .fa__haut ul { display: flex; gap: 1.8rem; margin: 0; padding: 0; list-style: none; text-transform: uppercase; font-size: 0.95rem; }
   .fa__haut nav a { text-decoration: none; }
   .fa__haut nav a:hover, .fa__haut nav a:focus-visible { color: var(--pink); }
-  .fa__dispo { justify-self: end; display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.3rem 0.8rem; border: 1px solid rgb(255 255 255 / 0.5); border-radius: 999px; }
-  .fa__point { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); animation: pulse 2s ease-in-out infinite; }
-  @keyframes pulse { 50% { opacity: 0.25; transform: scale(0.8); } }
 
   /* Le mot géant, avec les étiquettes posées par-dessus */
   .fa__scene { position: relative; margin-top: clamp(5rem, 9vw, 8rem); container-type: inline-size; }
@@ -125,5 +122,4 @@ const lettres = 'On discute ?'.split('');
     .fa__t { position: static; }
     .fa__tag { font-size: 1.05rem; box-shadow: 6px 6px 0 var(--sh, var(--blue)); }
   }
-  @media (prefers-reduced-motion: reduce) { .fa__point { animation: none; } }
 </style>
