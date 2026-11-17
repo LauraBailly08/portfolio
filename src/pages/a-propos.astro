@@ -3,7 +3,7 @@
  * PAGE À PROPOS — écrite à la première personne (exigence du cahier des charges).
  * Cartouche photo + bulle BD, compétences en « dossiers », inspirations en jaquettes.
  */
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Tag from '@/components/Tag.astro';
 import cartouche from '@/assets/decor/cartouche-accueil.png'; // même jaquette que sur l'accueil (photo sur fond blanc)
@@ -40,6 +40,10 @@ const inspirations = [
   { img: insp5, theme: 'Photographie', description: 'Une rue pavée de Montmartre et son enseigne en fer forgé.' },
   { img: insp6, theme: 'Jeux vidéo', description: 'Un setup de jeu dans le noir, avec une Nintendo 3DS allumée.' },
 ];
+
+// Le dos de chaque jaquette est découpé avec la silhouette de l'image (masque CSS).
+// On utilise une version WebP légère (600 px) au lieu du PNG d'origine : la page perd environ 2,5 Mo.
+const masques = await Promise.all(inspirations.map((i) => getImage({ src: i.img, width: 600, format: 'webp' })));
 ---
 
 <BaseLayout
@@ -101,7 +105,7 @@ const inspirations = [
     <ul class="insp__grid">
       {inspirations.map((i, k) => (
         <li>
-          <button class="flip" type="button" aria-pressed="false" data-flip style={`--mask:url("${i.img.src}")`}>
+          <button class="flip" type="button" aria-pressed="false" data-flip style={`--mask:url("${masques[k].src}")`}>
             <span class="flip__inner">
               <span class="flip__face flip__face--avant">
                 <Image src={i.img} alt="" widths={[300, 400, 804]} sizes="(max-width: 640px) 45vw, 380px" />
