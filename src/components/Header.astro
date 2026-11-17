@@ -52,9 +52,7 @@ const isActive = (href: string) => path.startsWith(href);
     top: 0;
     z-index: 50;
     overflow: clip; /* les onglets ne dépassent jamais sur la page */
-    background: color-mix(in srgb, var(--navy-2) 85%, transparent); /* un cran plus clair que le fond : le bandeau se distingue de la page */
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
+    background: var(--navy-2); /* opaque : le contenu de la page ne transparaît pas sous l'en-tête */
     border-bottom: 0;
     color: var(--white);
   }
@@ -64,7 +62,7 @@ const isActive = (href: string) => path.startsWith(href);
     justify-content: space-between;
     gap: 1rem;
     padding: 0.9rem var(--edge) 0;
-    border-bottom: 3px solid var(--pink-light); /* trait rose sous les onglets */
+    border-bottom: 5px solid var(--pink-light); /* trait rose sous les onglets */
   }
 
   .logo {
@@ -122,8 +120,8 @@ const isActive = (href: string) => path.startsWith(href);
     position: absolute;
     left: 0;
     right: 0;
-    bottom: -3px;
-    height: 3px;
+    bottom: -5px;
+    height: 5px;
     background: var(--pink-light);
   }
   .tab__icon {
@@ -141,11 +139,11 @@ const isActive = (href: string) => path.startsWith(href);
   @media (max-width: 720px) {
     .header__inner {
       padding: 0.6rem 1rem 0;
-      border-bottom-width: 2px;
+      border-bottom-width: 4px;
     }
     .tab--active::after {
-      bottom: -2px;
-      height: 2px;
+      bottom: -4px;
+      height: 4px;
     }
     .tab {
       padding: 0.45rem 0.7rem 0.55rem;
