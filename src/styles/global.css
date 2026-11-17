@@ -54,6 +54,17 @@
   box-sizing: border-box;
 }
 
+/* Transition douce entre deux pages (fondu) : le contenu change, l'en-tête reste fixe.
+   Les navigateurs qui ne la gèrent pas ignorent simplement la règle. */
+@view-transition {
+  navigation: auto;
+}
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}
+
 html {
   scroll-padding-top: var(--header-h, 76px); /* hauteur réelle de l'en-tête, mise à jour par Header.astro */
   overflow-x: clip; /* évite tout défilement horizontal causé par les décors */
