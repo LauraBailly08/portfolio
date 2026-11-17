@@ -36,7 +36,7 @@ Mesures Lighthouse du 17/11/2026, en mode mobile sauf mention contraire.
 | Images converties en WebP + tailles adaptées (`srcset`) | Visuels exportés en PNG lourds (hero : 1 Mo → ~100 Ko) | Onglet Réseau, Lighthouse | OK. Page À propos : 3 419 Ko → 474 Ko en convertissant les masques PNG en WebP 600 px (rendu identique au pixel près). |
 | Polices auto-hébergées, `font-display: swap` | Évite les requêtes vers Google | Onglet Réseau | OK, aucune requête externe. |
 | Très peu de JavaScript (uniquement le carrousel, le formulaire, le retournement des cartes) | Site statique Astro | Lighthouse | OK, TBT 0 ms sur À propos. |
-| Poids total de la page d’accueil | Objectif : moins de 1 Mo | Lighthouse | À reporter depuis la mesure en ligne. |
+| Poids total de la page d’accueil | Objectif : moins de 1 Mo | Onglet Réseau des DevTools, site en ligne | OK : 28 requêtes, 375 ko de ressources (environ 65 ko transférés avec le cache du navigateur). Largement sous l’objectif. |
 | Cache navigateur et compression | Visites suivantes plus rapides | En-têtes HTTP (`curl -I`) | OK : configuré dans le vhost Apache (cache immuable sur `/_astro`, DEFLATE). |
 | HTTPS + en-têtes de sécurité | Confiance, bonnes pratiques | Lighthouse « Bonnes pratiques » | OK : Let’s Encrypt, redirection 301 http → https, renouvellement automatique. |
 
