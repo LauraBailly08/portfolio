@@ -104,7 +104,7 @@ const projets = (await getCollection('projets')).sort((a, b) => a.data.ordre - b
   </section>
 
   <!-- 2. PROJETS -->
-  <section id="projets" class="projets container" aria-labelledby="projets-titre">
+  <section id="projets" class="projets container">
     <h2 id="projets-titre" class="sr-only">Mes projets</h2>
     <Carousel3DS projets={projets} titreId="projets-titre" />
     <p class="projets__all">

@@ -52,14 +52,16 @@ const ghost = (t: string) => `${t} · ${t} · ${t} · ${t} ·`;
     <!-- Fiche « cartouche » : les infos clés du projet -->
     <aside class:list={['fiche', { 'fiche--dense': !!p.equipe }]} aria-label="Fiche du projet">
       <Image src={cartouche} alt="" aria-hidden="true" class="fiche__bg" widths={[480, 944]} sizes="440px" />
-      <dl class="fiche__content">
+      <div class="fiche__content">
         <p class="fiche__titre">{p.titre}</p>
-        <div><dt>Rôle</dt><dd>{p.role}</dd></div>
-        <div><dt>Type</dt><dd>{p.type}</dd></div>
-        <div><dt>Durée</dt><dd>{p.duree}</dd></div>
-        <div><dt>Année</dt><dd>{p.annee}</dd></div>
-        {p.equipe && <div><dt>Équipe</dt><dd>{p.equipe}</dd></div>}
-      </dl>
+        <dl class="fiche__liste">
+          <div><dt>Rôle</dt><dd>{p.role}</dd></div>
+          <div><dt>Type</dt><dd>{p.type}</dd></div>
+          <div><dt>Durée</dt><dd>{p.duree}</dd></div>
+          <div><dt>Année</dt><dd>{p.annee}</dd></div>
+          {p.equipe && <div><dt>Équipe</dt><dd>{p.equipe}</dd></div>}
+        </dl>
+      </div>
     </aside>
   </section>
 
@@ -307,6 +309,10 @@ const ghost = (t: string) => `${t} · ${t} · ${t} · ${t} ·`;
     margin: 0;
     color: #000;
     rotate: -5deg;
+  }
+  /* la liste ne crée pas de boîte : ses lignes restent réparties comme avant dans .fiche__content */
+  .fiche__liste {
+    display: contents;
   }
   .fiche__titre {
     padding-bottom: 0.5rem;
@@ -842,5 +848,22 @@ const ghost = (t: string) => `${t} · ${t} · ${t} · ${t} ·`;
     };
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(maj); } }, { passive: true });
     maj();
+  }
+
+  // Vitrine : quand la liste défile (mobile), elle doit être atteignable et utilisable au clavier
+  const liste = document.querySelector<HTMLElement>('.vitrine__liste');
+  if (liste) {
+    const rendreFocusable = () => {
+      if (liste.scrollWidth > liste.clientWidth + 1) {
+        liste.tabIndex = 0;
+        liste.setAttribute('aria-label', 'Visuels du projet, défilement horizontal');
+      } else {
+        liste.removeAttribute('tabindex');
+        liste.removeAttribute('aria-label');
+      }
+    };
+    rendreFocusable();
+    addEventListener('load', rendreFocusable);
+    addEventListener('resize', rendreFocusable);
   }
 </script>
