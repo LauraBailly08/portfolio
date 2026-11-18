@@ -3,12 +3,15 @@
 Portfolio de Laura Bailly, étudiante en BUT MMI (2e année) : design d’interface, communication et art digital.
 Direction artistique inspirée de l’univers Nintendo 3DS (jaquettes, sélecteur, bulles) et des interfaces rétro.
 
+**Site en ligne : [portfolio.bailly-laura.fr](https://portfolio.bailly-laura.fr)** (projet individuel du semestre 3, BUT MMI).
+
 ## Technologies
 
 | Outil | Rôle | Pourquoi |
 |---|---|---|
 | [Astro 6](https://astro.build) | Framework | Génère un site statique très léger (peu de JavaScript), idéal pour la performance et le référencement. |
-| Content Collections (Markdown + Zod) | Source de données | Chaque projet est un fichier `.md` ; une seule page modèle affiche tous les projets. |
+| Content Collections (Zod) | Source de données | Chaque projet est une entrée validée par un schéma ; une seule page modèle affiche tous les projets. |
+| [PocketBase](https://pocketbase.io) | Base de données | Stocke les projets (collection `projets`), lue au build ; les fichiers `.md` servent de secours (voir plus bas). |
 | `astro:assets` (sharp) | Images | Conversion automatique en WebP et tailles adaptées à l’écran (`srcset`). |
 | @astrojs/sitemap | SEO | Génère le plan du site pour les moteurs de recherche. |
 | Fontsource | Polices | Polices auto-hébergées (pas d’appel à Google Fonts → RGPD + performance). |
@@ -76,7 +79,8 @@ public/                fichiers copiés tels quels : favicon, robots.txt, .htacc
 ### Ajouter un projet
 1. Créer `src/content/projets/mon-projet.md` en copiant un projet existant.
 2. Mettre ses images dans `src/assets/projets/mon-projet/`.
-3. C’est tout : la page `/projets/mon-projet/`, la jaquette du carrousel et la ligne de la liste sont créées automatiquement.
+3. Si PocketBase est utilisé, lancer `npm run pb:seed` pour l’y recopier.
+4. La page `/projets/mon-projet/`, la jaquette du carrousel et la ligne de la liste sont créées automatiquement au build.
 
 ## Mise en ligne (VPS Debian + Apache)
 Le site est un site statique (`dist/`) servi par Apache sur un VPS que je configure moi-même.
@@ -86,6 +90,9 @@ Le site est un site statique (`dist/`) servi par Apache sur un VPS que je config
 - **Apache** : un virtual host dédié (`/etc/apache2/sites-available/portfolio.conf`) gère la compression, le cache long de `/_astro/` et les en-têtes de sécurité. Le fichier `public/.htaccess` est donc inactif sur ce serveur.
 - **Déploiement automatique** : à chaque `git push` sur `main`, GitHub Actions (`.github/workflows/deploy.yml`) construit le site (`npm ci`, `npm run build`) puis copie `dist/` dans `/var/www/portfolio` par SSH. Les accès (hôte, utilisateur, port, clé) sont des *secrets* GitHub, jamais dans le dépôt.
 - **Formulaire de contact** : `contact.php` envoie le message par SMTP. Ses identifiants sont dans un fichier de configuration placé hors du dossier public du serveur et hors du dépôt.
+
+## Droits
+Textes, images et visuels du site : © Laura Bailly. Polices sous licence SIL Open Font License. Les chartes et logos de tiers (projet Wenddy, logos de logiciels) appartiennent à leurs auteurs. Détail dans les [mentions légales](https://portfolio.bailly-laura.fr/mentions-legales/).
 
 ## Documents du projet
 - [JOURNAL.md](JOURNAL.md) — journal de bord
