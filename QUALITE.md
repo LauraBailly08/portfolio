@@ -58,5 +58,5 @@ Mesures Lighthouse du 17/11/2026, en mode mobile sauf mention contraire.
 | Mentions légales (éditrice, hébergeur) | Obligation LCEN | Page /mentions-legales/ | OK. Hébergeur : Université Marie et Louis Pasteur (IUT Nord Franche-Comté) ; domaine : Infomaniak. |
 | Politique de confidentialité (formulaire) | Données personnelles = RGPD | Section #confidentialite | OK : le message est envoyé par e-mail via Gmail, rien n’est stocké sur le site. |
 | Aucun cookie ni traceur → pas de bandeau nécessaire | Simplicité | Onglet Application des DevTools | OK. |
-| Droits des images et logos (charte Wenddy, logos logiciels, photos d’inspiration) | Contenus de tiers | Liste des crédits | À finaliser dans le journal. |
+| Droits des images et logos (charte Wenddy, logos logiciels, photos d’inspiration) | Contenus de tiers | Relecture de la section « Propriété intellectuelle » des mentions légales | Crédits en ligne : chartes et logos imposés (Wenddy) cités comme appartenant à leurs auteurs, logos de logiciels cités comme appartenant à leurs éditeurs, photos d’inspiration déclarées personnelles. À confirmer image par image avant la soutenance. |
 | Licences des polices (SIL OFL) | Polices embarquées | Mentionnées dans les mentions légales | OK. |
