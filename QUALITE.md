@@ -1,6 +1,6 @@
 # Grille de contrôle qualité
 
-> Grille propre à ce site. Colonne « Résultat » : date, outil, correction éventuelle.
+> Grille propre à ce site. Pour chaque critère : pourquoi il compte ici, comment je le vérifie, résultat (date, outil, correction éventuelle).
 > Contrôles faits le 17/11/2026 (Playwright + axe-core sur les 11 pages, de 320 à 1440 px ; Lighthouse mobile et desktop). À refaire après chaque mise en production.
 
 ## Scores Lighthouse
